@@ -73,12 +73,15 @@
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "buildTarget": "fnanz:build"
+          },
           "configurations": {
             "production": {
-              "browserTarget": "fnanz:build:production"
+              "buildTarget": "fnanz:build:production"
             },
             "development": {
-              "browserTarget": "fnanz:build:development"
+              "buildTarget": "fnanz:build:development"
             }
           },
           "defaultConfiguration": "development"
