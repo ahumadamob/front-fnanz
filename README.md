@@ -4,8 +4,9 @@ Aplicación Angular para consumir la API Fnanz expuesta en `http://localhost:808
 
 ## Requisitos
 
-- Node.js 18 o superior
+- Node.js 18 o superior (Angular 20 requiere al menos Node 18)
 - NPM 9 o superior
+- Angular CLI 20 se instalará localmente con `npm install`
 - API backend disponible en `http://localhost:8080`
 
 ## Instalación
