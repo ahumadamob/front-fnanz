@@ -22,7 +22,7 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular/build:application",
+          "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "outputPath": "dist/fnanz",
             "index": "src/index.html",
@@ -72,22 +72,22 @@
           "defaultConfiguration": "production"
         },
         "serve": {
-          "builder": "@angular/build:dev-server",
+          "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "buildTarget": "fnanz:build"
+            "browserTarget": "fnanz:build"
           },
           "configurations": {
             "production": {
-              "buildTarget": "fnanz:build:production"
+              "browserTarget": "fnanz:build:production"
             },
             "development": {
-              "buildTarget": "fnanz:build:development"
+              "browserTarget": "fnanz:build:development"
             }
           },
           "defaultConfiguration": "development"
         },
         "extract-i18n": {
-          "builder": "@angular/build:extract-i18n",
+          "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
             "browserTarget": "fnanz:build"
           }
