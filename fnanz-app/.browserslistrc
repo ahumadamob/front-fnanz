@@ -1,0 +1,5 @@
+# Esta configuración es utilizada por autoprefixer, babel-preset-env y otros.
+> 0.5%
+last 2 versions
+Firefox ESR
+not dead
