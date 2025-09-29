@@ -1,0 +1,110 @@
+<section class="card categoria-panel">
+  <header class="categoria-panel__header">
+    <div>
+      <h2>Categorías financieras</h2>
+      <p class="categoria-panel__subtitle">
+        Administra las categorías utilizadas para clasificar ingresos y egresos.
+      </p>
+    </div>
+    <button type="button" class="primary-button" (click)="startCreate()" [disabled]="loading() || saving()">
+      Nueva Categoría Financiera
+    </button>
+  </header>
+
+  <p *ngIf="loading()" class="categoria-panel__loading">Cargando información...</p>
+  <p *ngIf="error() && !loading()" class="categoria-panel__error">{{ error() }}</p>
+
+  <section *ngIf="showForm()" class="categoria-form">
+    <h3>{{ formTitle() }}</h3>
+    <form [formGroup]="form" (ngSubmit)="submitForm()" class="categoria-form__grid">
+      <label class="form-field">
+        <span>Nombre *</span>
+        <input type="text" formControlName="nombre" [class.invalid]="form.controls.nombre.touched && form.controls.nombre.invalid" />
+        <small *ngIf="form.controls.nombre.touched && form.controls.nombre.hasError('required')">
+          El nombre es obligatorio.
+        </small>
+        <small *ngIf="form.controls.nombre.touched && form.controls.nombre.hasError('maxlength')">
+          El nombre debe tener menos de 120 caracteres.
+        </small>
+      </label>
+
+      <label class="form-field">
+        <span>Tipo *</span>
+        <select formControlName="tipo">
+          <option *ngFor="let tipo of tipoOptions" [value]="tipo">{{ tipo }}</option>
+        </select>
+      </label>
+
+      <label class="form-field form-field--inline">
+        <input type="checkbox" formControlName="activo" />
+        <span>Activo</span>
+      </label>
+
+      <label class="form-field">
+        <span>Orden</span>
+        <input type="number" formControlName="orden" />
+      </label>
+
+      <label class="form-field form-field--full">
+        <span>Descripción</span>
+        <textarea rows="3" formControlName="descripcion"></textarea>
+      </label>
+
+      <div class="form-actions">
+        <button type="button" class="ghost-button" (click)="cancelForm()">Cancelar</button>
+        <button type="submit" class="primary-button" [disabled]="saving()">
+          {{ saving() ? 'Guardando...' : 'Guardar' }}
+        </button>
+      </div>
+    </form>
+  </section>
+
+  <div class="categoria-grid" *ngIf="!loading() && categorias().length > 0; else emptyState">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Tipo</th>
+          <th>Estado</th>
+          <th>Orden</th>
+          <th>Descripción</th>
+          <th class="data-table__actions">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let categoria of categorias(); trackBy: trackByCategoriaId">
+          <td>
+            <div class="categoria-name">{{ categoria.nombre }}</div>
+            <small class="categoria-meta">Creada {{ categoria.creadoEn | date: 'short' }}</small>
+          </td>
+          <td>
+            <span class="tipo-pill" [ngClass]="categoria.tipo === 'INGRESO' ? 'tipo-pill--ingreso' : 'tipo-pill--egreso'">
+              {{ categoria.tipo }}
+            </span>
+          </td>
+          <td>
+            <span [ngClass]="categoria.activo ? 'estado estado--activo' : 'estado estado--inactivo'">
+              {{ categoria.activo ? 'Activo' : 'Inactivo' }}
+            </span>
+          </td>
+          <td>{{ categoria.orden ?? '—' }}</td>
+          <td>{{ categoria.descripcion || 'Sin descripción' }}</td>
+          <td class="data-table__actions">
+            <button type="button" class="ghost-button" (click)="startEdit(categoria)" [disabled]="loading() || saving()">
+              Editar
+            </button>
+            <button type="button" class="danger-button" (click)="deleteCategoria(categoria)" [disabled]="loading() || saving()">
+              Eliminar
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <ng-template #emptyState>
+    <p class="categoria-panel__empty" *ngIf="!loading()">
+      No hay categorías financieras registradas aún. Crea la primera para comenzar.
+    </p>
+  </ng-template>
+</section>
