@@ -14,4 +14,5 @@ export class AppComponent {
   private readonly environmentService = inject(EnvironmentService);
 
   readonly envLabel = signal(this.environmentService.environmentLabel);
+  readonly currentYear = new Date().getFullYear();
 }
