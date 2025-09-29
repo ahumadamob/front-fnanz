@@ -1,0 +1,127 @@
+<section *ngIf="errors().length" class="card card--error">
+  <div class="card__header">
+    <h2 class="card__title">Problemas de conexión</h2>
+  </div>
+  <ul>
+    <li *ngFor="let error of errors()">{{ error }}</li>
+  </ul>
+  <p class="card__helper">
+    Verifica que la API Fnanz esté disponible en <code>http://localhost:8080</code>.
+  </p>
+</section>
+
+<section class="card" *ngIf="perfil$ | async as perfil">
+  <div class="card__header">
+    <h2 class="card__title">Perfil de usuario</h2>
+    <span class="badge">{{ perfil.nombre }}</span>
+  </div>
+  <div class="profile-grid">
+    <div>
+      <span class="profile-label">Correo electrónico</span>
+      <p class="profile-value">{{ perfil.email }}</p>
+    </div>
+    <div>
+      <span class="profile-label">Moneda base</span>
+      <p class="profile-value">{{ perfil.monedaBase }}</p>
+    </div>
+    <div>
+      <span class="profile-label">Actualizado</span>
+      <p class="profile-value">{{ perfil.actualizadoEn | date: 'medium' }}</p>
+    </div>
+  </div>
+</section>
+
+<section class="card">
+  <div class="card__header">
+    <h2 class="card__title">Usuarios recientes</h2>
+  </div>
+  <ng-container *ngIf="usuarios$ | async as usuarios">
+    <table *ngIf="usuarios.length; else usuariosVacio" class="table">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Email</th>
+          <th>Moneda</th>
+          <th>Actualizado</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let usuario of usuarios">
+          <td>{{ usuario.nombre }}</td>
+          <td>{{ usuario.email }}</td>
+          <td>{{ usuario.monedaBase }}</td>
+          <td>{{ usuario.actualizadoEn | date: 'medium' }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </ng-container>
+  <ng-template #usuariosVacio>
+    <p class="empty-state">No hay usuarios para mostrar.</p>
+  </ng-template>
+</section>
+
+<section class="card">
+  <div class="card__header">
+    <h2 class="card__title">Categorías financieras</h2>
+  </div>
+  <ng-container *ngIf="categorias$ | async as categorias">
+    <table *ngIf="categorias.length; else categoriasVacio" class="table">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Tipo</th>
+          <th>Estado</th>
+          <th>Orden</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let categoria of categorias">
+          <td>{{ categoria.nombre }}</td>
+          <td>{{ categoria.tipo }}</td>
+          <td>
+            <span class="badge" [ngClass]="{ 'badge--warn': !categoria.activo }">
+              {{ categoria.activo ? 'Activa' : 'Inactiva' }}
+            </span>
+          </td>
+          <td>{{ categoria.orden }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </ng-container>
+  <ng-template #categoriasVacio>
+    <p class="empty-state">No hay categorías registradas.</p>
+  </ng-template>
+</section>
+
+<section class="card">
+  <div class="card__header">
+    <h2 class="card__title">Gastos reservados</h2>
+  </div>
+  <ng-container *ngIf="gastosReservados$ | async as gastos">
+    <table *ngIf="gastos.length; else gastosVacio" class="table">
+      <thead>
+        <tr>
+          <th>Concepto</th>
+          <th>Categoría</th>
+          <th>Monto reservado</th>
+          <th>Estado</th>
+          <th>Vencimiento</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let gasto of gastos">
+          <td>{{ gasto.concepto }}</td>
+          <td>{{ gasto.categoriaNombre }}</td>
+          <td>{{ gasto.montoReservado | number:'1.2-2' }}</td>
+          <td>
+            <span [class]="badgeClassForEstado(gasto.estado)">{{ gasto.estado }}</span>
+          </td>
+          <td>{{ gasto.fechaVencimiento | date: 'longDate' }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </ng-container>
+  <ng-template #gastosVacio>
+    <p class="empty-state">No hay gastos reservados registrados.</p>
+  </ng-template>
+</section>
