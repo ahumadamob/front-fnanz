@@ -1,0 +1,14 @@
+<header class="app-header">
+  <div class="container">
+    <h1>Fnanz Plataforma</h1>
+    <span class="env-pill">{{ envLabel() }}</span>
+  </div>
+</header>
+<main class="container">
+  <router-outlet />
+</main>
+<footer class="app-footer">
+  <div class="container">
+    <p>&copy; {{ new Date().getFullYear() }} Fnanz. Construido con Angular standalone y servicios.</p>
+  </div>
+</footer>
