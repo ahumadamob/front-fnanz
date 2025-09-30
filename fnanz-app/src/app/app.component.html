@@ -1,7 +1,13 @@
 <header class="app-header">
-  <div class="container">
-    <h1>Fnanz Plataforma</h1>
-    <span class="env-pill">{{ envLabel() }}</span>
+  <div class="container app-header__content">
+    <div class="app-header__brand">
+      <h1>Fnanz Plataforma</h1>
+      <span class="env-pill">{{ envLabel() }}</span>
+    </div>
+    <nav class="app-nav">
+      <a routerLink="/" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }">Dashboard</a>
+      <a routerLink="/categorias-financieras" routerLinkActive="active-link">Categorías financieras</a>
+    </nav>
   </div>
 </header>
 <main class="container">
