@@ -1,0 +1,171 @@
+<section class="card gasto-panel">
+  <header class="gasto-panel__header">
+    <div>
+      <h2>Gastos reservados</h2>
+      <p class="gasto-panel__subtitle">
+        Administra los compromisos de ingresos o egresos reservados para futuros períodos.
+      </p>
+    </div>
+    <button type="button" class="primary-button" (click)="startCreate()" [disabled]="loading() || saving()">
+      Nuevo gasto reservado
+    </button>
+  </header>
+
+  <p *ngIf="loading()" class="gasto-panel__loading">Cargando información...</p>
+  <p *ngIf="error() && !loading()" class="gasto-panel__error">{{ error() }}</p>
+  <p *ngIf="categoriasError()" class="gasto-panel__warning">{{ categoriasError() }}</p>
+
+  <section *ngIf="showForm()" class="gasto-form">
+    <h3>{{ formTitle() }}</h3>
+    <form [formGroup]="form" (ngSubmit)="submitForm()" class="gasto-form__grid">
+      <label class="form-field">
+        <span>Tipo *</span>
+        <select formControlName="tipo">
+          <option *ngFor="let tipo of tipoOptions" [value]="tipo">{{ tipo }}</option>
+        </select>
+      </label>
+
+      <label class="form-field">
+        <span>Categoría *</span>
+        <select formControlName="categoriaId" [disabled]="categoriasLoading() || categorias().length === 0">
+          <option [ngValue]="null" disabled>Seleccione una categoría</option>
+          <option *ngFor="let categoria of categorias()" [ngValue]="categoria.id">
+            {{ categoria.nombre }} ({{ categoria.tipo }})
+          </option>
+        </select>
+        <small *ngIf="form.controls.categoriaId.touched && form.controls.categoriaId.hasError('required')">
+          La categoría es obligatoria.
+        </small>
+        <small *ngIf="!categoriasLoading() && categorias().length === 0">
+          Debes crear al menos una categoría financiera para asignarla al gasto.
+        </small>
+      </label>
+
+      <label class="form-field">
+        <span>Concepto *</span>
+        <input type="text" formControlName="concepto" [class.invalid]="form.controls.concepto.touched && form.controls.concepto.invalid" />
+        <small *ngIf="form.controls.concepto.touched && form.controls.concepto.hasError('required')">
+          El concepto es obligatorio.
+        </small>
+        <small *ngIf="form.controls.concepto.touched && form.controls.concepto.hasError('maxlength')">
+          El concepto debe tener menos de 200 caracteres.
+        </small>
+      </label>
+
+      <label class="form-field">
+        <span>Periodo *</span>
+        <input type="date" formControlName="periodoFecha" [class.invalid]="form.controls.periodoFecha.touched && form.controls.periodoFecha.invalid" />
+        <small *ngIf="form.controls.periodoFecha.touched && form.controls.periodoFecha.hasError('required')">
+          El periodo es obligatorio.
+        </small>
+      </label>
+
+      <label class="form-field">
+        <span>Fecha de vencimiento</span>
+        <input type="date" formControlName="fechaVencimiento" />
+      </label>
+
+      <label class="form-field">
+        <span>Estado *</span>
+        <select formControlName="estado">
+          <option *ngFor="let estado of estadoOptions" [value]="estado">{{ estado }}</option>
+        </select>
+      </label>
+
+      <label class="form-field">
+        <span>Monto reservado *</span>
+        <input
+          type="number"
+          formControlName="montoReservado"
+          step="0.01"
+          min="0"
+          [class.invalid]="form.controls.montoReservado.touched && form.controls.montoReservado.invalid"
+        />
+        <small *ngIf="form.controls.montoReservado.touched && form.controls.montoReservado.hasError('required')">
+          El monto reservado es obligatorio.
+        </small>
+        <small *ngIf="form.controls.montoReservado.touched && form.controls.montoReservado.hasError('min')">
+          El monto reservado no puede ser negativo.
+        </small>
+      </label>
+
+      <label class="form-field">
+        <span>Monto aplicado</span>
+        <input type="number" formControlName="montoAplicado" step="0.01" min="0" />
+        <small *ngIf="form.controls.montoAplicado.touched && form.controls.montoAplicado.hasError('min')">
+          El monto aplicado no puede ser negativo.
+        </small>
+      </label>
+
+      <label class="form-field form-field--full">
+        <span>Nota</span>
+        <textarea rows="3" formControlName="nota"></textarea>
+        <small *ngIf="form.controls.nota.touched && form.controls.nota.hasError('maxlength')">
+          La nota debe tener menos de 500 caracteres.
+        </small>
+      </label>
+
+      <div class="form-actions">
+        <button type="button" class="ghost-button" (click)="cancelForm()">Cancelar</button>
+        <button type="submit" class="primary-button" [disabled]="saving()">
+          {{ saving() ? 'Guardando...' : 'Guardar' }}
+        </button>
+      </div>
+    </form>
+  </section>
+
+  <div class="gasto-grid" *ngIf="!loading() && gastos().length > 0; else emptyState">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Concepto</th>
+          <th>Tipo</th>
+          <th>Categoría</th>
+          <th>Estado</th>
+          <th>Periodo</th>
+          <th>Vencimiento</th>
+          <th>Monto reservado</th>
+          <th>Monto aplicado</th>
+          <th>Nota</th>
+          <th class="data-table__actions">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let gasto of gastos(); trackBy: trackByGastoId">
+          <td>
+            <div class="gasto-name">{{ gasto.concepto }}</div>
+            <small class="gasto-meta">Actualizado {{ gasto.actualizadoEn | date: 'short' }}</small>
+          </td>
+          <td>
+            <span class="tipo-pill" [ngClass]="gasto.tipo === 'INGRESO' ? 'tipo-pill--ingreso' : 'tipo-pill--egreso'">
+              {{ gasto.tipo }}
+            </span>
+          </td>
+          <td>{{ gasto.categoriaNombre }}</td>
+          <td>
+            <span [ngClass]="'estado estado--' + gasto.estado.toLowerCase()">{{ gasto.estado }}</span>
+          </td>
+          <td>{{ gasto.periodoFecha | date: 'longDate' }}</td>
+          <td>{{ gasto.fechaVencimiento ? (gasto.fechaVencimiento | date: 'longDate') : '—' }}</td>
+          <td>{{ gasto.montoReservado | number: '1.2-2' }}</td>
+          <td>{{ gasto.montoAplicado != null ? (gasto.montoAplicado | number: '1.2-2') : '—' }}</td>
+          <td>{{ gasto.nota || '—' }}</td>
+          <td class="data-table__actions">
+            <button type="button" class="ghost-button" (click)="startEdit(gasto)" [disabled]="loading() || saving()">
+              Editar
+            </button>
+            <button type="button" class="danger-button" (click)="deleteGasto(gasto)" [disabled]="loading() || saving()">
+              Eliminar
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <ng-template #emptyState>
+    <p class="gasto-panel__empty" *ngIf="!loading()">
+      No hay gastos reservados registrados. Registra uno nuevo para comenzar.
+    </p>
+  </ng-template>
+</section>
