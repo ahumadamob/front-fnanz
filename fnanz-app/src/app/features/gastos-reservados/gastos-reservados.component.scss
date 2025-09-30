@@ -103,6 +103,10 @@
   font-weight: 600;
 }
 
+.form-field--invalid span {
+  color: #b91c1c;
+}
+
 .form-field input,
 .form-field select,
 .form-field textarea {
@@ -110,6 +114,12 @@
   border-radius: 0.65rem;
   font: inherit;
   padding: 0.6rem 0.75rem;
+}
+
+.form-field--invalid input,
+.form-field--invalid select,
+.form-field--invalid textarea {
+  border-color: #ef4444;
 }
 
 .form-field textarea {

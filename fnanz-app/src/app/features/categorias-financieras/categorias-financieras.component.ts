@@ -94,11 +94,14 @@ export class CategoriasFinancierasComponent implements OnInit {
   }
 
   submitForm(): void {
+    this.clearFormErrors();
+
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
     }
 
+    this.error.set(null);
     const formValue = this.form.getRawValue();
     const payload: CategoriaFinancieraCreate = {
       nombre: formValue.nombre.trim(),
@@ -128,8 +131,13 @@ export class CategoriasFinancierasComponent implements OnInit {
         this.selectedCategoria.set(null);
         this.loadCategorias();
       },
-      error: () => {
-        this.error.set('Ocurrió un error al guardar la categoría financiera.');
+      error: (err) => {
+        const handled = this.handleFormApiErrors(err);
+        if (handled) {
+          this.error.set('Revisa los errores marcados en el formulario.');
+        } else {
+          this.error.set('Ocurrió un error al guardar la categoría financiera.');
+        }
         this.saving.set(false);
       }
     });
@@ -153,5 +161,63 @@ export class CategoriasFinancierasComponent implements OnInit {
         this.loading.set(false);
       }
     });
+  }
+
+  hasControlError(controlName: keyof typeof this.form.controls): boolean {
+    const control = this.form.controls[controlName];
+    return control?.touched === true && control.invalid;
+  }
+
+  getServerError(controlName: keyof typeof this.form.controls): string | null {
+    const control = this.form.controls[controlName];
+    const apiError = control?.errors?.['api'];
+    return typeof apiError === 'string' ? apiError : null;
+  }
+
+  private clearFormErrors(): void {
+    Object.values(this.form.controls).forEach((control) => {
+      if (!control.errors) {
+        return;
+      }
+
+      const { api, ...otherErrors } = control.errors;
+      if (api) {
+        const hasOtherErrors = Object.keys(otherErrors).length > 0;
+        control.setErrors(hasOtherErrors ? otherErrors : null);
+      }
+    });
+  }
+
+  private handleFormApiErrors(error: unknown): boolean {
+    if (!error || typeof error !== 'object') {
+      return false;
+    }
+
+    const httpError = error as { status?: number; error?: unknown };
+    if (!httpError.status || httpError.status < 400 || httpError.status >= 500) {
+      return false;
+    }
+
+    const payload = httpError.error as
+      | { messages?: { field: string; message: string }[] }
+      | undefined;
+
+    if (!payload?.messages?.length) {
+      return false;
+    }
+
+    let applied = false;
+
+    payload.messages.forEach(({ field, message }) => {
+      const control = this.form.get(field);
+      if (control) {
+        const existingErrors = control.errors ?? {};
+        control.setErrors({ ...existingErrors, api: message });
+        control.markAsTouched();
+        applied = true;
+      }
+    });
+
+    return applied;
   }
 }
