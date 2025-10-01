@@ -1,0 +1,141 @@
+<section class="card periodo-panel">
+  <header class="periodo-panel__header">
+    <div>
+      <h2>Periodos financieros</h2>
+      <p class="periodo-panel__subtitle">
+        Gestiona los periodos utilizados para organizar tus registros financieros.
+      </p>
+    </div>
+    <button type="button" class="primary-button" (click)="startCreate()" [disabled]="loading() || saving()">
+      Nuevo periodo financiero
+    </button>
+  </header>
+
+  <p *ngIf="loading()" class="periodo-panel__loading">Cargando información...</p>
+  <p *ngIf="error() && !loading()" class="periodo-panel__error">{{ error() }}</p>
+
+  <section *ngIf="showForm()" class="periodo-form">
+    <h3>{{ formTitle() }}</h3>
+    <form [formGroup]="form" (ngSubmit)="submitForm()" class="periodo-form__grid">
+      <label class="form-field" [class.form-field--invalid]="hasControlError('nombre')">
+        <span>Nombre *</span>
+        <input type="text" formControlName="nombre" />
+        <small *ngIf="form.controls.nombre.touched && form.controls.nombre.hasError('required')">
+          El nombre es obligatorio.
+        </small>
+        <small *ngIf="form.controls.nombre.touched && form.controls.nombre.hasError('maxlength')">
+          El nombre debe tener menos de 150 caracteres.
+        </small>
+        <small *ngIf="getServerError('nombre') as serverError">{{ serverError }}</small>
+      </label>
+
+      <label class="form-field" [class.form-field--invalid]="hasControlError('fechaInicio')">
+        <span>Fecha de inicio *</span>
+        <input type="date" formControlName="fechaInicio" />
+        <small *ngIf="form.controls.fechaInicio.touched && form.controls.fechaInicio.hasError('required')">
+          La fecha de inicio es obligatoria.
+        </small>
+        <small *ngIf="getServerError('fechaInicio') as serverError">{{ serverError }}</small>
+      </label>
+
+      <label class="form-field" [class.form-field--invalid]="hasControlError('fechaFin')">
+        <span>Fecha de fin *</span>
+        <input type="date" formControlName="fechaFin" />
+        <small *ngIf="form.controls.fechaFin.touched && form.controls.fechaFin.hasError('required')">
+          La fecha de fin es obligatoria.
+        </small>
+        <small *ngIf="getServerError('fechaFin') as serverError">{{ serverError }}</small>
+      </label>
+
+      <label class="form-field" [class.form-field--invalid]="hasControlError('tipo')">
+        <span>Tipo</span>
+        <input type="text" formControlName="tipo" placeholder="Ej: Mensual, Trimestral" />
+        <small *ngIf="getServerError('tipo') as serverError">{{ serverError }}</small>
+      </label>
+
+      <label class="form-field form-field--full" [class.form-field--invalid]="hasControlError('descripcion')">
+        <span>Descripción</span>
+        <textarea rows="3" formControlName="descripcion"></textarea>
+        <small *ngIf="getServerError('descripcion') as serverError">{{ serverError }}</small>
+      </label>
+
+      <label class="form-field form-field--inline" [class.form-field--invalid]="hasControlError('cerrado')">
+        <input type="checkbox" formControlName="cerrado" />
+        <span>Periodo cerrado</span>
+        <small *ngIf="getServerError('cerrado') as serverError">{{ serverError }}</small>
+      </label>
+
+      <div class="form-actions">
+        <button type="button" class="ghost-button" (click)="cancelForm()">Cancelar</button>
+        <button type="submit" class="primary-button" [disabled]="saving()">
+          {{ saving() ? 'Guardando...' : 'Guardar' }}
+        </button>
+      </div>
+    </form>
+  </section>
+
+  <div class="periodo-grid" *ngIf="!loading() && periodos().length > 0; else emptyState">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Rango</th>
+          <th>Tipo</th>
+          <th>Estado</th>
+          <th>Descripción</th>
+          <th class="data-table__actions">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let periodo of periodos(); trackBy: trackByPeriodoId">
+          <td>
+            <div class="periodo-name">{{ periodo.nombre }}</div>
+            <small class="periodo-meta">Actualizado {{ periodo.actualizadoEn | date: 'short' }}</small>
+          </td>
+          <td>
+            <div>{{ periodo.fechaInicio | date: 'mediumDate' }} – {{ periodo.fechaFin | date: 'mediumDate' }}</div>
+          </td>
+          <td>{{ periodo.tipo || '—' }}</td>
+          <td>
+            <span [ngClass]="periodo.cerrado ? 'estado estado--cerrado' : 'estado estado--abierto'">
+              {{ periodo.cerrado ? 'Cerrado' : 'Abierto' }}
+            </span>
+          </td>
+          <td>{{ periodo.descripcion || 'Sin descripción' }}</td>
+          <td class="data-table__actions">
+            <button type="button" class="ghost-button" (click)="startEdit(periodo)" [disabled]="loading() || saving()">
+              Editar
+            </button>
+            <button
+              type="button"
+              class="danger-button"
+              (click)="promptDelete(periodo)"
+              [disabled]="loading() || saving()"
+            >
+              Eliminar
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <ng-template #emptyState>
+    <p class="periodo-panel__empty" *ngIf="!loading()">
+      No hay periodos financieros registrados todavía. Crea el primero para comenzar.
+    </p>
+  </ng-template>
+
+  <app-confirm-dialog
+    [open]="periodoPendingDelete() !== null"
+    title="Eliminar periodo"
+    [message]="deleteMessage()"
+    confirmLabel="Eliminar"
+    cancelLabel="Cancelar"
+    busyLabel="Eliminando..."
+    [busy]="deleting()"
+    [confirmDestructive]="true"
+    (cancel)="closeDeleteDialog()"
+    (confirm)="confirmDeletePeriodo()"
+  ></app-confirm-dialog>
+</section>
