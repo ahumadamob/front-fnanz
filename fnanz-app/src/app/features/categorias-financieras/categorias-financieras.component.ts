@@ -7,11 +7,19 @@ import {
   CategoriaFinancieraCreate,
 } from '../../shared/models/categoria-financiera.model';
 import { CategoriaFinancieraService } from '../../core/services/categoria-financiera.service';
+import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-categorias-financieras',
   standalone: true,
-  imports: [DatePipe, NgClass, NgFor, NgIf, ReactiveFormsModule],
+  imports: [
+    ConfirmDialogComponent,
+    DatePipe,
+    NgClass,
+    NgFor,
+    NgIf,
+    ReactiveFormsModule,
+  ],
   templateUrl: './categorias-financieras.component.html',
   styleUrls: ['./categorias-financieras.component.scss']
 })
@@ -22,8 +30,10 @@ export class CategoriasFinancierasComponent implements OnInit {
   readonly categorias = signal<CategoriaFinanciera[]>([]);
   readonly loading = signal(false);
   readonly saving = signal(false);
+  readonly deleting = signal(false);
   readonly error = signal<string | null>(null);
   readonly selectedCategoria = signal<CategoriaFinanciera | null>(null);
+  readonly categoriaPendingDelete = signal<CategoriaFinanciera | null>(null);
   readonly showForm = signal(false);
   readonly tipoOptions: CategoriaFinanciera['tipo'][] = ['INGRESO', 'EGRESO'];
 
@@ -40,6 +50,13 @@ export class CategoriasFinancierasComponent implements OnInit {
       ? `Editar categoría: ${this.selectedCategoria()!.nombre}`
       : 'Nueva categoría financiera'
   );
+
+  readonly deleteMessage = computed(() => {
+    const categoria = this.categoriaPendingDelete();
+    return categoria
+      ? `¿Desea eliminar la categoría financiera "${categoria.nombre}"?`
+      : '';
+  });
 
   ngOnInit(): void {
     this.loadCategorias();
@@ -143,21 +160,40 @@ export class CategoriasFinancierasComponent implements OnInit {
     });
   }
 
-  deleteCategoria(categoria: CategoriaFinanciera): void {
-    const confirmDelete = window.confirm(
-      `¿Desea eliminar la categoría financiera "${categoria.nombre}"?`
-    );
+  promptDelete(categoria: CategoriaFinanciera): void {
+    this.categoriaPendingDelete.set(categoria);
+  }
 
-    if (!confirmDelete) {
+  closeDeleteDialog(): void {
+    if (this.deleting()) {
       return;
     }
+
+    this.categoriaPendingDelete.set(null);
+  }
+
+  confirmDeleteCategoria(): void {
+    const categoria = this.categoriaPendingDelete();
+
+    if (!categoria) {
+      return;
+    }
+
+    this.deleting.set(true);
+    this.error.set(null);
 
     this.loading.set(true);
 
     this.categoriaService.delete(categoria.id).subscribe({
-      next: () => this.loadCategorias(),
+      next: () => {
+        this.deleting.set(false);
+        this.categoriaPendingDelete.set(null);
+        this.loadCategorias();
+      },
       error: () => {
         this.error.set('No se pudo eliminar la categoría financiera seleccionada.');
+        this.deleting.set(false);
+        this.categoriaPendingDelete.set(null);
         this.loading.set(false);
       }
     });

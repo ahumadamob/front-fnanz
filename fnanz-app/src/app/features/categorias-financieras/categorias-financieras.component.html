@@ -98,7 +98,12 @@
             <button type="button" class="ghost-button" (click)="startEdit(categoria)" [disabled]="loading() || saving()">
               Editar
             </button>
-            <button type="button" class="danger-button" (click)="deleteCategoria(categoria)" [disabled]="loading() || saving()">
+            <button
+              type="button"
+              class="danger-button"
+              (click)="promptDelete(categoria)"
+              [disabled]="loading() || saving()"
+            >
               Eliminar
             </button>
           </td>
@@ -112,4 +117,17 @@
       No hay categorías financieras registradas aún. Crea la primera para comenzar.
     </p>
   </ng-template>
+
+  <app-confirm-dialog
+    [open]="categoriaPendingDelete() !== null"
+    title="Eliminar categoría"
+    [message]="deleteMessage()"
+    confirmLabel="Eliminar"
+    cancelLabel="Cancelar"
+    busyLabel="Eliminando..."
+    [busy]="deleting()"
+    [confirmDestructive]="true"
+    (cancel)="closeDeleteDialog()"
+    (confirm)="confirmDeleteCategoria()"
+  ></app-confirm-dialog>
 </section>

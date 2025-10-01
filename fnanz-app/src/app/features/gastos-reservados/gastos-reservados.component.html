@@ -163,7 +163,12 @@
             <button type="button" class="ghost-button" (click)="startEdit(gasto)" [disabled]="loading() || saving()">
               Editar
             </button>
-            <button type="button" class="danger-button" (click)="deleteGasto(gasto)" [disabled]="loading() || saving()">
+            <button
+              type="button"
+              class="danger-button"
+              (click)="promptDelete(gasto)"
+              [disabled]="loading() || saving()"
+            >
               Eliminar
             </button>
           </td>
@@ -177,4 +182,17 @@
       No hay gastos reservados registrados. Registra uno nuevo para comenzar.
     </p>
   </ng-template>
+
+  <app-confirm-dialog
+    [open]="gastoPendingDelete() !== null"
+    title="Eliminar gasto reservado"
+    [message]="deleteMessage()"
+    confirmLabel="Eliminar"
+    cancelLabel="Cancelar"
+    busyLabel="Eliminando..."
+    [busy]="deleting()"
+    [confirmDestructive]="true"
+    (cancel)="closeDeleteDialog()"
+    (confirm)="confirmDeleteGasto()"
+  ></app-confirm-dialog>
 </section>

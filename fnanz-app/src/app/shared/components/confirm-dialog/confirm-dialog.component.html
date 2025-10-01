@@ -1,0 +1,29 @@
+<div *ngIf="open" class="modal" role="dialog" aria-modal="true" (click)="handleBackdropClick($event)">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <header class="modal-header">
+        <h5 class="modal-title">{{ title }}</h5>
+        <button type="button" class="modal-close" aria-label="Cerrar" (click)="onCancel()" [disabled]="busy">
+          &times;
+        </button>
+      </header>
+      <section class="modal-body">
+        <p>{{ message }}</p>
+      </section>
+      <footer class="modal-footer">
+        <button type="button" class="ghost-button" (click)="onCancel()" [disabled]="busy">
+          {{ cancelLabel }}
+        </button>
+        <button
+          type="button"
+          [ngClass]="confirmButtonClass"
+          (click)="onConfirm()"
+          [disabled]="busy"
+        >
+          {{ busy ? busyLabel : confirmLabel }}
+        </button>
+      </footer>
+    </div>
+  </div>
+</div>
+<div *ngIf="open" class="modal-backdrop"></div>

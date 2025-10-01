@@ -9,11 +9,20 @@ import {
 } from '../../shared/models/gasto-reservado.model';
 import { CategoriaFinancieraService } from '../../core/services/categoria-financiera.service';
 import { GastoReservadoService } from '../../core/services/gasto-reservado.service';
+import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-gastos-reservados',
   standalone: true,
-  imports: [DatePipe, DecimalPipe, NgClass, NgFor, NgIf, ReactiveFormsModule],
+  imports: [
+    ConfirmDialogComponent,
+    DatePipe,
+    DecimalPipe,
+    NgClass,
+    NgFor,
+    NgIf,
+    ReactiveFormsModule,
+  ],
   templateUrl: './gastos-reservados.component.html',
   styleUrls: ['./gastos-reservados.component.scss']
 })
@@ -26,10 +35,12 @@ export class GastosReservadosComponent implements OnInit {
   readonly categorias = signal<CategoriaFinanciera[]>([]);
   readonly loading = signal(false);
   readonly saving = signal(false);
+  readonly deleting = signal(false);
   readonly categoriasLoading = signal(false);
   readonly error = signal<string | null>(null);
   readonly categoriasError = signal<string | null>(null);
   readonly selectedGasto = signal<GastoReservado | null>(null);
+  readonly gastoPendingDelete = signal<GastoReservado | null>(null);
   readonly showForm = signal(false);
   readonly tipoOptions: GastoReservado['tipo'][] = ['INGRESO', 'EGRESO'];
   readonly estadoOptions: GastoReservado['estado'][] = [
@@ -58,6 +69,13 @@ export class GastosReservadosComponent implements OnInit {
       ? `Editar gasto reservado: ${this.selectedGasto()!.concepto}`
       : 'Nuevo gasto reservado'
   );
+
+  readonly deleteMessage = computed(() => {
+    const gasto = this.gastoPendingDelete();
+    return gasto
+      ? `¿Desea eliminar el gasto reservado "${gasto.concepto}"?`
+      : '';
+  });
 
   ngOnInit(): void {
     this.loadGastos();
@@ -193,21 +211,40 @@ export class GastosReservadosComponent implements OnInit {
     });
   }
 
-  deleteGasto(gasto: GastoReservado): void {
-    const confirmDelete = window.confirm(
-      `¿Desea eliminar el gasto reservado "${gasto.concepto}"?`
-    );
+  promptDelete(gasto: GastoReservado): void {
+    this.gastoPendingDelete.set(gasto);
+  }
 
-    if (!confirmDelete) {
+  closeDeleteDialog(): void {
+    if (this.deleting()) {
       return;
     }
+
+    this.gastoPendingDelete.set(null);
+  }
+
+  confirmDeleteGasto(): void {
+    const gasto = this.gastoPendingDelete();
+
+    if (!gasto) {
+      return;
+    }
+
+    this.deleting.set(true);
+    this.error.set(null);
 
     this.loading.set(true);
 
     this.gastoService.delete(gasto.id).subscribe({
-      next: () => this.loadGastos(),
+      next: () => {
+        this.deleting.set(false);
+        this.gastoPendingDelete.set(null);
+        this.loadGastos();
+      },
       error: () => {
         this.error.set('No se pudo eliminar el gasto reservado seleccionado.');
+        this.deleting.set(false);
+        this.gastoPendingDelete.set(null);
         this.loading.set(false);
       }
     });
