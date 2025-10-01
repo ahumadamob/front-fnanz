@@ -1,20 +1,61 @@
-<header class="app-header">
-  <div class="container app-header__content">
-    <div class="app-header__brand">
-      <h1>Fnanz Plataforma</h1>
-      <span class="env-pill">{{ envLabel() }}</span>
+<div class="app-layout">
+  <aside class="app-sidebar">
+    <div class="app-sidebar__brand">
+      <div class="app-logo" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 19v-6m5 6V5m5 14v-9m5 9V9" />
+          <path d="M3 21h18" />
+        </svg>
+      </div>
+      <div class="app-brand-text">
+        <h1>Fnanz Plataforma</h1>
+        <span class="env-pill">{{ envLabel() }}</span>
+      </div>
     </div>
-    <nav class="app-nav">
-      <a routerLink="/" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }">Dashboard</a>
-      <a routerLink="/categorias-financieras" routerLinkActive="active-link">Categorías financieras</a>
+    <nav class="app-sidebar__nav">
+      <a routerLink="/" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }">
+        <span class="nav-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 11l9-8 9 8" />
+            <path d="M5 13v7h4v-4h6v4h4v-7" />
+          </svg>
+        </span>
+        <span>Dashboard</span>
+      </a>
+      <a routerLink="/categorias-financieras" routerLinkActive="active-link">
+        <span class="nav-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z" />
+          </svg>
+        </span>
+        <span>Categorías financieras</span>
+      </a>
+      <a routerLink="/gastos-reservados" routerLinkActive="active-link">
+        <span class="nav-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 1v4" />
+            <path d="M7 5h10l4 6-4 6H7L3 11z" />
+            <path d="M12 9v4" />
+            <path d="M10 13h4" />
+          </svg>
+        </span>
+        <span>Gastos reservados</span>
+      </a>
     </nav>
+  </aside>
+  <div class="app-main">
+    <header class="app-header">
+      <h2>Panel administrativo</h2>
+    </header>
+    <main class="app-main__content">
+      <div class="container">
+        <router-outlet />
+      </div>
+    </main>
+    <footer class="app-footer">
+      <div class="container">
+        <p>&copy; {{ currentYear }} Fnanz. Construido con Angular standalone y servicios.</p>
+      </div>
+    </footer>
   </div>
-</header>
-<main class="container">
-  <router-outlet />
-</main>
-<footer class="app-footer">
-  <div class="container">
-    <p>&copy; {{ currentYear }} Fnanz. Construido con Angular standalone y servicios.</p>
-  </div>
-</footer>
+</div>

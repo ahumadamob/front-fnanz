@@ -17,7 +17,7 @@
   <section *ngIf="showForm()" class="categoria-form">
     <h3>{{ formTitle() }}</h3>
     <form [formGroup]="form" (ngSubmit)="submitForm()" class="categoria-form__grid">
-      <label class="form-field">
+      <label class="form-field" [class.form-field--invalid]="hasControlError('nombre')">
         <span>Nombre *</span>
         <input type="text" formControlName="nombre" [class.invalid]="form.controls.nombre.touched && form.controls.nombre.invalid" />
         <small *ngIf="form.controls.nombre.touched && form.controls.nombre.hasError('required')">
@@ -26,28 +26,33 @@
         <small *ngIf="form.controls.nombre.touched && form.controls.nombre.hasError('maxlength')">
           El nombre debe tener menos de 120 caracteres.
         </small>
+        <small *ngIf="getServerError('nombre') as serverError">{{ serverError }}</small>
       </label>
 
-      <label class="form-field">
+      <label class="form-field" [class.form-field--invalid]="hasControlError('tipo')">
         <span>Tipo *</span>
         <select formControlName="tipo">
           <option *ngFor="let tipo of tipoOptions" [value]="tipo">{{ tipo }}</option>
         </select>
+        <small *ngIf="getServerError('tipo') as serverError">{{ serverError }}</small>
       </label>
 
-      <label class="form-field form-field--inline">
+      <label class="form-field form-field--inline" [class.form-field--invalid]="hasControlError('activo')">
         <input type="checkbox" formControlName="activo" />
         <span>Activo</span>
+        <small *ngIf="getServerError('activo') as serverError">{{ serverError }}</small>
       </label>
 
-      <label class="form-field">
+      <label class="form-field" [class.form-field--invalid]="hasControlError('orden')">
         <span>Orden</span>
         <input type="number" formControlName="orden" />
+        <small *ngIf="getServerError('orden') as serverError">{{ serverError }}</small>
       </label>
 
-      <label class="form-field form-field--full">
+      <label class="form-field form-field--full" [class.form-field--invalid]="hasControlError('descripcion')">
         <span>Descripción</span>
         <textarea rows="3" formControlName="descripcion"></textarea>
+        <small *ngIf="getServerError('descripcion') as serverError">{{ serverError }}</small>
       </label>
 
       <div class="form-actions">
@@ -93,7 +98,12 @@
             <button type="button" class="ghost-button" (click)="startEdit(categoria)" [disabled]="loading() || saving()">
               Editar
             </button>
-            <button type="button" class="danger-button" (click)="deleteCategoria(categoria)" [disabled]="loading() || saving()">
+            <button
+              type="button"
+              class="danger-button"
+              (click)="promptDelete(categoria)"
+              [disabled]="loading() || saving()"
+            >
               Eliminar
             </button>
           </td>
@@ -107,4 +117,17 @@
       No hay categorías financieras registradas aún. Crea la primera para comenzar.
     </p>
   </ng-template>
+
+  <app-confirm-dialog
+    [open]="categoriaPendingDelete() !== null"
+    title="Eliminar categoría"
+    [message]="deleteMessage()"
+    confirmLabel="Eliminar"
+    cancelLabel="Cancelar"
+    busyLabel="Eliminando..."
+    [busy]="deleting()"
+    [confirmDestructive]="true"
+    (cancel)="closeDeleteDialog()"
+    (confirm)="confirmDeleteCategoria()"
+  ></app-confirm-dialog>
 </section>

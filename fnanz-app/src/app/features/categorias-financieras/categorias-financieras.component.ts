@@ -7,11 +7,19 @@ import {
   CategoriaFinancieraCreate,
 } from '../../shared/models/categoria-financiera.model';
 import { CategoriaFinancieraService } from '../../core/services/categoria-financiera.service';
+import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-categorias-financieras',
   standalone: true,
-  imports: [DatePipe, NgClass, NgFor, NgIf, ReactiveFormsModule],
+  imports: [
+    ConfirmDialogComponent,
+    DatePipe,
+    NgClass,
+    NgFor,
+    NgIf,
+    ReactiveFormsModule,
+  ],
   templateUrl: './categorias-financieras.component.html',
   styleUrls: ['./categorias-financieras.component.scss']
 })
@@ -22,8 +30,10 @@ export class CategoriasFinancierasComponent implements OnInit {
   readonly categorias = signal<CategoriaFinanciera[]>([]);
   readonly loading = signal(false);
   readonly saving = signal(false);
+  readonly deleting = signal(false);
   readonly error = signal<string | null>(null);
   readonly selectedCategoria = signal<CategoriaFinanciera | null>(null);
+  readonly categoriaPendingDelete = signal<CategoriaFinanciera | null>(null);
   readonly showForm = signal(false);
   readonly tipoOptions: CategoriaFinanciera['tipo'][] = ['INGRESO', 'EGRESO'];
 
@@ -40,6 +50,13 @@ export class CategoriasFinancierasComponent implements OnInit {
       ? `Editar categoría: ${this.selectedCategoria()!.nombre}`
       : 'Nueva categoría financiera'
   );
+
+  readonly deleteMessage = computed(() => {
+    const categoria = this.categoriaPendingDelete();
+    return categoria
+      ? `¿Desea eliminar la categoría financiera "${categoria.nombre}"?`
+      : '';
+  });
 
   ngOnInit(): void {
     this.loadCategorias();
@@ -94,11 +111,14 @@ export class CategoriasFinancierasComponent implements OnInit {
   }
 
   submitForm(): void {
+    this.clearFormErrors();
+
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
     }
 
+    this.error.set(null);
     const formValue = this.form.getRawValue();
     const payload: CategoriaFinancieraCreate = {
       nombre: formValue.nombre.trim(),
@@ -128,30 +148,112 @@ export class CategoriasFinancierasComponent implements OnInit {
         this.selectedCategoria.set(null);
         this.loadCategorias();
       },
-      error: () => {
-        this.error.set('Ocurrió un error al guardar la categoría financiera.');
+      error: (err) => {
+        const handled = this.handleFormApiErrors(err);
+        if (handled) {
+          this.error.set('Revisa los errores marcados en el formulario.');
+        } else {
+          this.error.set('Ocurrió un error al guardar la categoría financiera.');
+        }
         this.saving.set(false);
       }
     });
   }
 
-  deleteCategoria(categoria: CategoriaFinanciera): void {
-    const confirmDelete = window.confirm(
-      `¿Desea eliminar la categoría financiera "${categoria.nombre}"?`
-    );
+  promptDelete(categoria: CategoriaFinanciera): void {
+    this.categoriaPendingDelete.set(categoria);
+  }
 
-    if (!confirmDelete) {
+  closeDeleteDialog(): void {
+    if (this.deleting()) {
       return;
     }
+
+    this.categoriaPendingDelete.set(null);
+  }
+
+  confirmDeleteCategoria(): void {
+    const categoria = this.categoriaPendingDelete();
+
+    if (!categoria) {
+      return;
+    }
+
+    this.deleting.set(true);
+    this.error.set(null);
 
     this.loading.set(true);
 
     this.categoriaService.delete(categoria.id).subscribe({
-      next: () => this.loadCategorias(),
+      next: () => {
+        this.deleting.set(false);
+        this.categoriaPendingDelete.set(null);
+        this.loadCategorias();
+      },
       error: () => {
         this.error.set('No se pudo eliminar la categoría financiera seleccionada.');
+        this.deleting.set(false);
+        this.categoriaPendingDelete.set(null);
         this.loading.set(false);
       }
     });
+  }
+
+  hasControlError(controlName: keyof typeof this.form.controls): boolean {
+    const control = this.form.controls[controlName];
+    return control?.touched === true && control.invalid;
+  }
+
+  getServerError(controlName: keyof typeof this.form.controls): string | null {
+    const control = this.form.controls[controlName];
+    const apiError = control?.errors?.['api'];
+    return typeof apiError === 'string' ? apiError : null;
+  }
+
+  private clearFormErrors(): void {
+    Object.values(this.form.controls).forEach((control) => {
+      if (!control.errors) {
+        return;
+      }
+
+      const { api, ...otherErrors } = control.errors;
+      if (api) {
+        const hasOtherErrors = Object.keys(otherErrors).length > 0;
+        control.setErrors(hasOtherErrors ? otherErrors : null);
+      }
+    });
+  }
+
+  private handleFormApiErrors(error: unknown): boolean {
+    if (!error || typeof error !== 'object') {
+      return false;
+    }
+
+    const httpError = error as { status?: number; error?: unknown };
+    if (!httpError.status || httpError.status < 400 || httpError.status >= 500) {
+      return false;
+    }
+
+    const payload = httpError.error as
+      | { messages?: { field: string; message: string }[] }
+      | undefined;
+
+    if (!payload?.messages?.length) {
+      return false;
+    }
+
+    let applied = false;
+
+    payload.messages.forEach(({ field, message }) => {
+      const control = this.form.get(field);
+      if (control) {
+        const existingErrors = control.errors ?? {};
+        control.setErrors({ ...existingErrors, api: message });
+        control.markAsTouched();
+        applied = true;
+      }
+    });
+
+    return applied;
   }
 }
