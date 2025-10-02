@@ -4,6 +4,7 @@ import { map, Observable } from 'rxjs';
 import {
   PeriodoFinanciero,
   PeriodoFinancieroCreate,
+  PeriodoFinancieroReservasResumen,
   PeriodoFinancieroUpdate
 } from '../../shared/models/periodo-financiero.model';
 import { ApiHttpService } from './api-http.service';
@@ -50,5 +51,15 @@ export class PeriodoFinancieroService {
 
   delete(id: number): Observable<void> {
     return this.apiHttp.delete<void>(`${this.basePath}/${id}`);
+  }
+
+  getReservasResumen(
+    id: number
+  ): Observable<PeriodoFinancieroReservasResumen | null> {
+    return this.apiHttp
+      .get<ApiResponse<PeriodoFinancieroReservasResumen | null>>(
+        `${this.basePath}/${id}/reservas-resumen`
+      )
+      .pipe(map((response) => response.data ?? null));
   }
 }

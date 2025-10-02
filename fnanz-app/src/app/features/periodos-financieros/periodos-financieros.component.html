@@ -106,6 +106,14 @@
           </td>
           <td>{{ periodo.descripcion || 'Sin descripción' }}</td>
           <td class="data-table__actions">
+            <button
+              type="button"
+              class="ghost-button"
+              [routerLink]="['/periodos-financieros', periodo.id, 'reservas-resumen']"
+              [state]="{ periodoNombre: periodo.nombre }"
+            >
+              Ver resumen
+            </button>
             <button type="button" class="ghost-button" (click)="startEdit(periodo)" [disabled]="loading() || saving()">
               Editar
             </button>

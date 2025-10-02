@@ -20,3 +20,25 @@ export type PeriodoFinancieroCreate = {
 };
 
 export type PeriodoFinancieroUpdate = Partial<PeriodoFinancieroCreate>;
+
+export interface GastoReservadoCategoriaResumen {
+  categoriaId: number;
+  categoriaNombre: string;
+  tipo: 'INGRESO' | 'EGRESO';
+  orden?: number | null;
+  montoReservado: number;
+  montoAplicado: number;
+}
+
+export interface GastoReservadoTotales {
+  montoReservado: number;
+  montoAplicado: number;
+}
+
+export interface PeriodoFinancieroReservasResumen {
+  ingresos: GastoReservadoCategoriaResumen[];
+  totalIngresos: GastoReservadoTotales;
+  egresos: GastoReservadoCategoriaResumen[];
+  totalEgresos: GastoReservadoTotales;
+  totalGeneral: GastoReservadoTotales;
+}

@@ -1,0 +1,151 @@
+.resumen-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.resumen-panel__header {
+  align-items: center;
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.resumen-panel__subtitle {
+  color: #6b7280;
+  margin: 0.25rem 0 0;
+}
+
+.resumen-panel__loading,
+.resumen-panel__error,
+.resumen-panel__empty {
+  border-radius: 0.75rem;
+  margin: 0;
+  padding: 1rem;
+}
+
+.resumen-panel__loading {
+  background-color: #f3f4f6;
+}
+
+.resumen-panel__error {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+.resumen-panel__empty {
+  background-color: #f9fafb;
+}
+
+.resumen-grid {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.resumen-card {
+  background-color: #f9fafb;
+  border-radius: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.5rem;
+}
+
+.resumen-card header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+.resumen-card h3 {
+  margin: 0;
+}
+
+.resumen-card__empty {
+  color: #6b7280;
+  margin: 0;
+}
+
+.resumen-table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.resumen-table th,
+.resumen-table td {
+  border-bottom: 1px solid #e5e7eb;
+  padding: 0.65rem 0.75rem;
+  text-align: left;
+}
+
+.resumen-table th {
+  color: #6b7280;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.resumen-table tfoot td {
+  font-weight: 600;
+}
+
+.categoria-nombre {
+  font-weight: 600;
+}
+
+.categoria-orden {
+  color: #6b7280;
+}
+
+.monto-pill {
+  border-radius: 999px;
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.35rem 0.75rem;
+}
+
+.monto-pill--ingreso {
+  background-color: #047857;
+}
+
+.monto-pill--egreso {
+  background-color: #b91c1c;
+}
+
+.resumen-totales {
+  background-color: #f3f4f6;
+  border-radius: 1rem;
+  padding: 1.5rem;
+}
+
+.resumen-totales h3 {
+  margin-top: 0;
+}
+
+.totales-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  margin-top: 1rem;
+}
+
+.total-card {
+  background-color: #fff;
+  border-radius: 0.85rem;
+  box-shadow: 0 5px 12px rgba(15, 23, 42, 0.08);
+  padding: 1rem 1.25rem;
+}
+
+.total-label {
+  color: #6b7280;
+  display: block;
+  font-size: 0.85rem;
+  margin-bottom: 0.5rem;
+}
+
+.total-card strong {
+  font-size: 1.4rem;
+}
