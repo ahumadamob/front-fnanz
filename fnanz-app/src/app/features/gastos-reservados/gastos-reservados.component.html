@@ -14,6 +14,7 @@
   <p *ngIf="loading()" class="gasto-panel__loading">Cargando información...</p>
   <p *ngIf="error() && !loading()" class="gasto-panel__error">{{ error() }}</p>
   <p *ngIf="categoriasError()" class="gasto-panel__warning">{{ categoriasError() }}</p>
+  <p *ngIf="periodosError()" class="gasto-panel__warning">{{ periodosError() }}</p>
 
   <section *ngIf="showForm()" class="gasto-form">
     <h3>{{ formTitle() }}</h3>
@@ -55,19 +56,21 @@
         <small *ngIf="getServerError('concepto') as serverError">{{ serverError }}</small>
       </label>
 
-      <label class="form-field" [class.form-field--invalid]="hasControlError('periodoFecha')">
+      <label class="form-field" [class.form-field--invalid]="hasControlError('periodoId')">
         <span>Periodo *</span>
-        <input type="date" formControlName="periodoFecha" [class.invalid]="form.controls.periodoFecha.touched && form.controls.periodoFecha.invalid" />
-        <small *ngIf="form.controls.periodoFecha.touched && form.controls.periodoFecha.hasError('required')">
+        <select formControlName="periodoId" [disabled]="periodosLoading() || periodos().length === 0">
+          <option [ngValue]="null" disabled>Seleccione un periodo</option>
+          <option *ngFor="let periodo of periodos()" [ngValue]="periodo.id">
+            {{ periodo.nombre }} ({{ periodo.fechaInicio | date: 'longDate' }} - {{ periodo.fechaFin | date: 'longDate' }})
+          </option>
+        </select>
+        <small *ngIf="form.controls.periodoId.touched && form.controls.periodoId.hasError('required')">
           El periodo es obligatorio.
         </small>
-        <small *ngIf="getServerError('periodoFecha') as serverError">{{ serverError }}</small>
-      </label>
-
-      <label class="form-field" [class.form-field--invalid]="hasControlError('fechaVencimiento')">
-        <span>Fecha de vencimiento</span>
-        <input type="date" formControlName="fechaVencimiento" />
-        <small *ngIf="getServerError('fechaVencimiento') as serverError">{{ serverError }}</small>
+        <small *ngIf="getServerError('periodoId') as serverError">{{ serverError }}</small>
+        <small *ngIf="!periodosLoading() && periodos().length === 0">
+          Debes crear al menos un periodo financiero para asignarlo al gasto.
+        </small>
       </label>
 
       <label class="form-field" [class.form-field--invalid]="hasControlError('estado')">
@@ -132,7 +135,7 @@
           <th>Categoría</th>
           <th>Estado</th>
           <th>Periodo</th>
-          <th>Vencimiento</th>
+          <th>Rango</th>
           <th>Monto reservado</th>
           <th>Monto aplicado</th>
           <th>Nota</th>
@@ -154,8 +157,11 @@
           <td>
             <span [ngClass]="'estado estado--' + gasto.estado.toLowerCase()">{{ gasto.estado }}</span>
           </td>
-          <td>{{ gasto.periodoFecha | date: 'longDate' }}</td>
-          <td>{{ gasto.fechaVencimiento ? (gasto.fechaVencimiento | date: 'longDate') : '—' }}</td>
+          <td>{{ gasto.periodoNombre }}</td>
+          <td>
+            {{ gasto.periodoFechaInicio | date: 'longDate' }} -
+            {{ gasto.periodoFechaFin | date: 'longDate' }}
+          </td>
           <td>{{ gasto.montoReservado | number: '1.2-2' }}</td>
           <td>{{ gasto.montoAplicado != null ? (gasto.montoAplicado | number: '1.2-2') : '—' }}</td>
           <td>{{ gasto.nota || '—' }}</td>
