@@ -7,8 +7,10 @@ import {
   GastoReservado,
   GastoReservadoCreate
 } from '../../shared/models/gasto-reservado.model';
+import { PeriodoFinanciero } from '../../shared/models/periodo-financiero.model';
 import { CategoriaFinancieraService } from '../../core/services/categoria-financiera.service';
 import { GastoReservadoService } from '../../core/services/gasto-reservado.service';
+import { PeriodoFinancieroService } from '../../core/services/periodo-financiero.service';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 
 @Component({
@@ -29,16 +31,20 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
 export class GastosReservadosComponent implements OnInit {
   private readonly gastoService = inject(GastoReservadoService);
   private readonly categoriaService = inject(CategoriaFinancieraService);
+  private readonly periodoService = inject(PeriodoFinancieroService);
   private readonly formBuilder = inject(FormBuilder);
 
   readonly gastos = signal<GastoReservado[]>([]);
   readonly categorias = signal<CategoriaFinanciera[]>([]);
+  readonly periodos = signal<PeriodoFinanciero[]>([]);
   readonly loading = signal(false);
   readonly saving = signal(false);
   readonly deleting = signal(false);
   readonly categoriasLoading = signal(false);
+  readonly periodosLoading = signal(false);
   readonly error = signal<string | null>(null);
   readonly categoriasError = signal<string | null>(null);
+  readonly periodosError = signal<string | null>(null);
   readonly selectedGasto = signal<GastoReservado | null>(null);
   readonly gastoPendingDelete = signal<GastoReservado | null>(null);
   readonly showForm = signal(false);
@@ -53,8 +59,7 @@ export class GastosReservadosComponent implements OnInit {
     tipo: ['EGRESO' as GastoReservado['tipo'], Validators.required],
     categoriaId: this.formBuilder.control<number | null>(null, Validators.required),
     concepto: ['', [Validators.required, Validators.maxLength(200)]],
-    periodoFecha: ['', Validators.required],
-    fechaVencimiento: this.formBuilder.control<string | null>(null),
+    periodoId: this.formBuilder.control<number | null>(null, Validators.required),
     estado: ['RESERVADO' as GastoReservado['estado'], Validators.required],
     montoReservado: this.formBuilder.control<number | null>(null, [
       Validators.required,
@@ -80,6 +85,7 @@ export class GastosReservadosComponent implements OnInit {
   ngOnInit(): void {
     this.loadGastos();
     this.loadCategorias();
+    this.loadPeriodos();
   }
 
   trackByGastoId = (_: number, gasto: GastoReservado): number => gasto.id;
@@ -96,6 +102,22 @@ export class GastosReservadosComponent implements OnInit {
       error: () => {
         this.categoriasError.set('No se pudieron cargar las categorías financieras.');
         this.categoriasLoading.set(false);
+      }
+    });
+  }
+
+  private loadPeriodos(): void {
+    this.periodosLoading.set(true);
+    this.periodosError.set(null);
+
+    this.periodoService.list().subscribe({
+      next: (periodos) => {
+        this.periodos.set(periodos);
+        this.periodosLoading.set(false);
+      },
+      error: () => {
+        this.periodosError.set('No se pudieron cargar los periodos financieros.');
+        this.periodosLoading.set(false);
       }
     });
   }
@@ -122,8 +144,7 @@ export class GastosReservadosComponent implements OnInit {
       tipo: 'EGRESO',
       categoriaId: null,
       concepto: '',
-      periodoFecha: '',
-      fechaVencimiento: null,
+      periodoId: null,
       estado: 'RESERVADO',
       montoReservado: null,
       montoAplicado: null,
@@ -138,8 +159,7 @@ export class GastosReservadosComponent implements OnInit {
       tipo: gasto.tipo,
       categoriaId: gasto.categoriaId,
       concepto: gasto.concepto,
-      periodoFecha: gasto.periodoFecha,
-      fechaVencimiento: gasto.fechaVencimiento ?? null,
+      periodoId: gasto.periodoId,
       estado: gasto.estado,
       montoReservado: gasto.montoReservado,
       montoAplicado: gasto.montoAplicado ?? null,
@@ -168,14 +188,10 @@ export class GastosReservadosComponent implements OnInit {
       tipo: formValue.tipo,
       categoriaId: Number(formValue.categoriaId),
       concepto: formValue.concepto.trim(),
-      periodoFecha: formValue.periodoFecha,
+      periodoId: Number(formValue.periodoId),
       estado: formValue.estado,
       montoReservado: Number(formValue.montoReservado)
     };
-
-    if (formValue.fechaVencimiento) {
-      payload.fechaVencimiento = formValue.fechaVencimiento;
-    }
 
     if (formValue.montoAplicado !== null && formValue.montoAplicado !== undefined) {
       payload.montoAplicado = Number(formValue.montoAplicado);
