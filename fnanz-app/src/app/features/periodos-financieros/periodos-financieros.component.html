@@ -44,6 +44,9 @@
         <small *ngIf="form.controls.fechaFin.touched && form.controls.fechaFin.hasError('required')">
           La fecha de fin es obligatoria.
         </small>
+        <small *ngIf="form.controls.fechaFin.touched && form.controls.fechaFin.hasError('dateRange')">
+          La fecha de fin debe ser posterior o igual a la fecha de inicio.
+        </small>
         <small *ngIf="getServerError('fechaFin') as serverError">{{ serverError }}</small>
       </label>
 

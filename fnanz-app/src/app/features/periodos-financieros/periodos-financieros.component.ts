@@ -1,6 +1,6 @@
 import { DatePipe, NgClass, NgFor, NgIf } from '@angular/common';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
 
 import {
   PeriodoFinanciero,
@@ -45,6 +45,32 @@ export class PeriodosFinancierosComponent implements OnInit {
     cerrado: [false],
   });
 
+  private readonly fechaFinValidator: ValidatorFn = (control) => {
+    const parent = control.parent;
+
+    if (!parent) {
+      return null;
+    }
+
+    const fechaInicioControl = parent.get('fechaInicio');
+
+    if (!fechaInicioControl) {
+      return null;
+    }
+
+    const fechaInicio = fechaInicioControl.value as string | null;
+    const fechaFin = control.value as string | null;
+
+    if (!fechaInicio || !fechaFin) {
+      return null;
+    }
+
+    const inicioDate = new Date(fechaInicio);
+    const finDate = new Date(fechaFin);
+
+    return finDate < inicioDate ? { dateRange: true } : null;
+  };
+
   readonly formTitle = computed(() =>
     this.selectedPeriodo()
       ? `Editar periodo financiero: ${this.selectedPeriodo()!.nombre}`
@@ -59,6 +85,11 @@ export class PeriodosFinancierosComponent implements OnInit {
   });
 
   ngOnInit(): void {
+    this.form.controls.fechaFin.addValidators(this.fechaFinValidator);
+    this.form.controls.fechaInicio.valueChanges.subscribe(() => {
+      this.form.controls.fechaFin.updateValueAndValidity({ emitEvent: false });
+    });
+
     this.loadPeriodos();
   }
 
@@ -90,6 +121,7 @@ export class PeriodosFinancierosComponent implements OnInit {
       descripcion: '',
       cerrado: false
     });
+    this.form.controls.fechaFin.updateValueAndValidity({ emitEvent: false });
     this.showForm.set(true);
   }
 
@@ -103,6 +135,7 @@ export class PeriodosFinancierosComponent implements OnInit {
       descripcion: periodo.descripcion ?? '',
       cerrado: periodo.cerrado
     });
+    this.form.controls.fechaFin.updateValueAndValidity({ emitEvent: false });
     this.showForm.set(true);
   }
 
