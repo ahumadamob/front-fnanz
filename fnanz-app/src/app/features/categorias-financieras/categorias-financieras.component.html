@@ -37,11 +37,21 @@
         <small *ngIf="getServerError('tipo') as serverError">{{ serverError }}</small>
       </label>
 
-      <label class="form-field form-field--inline" [class.form-field--invalid]="hasControlError('activo')">
-        <input type="checkbox" formControlName="activo" />
-        <span>Activo</span>
+      <div class="form-field form-field--switch" [class.form-field--invalid]="hasControlError('activo')">
+        <div class="form-field__row">
+          <span class="form-field__label">Activo</span>
+          <label class="switch">
+            <input type="checkbox" formControlName="activo" />
+            <span class="switch__track">
+              <span class="switch__thumb"></span>
+            </span>
+          </label>
+          <span class="switch__status" aria-live="polite">
+            {{ form.controls.activo.value ? 'On' : 'Off' }}
+          </span>
+        </div>
         <small *ngIf="getServerError('activo') as serverError">{{ serverError }}</small>
-      </label>
+      </div>
 
       <label class="form-field" [class.form-field--invalid]="hasControlError('orden')">
         <span>Orden</span>

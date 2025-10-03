@@ -25,7 +25,7 @@
           <header>
             <h3>Ingresos</h3>
             <span class="monto-pill monto-pill--ingreso">
-              Reservado: {{ resumenData.totalIngresos.montoReservado | number: '1.2-2' }}
+              Reservado: {{ resumenData.totalIngresos.montoReservado | currency: 'USD':'symbol-narrow':'1.0-0' }}
             </span>
           </header>
 
@@ -47,15 +47,15 @@
                   <div class="categoria-nombre">{{ ingreso.categoriaNombre }}</div>
                   <small *ngIf="ingreso.orden != null" class="categoria-orden">Orden {{ ingreso.orden }}</small>
                 </td>
-                <td>{{ ingreso.montoReservado | number: '1.2-2' }}</td>
-                <td>{{ ingreso.montoAplicado | number: '1.2-2' }}</td>
+                <td>{{ ingreso.montoReservado | currency: 'USD':'symbol-narrow':'1.0-0' }}</td>
+                <td>{{ ingreso.montoAplicado | currency: 'USD':'symbol-narrow':'1.0-0' }}</td>
               </tr>
             </tbody>
             <tfoot>
               <tr>
                 <td>Total</td>
-                <td>{{ resumenData.totalIngresos.montoReservado | number: '1.2-2' }}</td>
-                <td>{{ resumenData.totalIngresos.montoAplicado | number: '1.2-2' }}</td>
+                <td>{{ resumenData.totalIngresos.montoReservado | currency: 'USD':'symbol-narrow':'1.0-0' }}</td>
+                <td>{{ resumenData.totalIngresos.montoAplicado | currency: 'USD':'symbol-narrow':'1.0-0' }}</td>
               </tr>
             </tfoot>
           </table>
@@ -65,7 +65,7 @@
           <header>
             <h3>Egresos</h3>
             <span class="monto-pill monto-pill--egreso">
-              Reservado: {{ resumenData.totalEgresos.montoReservado | number: '1.2-2' }}
+              Reservado: {{ resumenData.totalEgresos.montoReservado | currency: 'USD':'symbol-narrow':'1.0-0' }}
             </span>
           </header>
 
@@ -87,15 +87,15 @@
                   <div class="categoria-nombre">{{ egreso.categoriaNombre }}</div>
                   <small *ngIf="egreso.orden != null" class="categoria-orden">Orden {{ egreso.orden }}</small>
                 </td>
-                <td>{{ egreso.montoReservado | number: '1.2-2' }}</td>
-                <td>{{ egreso.montoAplicado | number: '1.2-2' }}</td>
+                <td>{{ egreso.montoReservado | currency: 'USD':'symbol-narrow':'1.0-0' }}</td>
+                <td>{{ egreso.montoAplicado | currency: 'USD':'symbol-narrow':'1.0-0' }}</td>
               </tr>
             </tbody>
             <tfoot>
               <tr>
                 <td>Total</td>
-                <td>{{ resumenData.totalEgresos.montoReservado | number: '1.2-2' }}</td>
-                <td>{{ resumenData.totalEgresos.montoAplicado | number: '1.2-2' }}</td>
+                <td>{{ resumenData.totalEgresos.montoReservado | currency: 'USD':'symbol-narrow':'1.0-0' }}</td>
+                <td>{{ resumenData.totalEgresos.montoAplicado | currency: 'USD':'symbol-narrow':'1.0-0' }}</td>
               </tr>
             </tfoot>
           </table>
@@ -107,11 +107,11 @@
         <div class="totales-grid">
           <div class="total-card">
             <span class="total-label">Monto reservado</span>
-            <strong>{{ resumenData.totalGeneral.montoReservado | number: '1.2-2' }}</strong>
+            <strong>{{ resumenData.totalGeneral.montoReservado | currency: 'USD':'symbol-narrow':'1.0-0' }}</strong>
           </div>
           <div class="total-card">
             <span class="total-label">Monto aplicado</span>
-            <strong>{{ resumenData.totalGeneral.montoAplicado | number: '1.2-2' }}</strong>
+            <strong>{{ resumenData.totalGeneral.montoAplicado | currency: 'USD':'symbol-narrow':'1.0-0' }}</strong>
           </div>
         </div>
       </section>

@@ -1,4 +1,4 @@
-import { DecimalPipe, NgFor, NgIf } from '@angular/common';
+import { CurrencyPipe, NgFor, NgIf } from '@angular/common';
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
@@ -11,7 +11,7 @@ import { PeriodoFinancieroService } from '../../../core/services/periodo-financi
 @Component({
   selector: 'app-periodo-reservas-resumen',
   standalone: true,
-  imports: [DecimalPipe, NgFor, NgIf, RouterLink],
+  imports: [CurrencyPipe, NgFor, NgIf, RouterLink],
   templateUrl: './reservas-resumen.component.html',
   styleUrls: ['./reservas-resumen.component.scss']
 })

@@ -156,8 +156,8 @@
             <span [ngClass]="'estado estado--' + gasto.estado.toLowerCase()">{{ gasto.estado }}</span>
           </td>
           <td>{{ gasto.periodoNombre }}</td>
-          <td>{{ gasto.montoReservado | number: '1.2-2' }}</td>
-          <td>{{ gasto.montoAplicado != null ? (gasto.montoAplicado | number: '1.2-2') : '—' }}</td>
+          <td>{{ gasto.montoReservado | currency: 'USD':'symbol-narrow':'1.0-0' }}</td>
+          <td>{{ gasto.montoAplicado != null ? (gasto.montoAplicado | currency: 'USD':'symbol-narrow':'1.0-0') : '—' }}</td>
           <td class="data-table__actions">
             <button
               type="button"
