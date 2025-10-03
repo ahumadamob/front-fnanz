@@ -135,10 +135,8 @@
           <th>Categoría</th>
           <th>Estado</th>
           <th>Periodo</th>
-          <th>Rango</th>
           <th>Monto reservado</th>
           <th>Monto aplicado</th>
-          <th>Nota</th>
           <th class="data-table__actions">Acciones</th>
         </tr>
       </thead>
@@ -158,13 +156,8 @@
             <span [ngClass]="'estado estado--' + gasto.estado.toLowerCase()">{{ gasto.estado }}</span>
           </td>
           <td>{{ gasto.periodoNombre }}</td>
-          <td>
-            {{ gasto.periodoFechaInicio | date: 'longDate' }} -
-            {{ gasto.periodoFechaFin | date: 'longDate' }}
-          </td>
           <td>{{ gasto.montoReservado | number: '1.2-2' }}</td>
           <td>{{ gasto.montoAplicado != null ? (gasto.montoAplicado | number: '1.2-2') : '—' }}</td>
-          <td>{{ gasto.nota || '—' }}</td>
           <td class="data-table__actions">
             <button
               type="button"
