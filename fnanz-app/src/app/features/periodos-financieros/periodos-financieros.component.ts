@@ -1,5 +1,6 @@
 import { DatePipe, NgClass, NgFor, NgIf } from '@angular/common';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
 
 import {
@@ -19,6 +20,7 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
     NgFor,
     NgIf,
     ReactiveFormsModule,
+    RouterLink,
   ],
   templateUrl: './periodos-financieros.component.html',
   styleUrls: ['./periodos-financieros.component.scss']
