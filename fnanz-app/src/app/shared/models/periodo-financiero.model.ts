@@ -21,6 +21,11 @@ export type PeriodoFinancieroCreate = {
 
 export type PeriodoFinancieroUpdate = Partial<PeriodoFinancieroCreate>;
 
+export interface PeriodoFinancieroDropdown {
+  id: number;
+  nombre: string;
+}
+
 export interface GastoReservadoCategoriaResumen {
   categoriaId: number;
   categoriaNombre: string;

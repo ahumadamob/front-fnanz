@@ -36,6 +36,14 @@ export class GastoReservadoService {
       .pipe(map((response) => response.data ?? []));
   }
 
+  listByPeriodo(periodoId: number): Observable<GastoReservado[]> {
+    return this.apiHttp
+      .get<ApiResponse<GastoReservado[]>>(
+        `${this.basePath}/periodo/${periodoId}`
+      )
+      .pipe(map((response) => response.data ?? []));
+  }
+
   create(payload: GastoReservadoCreate): Observable<GastoReservado> {
     return this.apiHttp
       .post<ApiResponse<GastoReservado>>(this.basePath, payload)

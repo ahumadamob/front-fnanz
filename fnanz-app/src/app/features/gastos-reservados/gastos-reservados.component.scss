@@ -17,6 +17,44 @@
   margin: 0.25rem 0 0;
 }
 
+.gasto-panel__filters {
+  align-items: flex-end;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.filter-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.filter-field span {
+  font-weight: 600;
+}
+
+.filter-field select {
+  border: 1px solid #d1d5db;
+  border-radius: 0.65rem;
+  font: inherit;
+  padding: 0.6rem 0.75rem;
+  min-width: 200px;
+}
+
+.filter-checkbox {
+  align-items: center;
+  display: inline-flex;
+  gap: 0.5rem;
+  font-weight: 500;
+}
+
+.filter-checkbox input[type='checkbox'] {
+  accent-color: var(--fnanz-primary);
+  height: 1.1rem;
+  width: 1.1rem;
+}
+
 .primary-button,
 .ghost-button,
 .danger-button {

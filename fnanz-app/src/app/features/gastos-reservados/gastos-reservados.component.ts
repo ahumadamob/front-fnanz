@@ -7,7 +7,10 @@ import {
   GastoReservado,
   GastoReservadoCreate
 } from '../../shared/models/gasto-reservado.model';
-import { PeriodoFinanciero } from '../../shared/models/periodo-financiero.model';
+import {
+  PeriodoFinanciero,
+  PeriodoFinancieroDropdown
+} from '../../shared/models/periodo-financiero.model';
 import { CategoriaFinancieraService } from '../../core/services/categoria-financiera.service';
 import { GastoReservadoService } from '../../core/services/gasto-reservado.service';
 import { PeriodoFinancieroService } from '../../core/services/periodo-financiero.service';
@@ -37,17 +40,22 @@ export class GastosReservadosComponent implements OnInit {
   readonly gastos = signal<GastoReservado[]>([]);
   readonly categorias = signal<CategoriaFinanciera[]>([]);
   readonly periodos = signal<PeriodoFinanciero[]>([]);
+  readonly periodosDropdown = signal<PeriodoFinancieroDropdown[]>([]);
   readonly loading = signal(false);
   readonly saving = signal(false);
   readonly deleting = signal(false);
   readonly categoriasLoading = signal(false);
   readonly periodosLoading = signal(false);
+  readonly periodosDropdownLoading = signal(false);
   readonly error = signal<string | null>(null);
   readonly categoriasError = signal<string | null>(null);
   readonly periodosError = signal<string | null>(null);
+  readonly periodosDropdownError = signal<string | null>(null);
   readonly selectedGasto = signal<GastoReservado | null>(null);
   readonly gastoPendingDelete = signal<GastoReservado | null>(null);
   readonly showForm = signal(false);
+  readonly selectedPeriodoId = signal<number | null>(null);
+  readonly includePeriodosCerrados = signal(false);
   readonly tipoOptions: GastoReservado['tipo'][] = ['INGRESO', 'EGRESO'];
   readonly estadoOptions: GastoReservado['estado'][] = [
     'RESERVADO',
@@ -83,9 +91,9 @@ export class GastosReservadosComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    this.loadGastos();
     this.loadCategorias();
     this.loadPeriodos();
+    this.loadPeriodosDropdown();
   }
 
   trackByGastoId = (_: number, gasto: GastoReservado): number => gasto.id;
@@ -123,10 +131,18 @@ export class GastosReservadosComponent implements OnInit {
   }
 
   loadGastos(): void {
+    const periodoId = this.selectedPeriodoId();
+
+    if (periodoId === null) {
+      this.gastos.set([]);
+      this.loading.set(false);
+      return;
+    }
+
     this.loading.set(true);
     this.error.set(null);
 
-    this.gastoService.list().subscribe({
+    this.gastoService.listByPeriodo(periodoId).subscribe({
       next: (gastos) => {
         this.gastos.set(gastos);
         this.loading.set(false);
@@ -136,6 +152,34 @@ export class GastosReservadosComponent implements OnInit {
         this.loading.set(false);
       }
     });
+  }
+
+  onPeriodoDropdownChange(value: string): void {
+    let selectedPeriodoId: number | null = null;
+
+    if (value) {
+      const parsed = Number(value);
+      selectedPeriodoId = Number.isNaN(parsed) ? null : parsed;
+    }
+
+    this.selectedPeriodoId.set(selectedPeriodoId);
+
+    if (selectedPeriodoId === null) {
+      this.gastos.set([]);
+      this.loading.set(false);
+      this.error.set(null);
+      return;
+    }
+
+    this.loadGastos();
+  }
+
+  onIncludePeriodosCerradosChange(checked: boolean): void {
+    this.includePeriodosCerrados.set(checked);
+    this.selectedPeriodoId.set(null);
+    this.gastos.set([]);
+    this.error.set(null);
+    this.loadPeriodosDropdown();
   }
 
   startCreate(): void {
@@ -322,5 +366,37 @@ export class GastosReservadosComponent implements OnInit {
     });
 
     return applied;
+  }
+
+  private loadPeriodosDropdown(): void {
+    const soloAbiertos = !this.includePeriodosCerrados();
+    this.periodosDropdownLoading.set(true);
+    this.periodosDropdownError.set(null);
+
+    this.periodoService.dropdown(soloAbiertos).subscribe({
+      next: (periodos) => {
+        this.periodosDropdown.set(periodos);
+        const selectedId = this.selectedPeriodoId();
+        const selectedStillExists = periodos.some(
+          (periodo) => periodo.id === selectedId
+        );
+
+        if (!selectedStillExists) {
+          this.selectedPeriodoId.set(null);
+          this.gastos.set([]);
+          this.loading.set(false);
+          this.error.set(null);
+        }
+
+        this.periodosDropdownLoading.set(false);
+      },
+      error: () => {
+        this.periodosDropdown.set([]);
+        this.periodosDropdownError.set(
+          'No se pudieron cargar los periodos financieros para filtrar.'
+        );
+        this.periodosDropdownLoading.set(false);
+      }
+    });
   }
 }
