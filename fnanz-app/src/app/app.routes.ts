@@ -13,7 +13,7 @@ export const routes: Routes = [
     component: DashboardComponent
   },
   {
-    path: 'categorias-financieras',
+    path: 'categorias',
     component: CategoriasFinancierasComponent
   },
   {
@@ -21,11 +21,11 @@ export const routes: Routes = [
     component: GastosReservadosComponent
   },
   {
-    path: 'periodos-financieros',
+    path: 'periodos',
     component: PeriodosFinancierosComponent
   },
   {
-    path: 'periodos-financieros/:id/reservas-resumen',
+    path: 'periodos/:id/reservas-resumen',
     component: ReservasResumenComponent
   },
   {

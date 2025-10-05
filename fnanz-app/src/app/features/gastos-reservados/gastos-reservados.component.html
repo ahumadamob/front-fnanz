@@ -24,7 +24,7 @@
 
   <section *ngIf="!showForm() && !viewingGasto()" class="gasto-panel__filters">
     <label class="filter-field">
-      <span>Periodo financiero</span>
+      <span>Periodo</span>
       <select
         [disabled]="periodosDropdownLoading() || periodosDropdown().length === 0"
         [value]="selectedPeriodoId() ?? ''"
@@ -48,7 +48,7 @@
   </section>
 
   <p *ngIf="periodosDropdownLoading() && !showForm() && !viewingGasto()" class="gasto-panel__loading">
-    Cargando periodos financieros...
+    Cargando periodos...
   </p>
 
   <section *ngIf="showForm()" class="gasto-form">
@@ -75,7 +75,7 @@
         </small>
         <small *ngIf="getServerError('categoriaId') as serverError">{{ serverError }}</small>
         <small *ngIf="!categoriasLoading() && categorias().length === 0">
-          Debes crear al menos una categoría financiera para asignarla a la partida presupuestaria.
+          Debes crear al menos una categoria para asignarla a la partida presupuestaria.
         </small>
       </label>
 
@@ -151,7 +151,7 @@
             <ng-template #emptyMessage>
               {{
                 selectedPeriodoId() === null
-                  ? 'Selecciona un periodo financiero para ver las partidas presupuestarias.'
+                  ? 'Selecciona un periodo para ver las partidas presupuestarias.'
                   : 'No hay partidas presupuestarias registradas para el periodo seleccionado.'
               }}
             </ng-template>

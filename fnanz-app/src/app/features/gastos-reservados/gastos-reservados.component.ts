@@ -108,7 +108,7 @@ export class GastosReservadosComponent implements OnInit {
         this.categoriasLoading.set(false);
       },
       error: () => {
-        this.categoriasError.set('No se pudieron cargar las categorías financieras.');
+        this.categoriasError.set('No se pudieron cargar las categorias.');
         this.categoriasLoading.set(false);
       }
     });
@@ -124,7 +124,7 @@ export class GastosReservadosComponent implements OnInit {
         this.periodosLoading.set(false);
       },
       error: () => {
-        this.periodosError.set('No se pudieron cargar los periodos financieros.');
+        this.periodosError.set('No se pudieron cargar los periodos.');
         this.periodosLoading.set(false);
       }
     });
@@ -206,7 +206,7 @@ export class GastosReservadosComponent implements OnInit {
     const periodoId = this.selectedPeriodoId();
 
     if (periodoId === null) {
-      this.error.set('Selecciona un periodo financiero antes de crear una partida presupuestaria.');
+      this.error.set('Selecciona un periodo antes de crear una partida presupuestaria.');
       return;
     }
 
@@ -417,9 +417,7 @@ export class GastosReservadosComponent implements OnInit {
       },
       error: () => {
         this.periodosDropdown.set([]);
-        this.periodosDropdownError.set(
-          'No se pudieron cargar los periodos financieros para filtrar.'
-        );
+        this.periodosDropdownError.set('No se pudieron cargar los periodos para filtrar.');
         this.periodosDropdownLoading.set(false);
       }
     });

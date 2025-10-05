@@ -1,13 +1,13 @@
 <section class="card periodo-panel">
   <header class="periodo-panel__header">
     <div>
-      <h2>Periodos financieros</h2>
+      <h2>Periodos</h2>
       <p class="periodo-panel__subtitle">
         Gestiona los periodos utilizados para organizar tus registros financieros.
       </p>
     </div>
     <button type="button" class="primary-button" (click)="startCreate()" [disabled]="loading() || saving()">
-      Nuevo periodo financiero
+      Nuevo periodo
     </button>
   </header>
 
@@ -109,7 +109,7 @@
             <button
               type="button"
               class="ghost-button"
-              [routerLink]="['/periodos-financieros', periodo.id, 'reservas-resumen']"
+              [routerLink]="['/periodos', periodo.id, 'reservas-resumen']"
               [state]="{ periodoNombre: periodo.nombre }"
             >
               Ver resumen
@@ -119,8 +119,8 @@
               class="ghost-button icon-button"
               (click)="startEdit(periodo)"
               [disabled]="loading() || saving()"
-              [attr.aria-label]="'Editar periodo financiero: ' + periodo.nombre"
-              [attr.title]="'Editar periodo financiero'"
+              [attr.aria-label]="'Editar periodo: ' + periodo.nombre"
+              [attr.title]="'Editar periodo'"
             >
               <svg
                 viewBox="0 0 24 24"
@@ -140,8 +140,8 @@
               class="danger-button icon-button"
               (click)="promptDelete(periodo)"
               [disabled]="loading() || saving()"
-              [attr.aria-label]="'Eliminar periodo financiero: ' + periodo.nombre"
-              [attr.title]="'Eliminar periodo financiero'"
+              [attr.aria-label]="'Eliminar periodo: ' + periodo.nombre"
+              [attr.title]="'Eliminar periodo'"
             >
               <svg
                 viewBox="0 0 24 24"
@@ -167,7 +167,7 @@
 
   <ng-template #emptyState>
     <p class="periodo-panel__empty" *ngIf="!loading()">
-      No hay periodos financieros registrados todavía. Crea el primero para comenzar.
+      No hay periodos registrados todavía. Crea el primero para comenzar.
     </p>
   </ng-template>
 
