@@ -1,7 +1,7 @@
 <section class="card gasto-panel">
   <header class="gasto-panel__header">
     <div>
-      <h2>Gastos reservados</h2>
+      <h2>Presupuestos</h2>
       <p class="gasto-panel__subtitle">
         Administra los compromisos de ingresos o egresos reservados para futuros períodos.
       </p>
@@ -12,7 +12,7 @@
       (click)="startCreate()"
       [disabled]="loading() || saving() || selectedPeriodoId() === null"
     >
-      Nuevo gasto reservado
+      Nueva partida presupuestaria
     </button>
   </header>
 
@@ -75,7 +75,7 @@
         </small>
         <small *ngIf="getServerError('categoriaId') as serverError">{{ serverError }}</small>
         <small *ngIf="!categoriasLoading() && categorias().length === 0">
-          Debes crear al menos una categoría financiera para asignarla al gasto.
+          Debes crear al menos una categoría financiera para asignarla a la partida presupuestaria.
         </small>
       </label>
 
@@ -106,7 +106,7 @@
           </small>
           <small *ngIf="getServerError('periodoId') as serverError">{{ serverError }}</small>
           <small *ngIf="!periodosLoading() && periodos().length === 0">
-            Debes crear al menos un periodo financiero para asignarlo al gasto.
+            Debes crear al menos un periodo financiero para asignarlo a la partida presupuestaria.
           </small>
         </label>
       </ng-container>
@@ -201,8 +201,8 @@
             <ng-template #emptyMessage>
               {{
                 selectedPeriodoId() === null
-                  ? 'Selecciona un periodo financiero para ver los gastos reservados.'
-                  : 'No hay gastos reservados registrados para el periodo seleccionado.'
+                  ? 'Selecciona un periodo financiero para ver las partidas presupuestarias.'
+                  : 'No hay partidas presupuestarias registradas para el periodo seleccionado.'
               }}
             </ng-template>
           </td>
@@ -230,8 +230,8 @@
               class="ghost-button icon-button"
               (click)="viewGasto(gasto)"
               [disabled]="loading() || saving()"
-              [attr.aria-label]="'Ver gasto reservado: ' + gasto.concepto"
-              [attr.title]="'Ver gasto reservado'"
+              [attr.aria-label]="'Ver partida presupuestaria: ' + gasto.concepto"
+              [attr.title]="'Ver partida presupuestaria'"
             >
               <svg
                 viewBox="0 0 24 24"
@@ -251,8 +251,8 @@
               class="ghost-button icon-button"
               (click)="startEdit(gasto)"
               [disabled]="loading() || saving()"
-              [attr.aria-label]="'Editar gasto reservado: ' + gasto.concepto"
-              [attr.title]="'Editar gasto reservado'"
+              [attr.aria-label]="'Editar partida presupuestaria: ' + gasto.concepto"
+              [attr.title]="'Editar partida presupuestaria'"
             >
               <svg
                 viewBox="0 0 24 24"
@@ -272,8 +272,8 @@
               class="danger-button icon-button"
               (click)="promptDelete(gasto)"
               [disabled]="loading() || saving()"
-              [attr.aria-label]="'Eliminar gasto reservado: ' + gasto.concepto"
-              [attr.title]="'Eliminar gasto reservado'"
+              [attr.aria-label]="'Eliminar partida presupuestaria: ' + gasto.concepto"
+              [attr.title]="'Eliminar partida presupuestaria'"
             >
               <svg
                 viewBox="0 0 24 24"
@@ -299,7 +299,7 @@
 
   <app-confirm-dialog
     [open]="gastoPendingDelete() !== null"
-    title="Eliminar gasto reservado"
+    title="Eliminar partida presupuestaria"
     [message]="deleteMessage()"
     confirmLabel="Eliminar"
     cancelLabel="Cancelar"

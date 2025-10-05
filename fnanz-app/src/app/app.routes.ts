@@ -17,7 +17,7 @@ export const routes: Routes = [
     component: CategoriasFinancierasComponent
   },
   {
-    path: 'gastos-reservados',
+    path: 'presupuestos',
     component: GastosReservadosComponent
   },
   {

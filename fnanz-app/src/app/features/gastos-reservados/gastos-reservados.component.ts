@@ -92,8 +92,8 @@ export class GastosReservadosComponent implements OnInit {
 
   readonly formTitle = computed(() =>
     this.selectedGasto()
-      ? `Editar gasto reservado: ${this.selectedGasto()!.concepto}`
-      : 'Nuevo gasto reservado'
+      ? `Editar partida presupuestaria: ${this.selectedGasto()!.concepto}`
+      : 'Nueva partida presupuestaria'
   );
 
   readonly cancelDialogTitle = computed(() =>
@@ -102,14 +102,14 @@ export class GastosReservadosComponent implements OnInit {
 
   readonly cancelDialogMessage = computed(() =>
     this.selectedGasto()
-      ? '¿Deseas cancelar la edición del gasto reservado? Los cambios no guardados se perderán.'
-      : '¿Deseas cancelar la creación del gasto reservado? Los cambios no guardados se perderán.'
+      ? '¿Deseas cancelar la edición de la partida presupuestaria? Los cambios no guardados se perderán.'
+      : '¿Deseas cancelar la creación de la partida presupuestaria? Los cambios no guardados se perderán.'
   );
 
   readonly deleteMessage = computed(() => {
     const gasto = this.gastoPendingDelete();
     return gasto
-      ? `¿Desea eliminar el gasto reservado "${gasto.concepto}"?`
+      ? `¿Desea eliminar la partida presupuestaria "${gasto.concepto}"?`
       : '';
   });
 
@@ -176,7 +176,7 @@ export class GastosReservadosComponent implements OnInit {
         this.loading.set(false);
       },
       error: () => {
-        this.error.set('No se pudieron cargar los gastos reservados.');
+        this.error.set('No se pudieron cargar las partidas presupuestarias.');
         this.loading.set(false);
       }
     });
@@ -229,7 +229,7 @@ export class GastosReservadosComponent implements OnInit {
     const periodoId = this.selectedPeriodoId();
 
     if (periodoId === null) {
-      this.error.set('Selecciona un periodo financiero antes de crear un gasto reservado.');
+      this.error.set('Selecciona un periodo financiero antes de crear una partida presupuestaria.');
       return;
     }
 
@@ -331,7 +331,7 @@ export class GastosReservadosComponent implements OnInit {
         if (handled) {
           this.error.set('Revisa los errores marcados en el formulario.');
         } else {
-          this.error.set('Ocurrió un error al guardar el gasto reservado.');
+          this.error.set('Ocurrió un error al guardar la partida presupuestaria.');
         }
         this.saving.set(false);
       }
@@ -370,7 +370,7 @@ export class GastosReservadosComponent implements OnInit {
         this.loadGastos();
       },
       error: () => {
-        this.error.set('No se pudo eliminar el gasto reservado seleccionado.');
+        this.error.set('No se pudo eliminar la partida presupuestaria seleccionada.');
         this.deleting.set(false);
         this.gastoPendingDelete.set(null);
         this.loading.set(false);
