@@ -1,13 +1,13 @@
 <section class="card categoria-panel">
   <header class="categoria-panel__header">
     <div>
-      <h2>Categorías financieras</h2>
+      <h2>Categorias</h2>
       <p class="categoria-panel__subtitle">
-        Administra las categorías utilizadas para clasificar ingresos y egresos.
+        Administra las categorias utilizadas para clasificar ingresos y egresos.
       </p>
     </div>
     <button type="button" class="primary-button" (click)="startCreate()" [disabled]="loading() || saving()">
-      Nueva Categoría Financiera
+      Nueva categoria
     </button>
   </header>
 
@@ -110,8 +110,8 @@
               class="ghost-button icon-button"
               (click)="startEdit(categoria)"
               [disabled]="loading() || saving()"
-              [attr.aria-label]="'Editar categoría financiera: ' + categoria.nombre"
-              [attr.title]="'Editar categoría financiera'"
+              [attr.aria-label]="'Editar categoria: ' + categoria.nombre"
+              [attr.title]="'Editar categoria'"
             >
               <svg
                 viewBox="0 0 24 24"
@@ -131,8 +131,8 @@
               class="danger-button icon-button"
               (click)="promptDelete(categoria)"
               [disabled]="loading() || saving()"
-              [attr.aria-label]="'Eliminar categoría financiera: ' + categoria.nombre"
-              [attr.title]="'Eliminar categoría financiera'"
+              [attr.aria-label]="'Eliminar categoria: ' + categoria.nombre"
+              [attr.title]="'Eliminar categoria'"
             >
               <svg
                 viewBox="0 0 24 24"
@@ -158,13 +158,13 @@
 
   <ng-template #emptyState>
     <p class="categoria-panel__empty" *ngIf="!loading()">
-      No hay categorías financieras registradas aún. Crea la primera para comenzar.
+      No hay categorias registradas aún. Crea la primera para comenzar.
     </p>
   </ng-template>
 
   <app-confirm-dialog
     [open]="categoriaPendingDelete() !== null"
-    title="Eliminar categoría"
+    title="Eliminar categoria"
     [message]="deleteMessage()"
     confirmLabel="Eliminar"
     cancelLabel="Cancelar"

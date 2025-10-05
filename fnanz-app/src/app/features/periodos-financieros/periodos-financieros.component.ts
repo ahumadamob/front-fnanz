@@ -75,15 +75,13 @@ export class PeriodosFinancierosComponent implements OnInit {
 
   readonly formTitle = computed(() =>
     this.selectedPeriodo()
-      ? `Editar periodo financiero: ${this.selectedPeriodo()!.nombre}`
-      : 'Nuevo periodo financiero'
+      ? `Editar periodo: ${this.selectedPeriodo()!.nombre}`
+      : 'Nuevo periodo'
   );
 
   readonly deleteMessage = computed(() => {
     const periodo = this.periodoPendingDelete();
-    return periodo
-      ? `¿Desea eliminar el periodo financiero "${periodo.nombre}"?`
-      : '';
+    return periodo ? `¿Desea eliminar el periodo "${periodo.nombre}"?` : '';
   });
 
   ngOnInit(): void {
@@ -107,7 +105,7 @@ export class PeriodosFinancierosComponent implements OnInit {
         this.loading.set(false);
       },
       error: () => {
-        this.error.set('No se pudieron cargar los periodos financieros.');
+        this.error.set('No se pudieron cargar los periodos.');
         this.loading.set(false);
       }
     });
@@ -191,7 +189,7 @@ export class PeriodosFinancierosComponent implements OnInit {
         if (handled) {
           this.error.set('Revisa los errores marcados en el formulario.');
         } else {
-          this.error.set('Ocurrió un error al guardar el periodo financiero.');
+          this.error.set('Ocurrió un error al guardar el periodo.');
         }
         this.saving.set(false);
       }
@@ -229,7 +227,7 @@ export class PeriodosFinancierosComponent implements OnInit {
         this.loadPeriodos();
       },
       error: () => {
-        this.error.set('No se pudo eliminar el periodo financiero seleccionado.');
+        this.error.set('No se pudo eliminar el periodo seleccionado.');
         this.deleting.set(false);
         this.periodoPendingDelete.set(null);
         this.loading.set(false);

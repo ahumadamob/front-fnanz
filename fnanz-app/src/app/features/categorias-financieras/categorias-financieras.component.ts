@@ -47,15 +47,13 @@ export class CategoriasFinancierasComponent implements OnInit {
 
   readonly formTitle = computed(() =>
     this.selectedCategoria()
-      ? `Editar categoría: ${this.selectedCategoria()!.nombre}`
-      : 'Nueva categoría financiera'
+      ? `Editar categoria: ${this.selectedCategoria()!.nombre}`
+      : 'Nueva categoria'
   );
 
   readonly deleteMessage = computed(() => {
     const categoria = this.categoriaPendingDelete();
-    return categoria
-      ? `¿Desea eliminar la categoría financiera "${categoria.nombre}"?`
-      : '';
+    return categoria ? `¿Desea eliminar la categoria "${categoria.nombre}"?` : '';
   });
 
   ngOnInit(): void {
@@ -74,7 +72,7 @@ export class CategoriasFinancierasComponent implements OnInit {
         this.loading.set(false);
       },
       error: () => {
-        this.error.set('No se pudieron cargar las categorías financieras.');
+        this.error.set('No se pudieron cargar las categorias.');
         this.loading.set(false);
       }
     });
@@ -153,7 +151,7 @@ export class CategoriasFinancierasComponent implements OnInit {
         if (handled) {
           this.error.set('Revisa los errores marcados en el formulario.');
         } else {
-          this.error.set('Ocurrió un error al guardar la categoría financiera.');
+          this.error.set('Ocurrió un error al guardar la categoria.');
         }
         this.saving.set(false);
       }
@@ -191,7 +189,7 @@ export class CategoriasFinancierasComponent implements OnInit {
         this.loadCategorias();
       },
       error: () => {
-        this.error.set('No se pudo eliminar la categoría financiera seleccionada.');
+        this.error.set('No se pudo eliminar la categoria seleccionada.');
         this.deleting.set(false);
         this.categoriaPendingDelete.set(null);
         this.loading.set(false);

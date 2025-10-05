@@ -53,28 +53,13 @@ export class GastosReservadosComponent implements OnInit {
   readonly categoriasError = signal<string | null>(null);
   readonly periodosError = signal<string | null>(null);
   readonly periodosDropdownError = signal<string | null>(null);
-  readonly selectedGasto = signal<GastoReservado | null>(null);
   readonly gastoPendingDelete = signal<GastoReservado | null>(null);
+  readonly viewingGasto = signal<GastoReservado | null>(null);
   readonly showForm = signal(false);
   readonly selectedPeriodoId = signal<number | null>(null);
   readonly includePeriodosCerrados = signal(false);
   readonly cancelDialogOpen = signal(false);
   readonly tipoOptions: GastoReservado['tipo'][] = ['INGRESO', 'EGRESO'];
-  readonly estadoOptions: GastoReservado['estado'][] = [
-    'RESERVADO',
-    'APLICADO',
-    'CANCELADO'
-  ];
-  readonly selectedPeriodoDetalle = computed(() => {
-    const selectedId = this.selectedPeriodoId();
-
-    if (selectedId === null) {
-      return null;
-    }
-
-    return this.periodos().find((periodo) => periodo.id === selectedId) ?? null;
-  });
-
   readonly form = this.formBuilder.nonNullable.group({
     tipo: ['EGRESO' as GastoReservado['tipo'], Validators.required],
     categoriaId: this.formBuilder.control<number | null>(null, Validators.required),
@@ -89,26 +74,19 @@ export class GastosReservadosComponent implements OnInit {
     nota: ['', Validators.maxLength(500)]
   });
 
-  readonly formTitle = computed(() =>
-    this.selectedGasto()
-      ? `Editar gasto reservado: ${this.selectedGasto()!.concepto}`
-      : 'Nuevo gasto reservado'
-  );
+  readonly formTitle = computed(() => 'Nueva partida presupuestaria');
 
-  readonly cancelDialogTitle = computed(() =>
-    this.selectedGasto() ? 'Cancelar edición' : 'Cancelar creación'
-  );
+  readonly cancelDialogTitle = computed(() => 'Cancelar creación');
 
-  readonly cancelDialogMessage = computed(() =>
-    this.selectedGasto()
-      ? '¿Deseas cancelar la edición del gasto reservado? Los cambios no guardados se perderán.'
-      : '¿Deseas cancelar la creación del gasto reservado? Los cambios no guardados se perderán.'
+  readonly cancelDialogMessage = computed(
+    () =>
+      '¿Deseas cancelar la creación de la partida presupuestaria? Los cambios no guardados se perderán.'
   );
 
   readonly deleteMessage = computed(() => {
     const gasto = this.gastoPendingDelete();
     return gasto
-      ? `¿Desea eliminar el gasto reservado "${gasto.concepto}"?`
+      ? `¿Desea eliminar la partida presupuestaria "${gasto.concepto}"?`
       : '';
   });
 
@@ -130,7 +108,7 @@ export class GastosReservadosComponent implements OnInit {
         this.categoriasLoading.set(false);
       },
       error: () => {
-        this.categoriasError.set('No se pudieron cargar las categorías financieras.');
+        this.categoriasError.set('No se pudieron cargar las categorias.');
         this.categoriasLoading.set(false);
       }
     });
@@ -146,7 +124,7 @@ export class GastosReservadosComponent implements OnInit {
         this.periodosLoading.set(false);
       },
       error: () => {
-        this.periodosError.set('No se pudieron cargar los periodos financieros.');
+        this.periodosError.set('No se pudieron cargar los periodos.');
         this.periodosLoading.set(false);
       }
     });
@@ -167,10 +145,15 @@ export class GastosReservadosComponent implements OnInit {
     this.gastoService.listByPeriodo(periodoId).subscribe({
       next: (gastos) => {
         this.gastos.set(gastos);
+        const currentlyViewing = this.viewingGasto();
+        if (currentlyViewing) {
+          const updated = gastos.find((gasto) => gasto.id === currentlyViewing.id) ?? null;
+          this.viewingGasto.set(updated);
+        }
         this.loading.set(false);
       },
       error: () => {
-        this.error.set('No se pudieron cargar los gastos reservados.');
+        this.error.set('No se pudieron cargar las partidas presupuestarias.');
         this.loading.set(false);
       }
     });
@@ -185,8 +168,9 @@ export class GastosReservadosComponent implements OnInit {
     }
 
     this.selectedPeriodoId.set(selectedPeriodoId);
+    this.viewingGasto.set(null);
 
-    if (this.showForm() && !this.selectedGasto()) {
+    if (this.showForm()) {
       if (selectedPeriodoId === null) {
         this.form.controls.periodoId.reset(null, { emitEvent: false });
       } else {
@@ -211,7 +195,8 @@ export class GastosReservadosComponent implements OnInit {
     this.selectedPeriodoId.set(null);
     this.gastos.set([]);
     this.error.set(null);
-    if (this.showForm() && !this.selectedGasto()) {
+    this.viewingGasto.set(null);
+    if (this.showForm()) {
       this.form.controls.periodoId.reset(null, { emitEvent: false });
     }
     this.loadPeriodosDropdown();
@@ -221,11 +206,11 @@ export class GastosReservadosComponent implements OnInit {
     const periodoId = this.selectedPeriodoId();
 
     if (periodoId === null) {
-      this.error.set('Selecciona un periodo financiero antes de crear un gasto reservado.');
+      this.error.set('Selecciona un periodo antes de crear una partida presupuestaria.');
       return;
     }
 
-    this.selectedGasto.set(null);
+    this.viewingGasto.set(null);
     this.form.reset({
       tipo: 'EGRESO',
       categoriaId: null,
@@ -240,23 +225,8 @@ export class GastosReservadosComponent implements OnInit {
     this.showForm.set(true);
   }
 
-  startEdit(gasto: GastoReservado): void {
-    this.form.controls.periodoId.enable({ emitEvent: false });
-    this.selectedGasto.set(gasto);
-    this.form.reset({
-      tipo: gasto.tipo,
-      categoriaId: gasto.categoriaId,
-      concepto: gasto.concepto,
-      periodoId: gasto.periodoId,
-      estado: gasto.estado,
-      montoReservado: gasto.montoReservado,
-      montoAplicado: gasto.montoAplicado ?? null,
-      nota: gasto.nota ?? ''
-    });
-    this.showForm.set(true);
-  }
-
   promptCancelForm(): void {
+    this.viewingGasto.set(null);
     if (this.saving()) {
       return;
     }
@@ -283,35 +253,26 @@ export class GastosReservadosComponent implements OnInit {
 
     this.error.set(null);
     const formValue = this.form.getRawValue();
+
     const payload: GastoReservadoCreate = {
       tipo: formValue.tipo,
       categoriaId: Number(formValue.categoriaId),
       concepto: formValue.concepto.trim(),
       periodoId: Number(formValue.periodoId),
-      estado: formValue.estado,
+      estado: 'RESERVADO',
       montoReservado: Number(formValue.montoReservado)
     };
-
-    if (formValue.montoAplicado !== null && formValue.montoAplicado !== undefined) {
-      payload.montoAplicado = Number(formValue.montoAplicado);
-    }
 
     if (formValue.nota?.trim()) {
       payload.nota = formValue.nota.trim();
     }
 
-    const selected = this.selectedGasto();
     this.saving.set(true);
 
-    const request = selected
-      ? this.gastoService.update(selected.id, { ...payload })
-      : this.gastoService.create(payload);
-
-    request.subscribe({
+    this.gastoService.create(payload).subscribe({
       next: () => {
         this.saving.set(false);
         this.showForm.set(false);
-        this.selectedGasto.set(null);
         this.form.controls.periodoId.enable({ emitEvent: false });
         this.loadGastos();
       },
@@ -320,7 +281,7 @@ export class GastosReservadosComponent implements OnInit {
         if (handled) {
           this.error.set('Revisa los errores marcados en el formulario.');
         } else {
-          this.error.set('Ocurrió un error al guardar el gasto reservado.');
+          this.error.set('Ocurrió un error al guardar la partida presupuestaria.');
         }
         this.saving.set(false);
       }
@@ -328,6 +289,7 @@ export class GastosReservadosComponent implements OnInit {
   }
 
   promptDelete(gasto: GastoReservado): void {
+    this.viewingGasto.set(null);
     this.gastoPendingDelete.set(gasto);
   }
 
@@ -358,7 +320,7 @@ export class GastosReservadosComponent implements OnInit {
         this.loadGastos();
       },
       error: () => {
-        this.error.set('No se pudo eliminar el gasto reservado seleccionado.');
+        this.error.set('No se pudo eliminar la partida presupuestaria seleccionada.');
         this.deleting.set(false);
         this.gastoPendingDelete.set(null);
         this.loading.set(false);
@@ -428,7 +390,7 @@ export class GastosReservadosComponent implements OnInit {
     this.form.reset();
     this.form.controls.periodoId.enable({ emitEvent: false });
     this.showForm.set(false);
-    this.selectedGasto.set(null);
+    this.viewingGasto.set(null);
   }
 
   private loadPeriodosDropdown(): void {
@@ -455,9 +417,7 @@ export class GastosReservadosComponent implements OnInit {
       },
       error: () => {
         this.periodosDropdown.set([]);
-        this.periodosDropdownError.set(
-          'No se pudieron cargar los periodos financieros para filtrar.'
-        );
+        this.periodosDropdownError.set('No se pudieron cargar los periodos para filtrar.');
         this.periodosDropdownLoading.set(false);
       }
     });
@@ -473,5 +433,13 @@ export class GastosReservadosComponent implements OnInit {
       this.decimalPipe.transform(absoluteValue, '1.0-0') ?? absoluteValue.toString();
 
     return value < 0 ? `(${formattedAbsolute})` : formattedAbsolute;
+  }
+
+  viewGasto(gasto: GastoReservado): void {
+    this.viewingGasto.set(gasto);
+  }
+
+  closeViewGasto(): void {
+    this.viewingGasto.set(null);
   }
 }
