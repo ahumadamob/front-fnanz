@@ -22,7 +22,7 @@
   <p *ngIf="periodosError()" class="gasto-panel__warning">{{ periodosError() }}</p>
   <p *ngIf="periodosDropdownError()" class="gasto-panel__warning">{{ periodosDropdownError() }}</p>
 
-  <section *ngIf="!showForm()" class="gasto-panel__filters">
+  <section *ngIf="!showForm() && !viewingGasto()" class="gasto-panel__filters">
     <label class="filter-field">
       <span>Periodo financiero</span>
       <select
@@ -47,7 +47,7 @@
     </label>
   </section>
 
-  <p *ngIf="periodosDropdownLoading() && !showForm()" class="gasto-panel__loading">
+  <p *ngIf="periodosDropdownLoading() && !showForm() && !viewingGasto()" class="gasto-panel__loading">
     Cargando periodos financieros...
   </p>
 
@@ -178,7 +178,7 @@
     </form>
   </section>
 
-  <div *ngIf="!showForm()" class="gasto-grid">
+  <div *ngIf="!showForm() && !viewingGasto()" class="gasto-grid">
     <table class="data-table">
       <thead>
         <tr>
@@ -326,9 +326,6 @@
         <h3>{{ gasto.concepto }}</h3>
         <p class="gasto-panel__subtitle">Actualizado {{ gasto.actualizadoEn | date: 'short' }}</p>
       </div>
-      <button type="button" class="ghost-button" (click)="closeViewGasto()">
-        Cerrar
-      </button>
     </header>
 
     <div class="gasto-form__grid">
@@ -394,6 +391,12 @@
         <span>Nota</span>
         <p class="form-field__readonly">{{ gasto.nota?.trim() || 'Sin nota registrada.' }}</p>
       </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="ghost-button" (click)="closeViewGasto()">
+        Volver
+      </button>
     </div>
   </section>
 </section>
