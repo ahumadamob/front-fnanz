@@ -1,9 +1,9 @@
-<section class="card gasto-panel">
-  <header class="gasto-panel__header">
+<section class="card partida-panel">
+  <header class="partida-panel__header">
     <div>
       <h2>Presupuestos</h2>
-      <p class="gasto-panel__subtitle">
-        Administra los compromisos de ingresos o egresos reservados para futuros períodos.
+      <p class="partida-panel__subtitle">
+        Administra las partidas presupuestarias asignadas a los periodos financieros de tu organización.
       </p>
     </div>
     <button
@@ -16,13 +16,13 @@
     </button>
   </header>
 
-  <p *ngIf="loading()" class="gasto-panel__loading">Cargando información...</p>
-  <p *ngIf="error() && !loading()" class="gasto-panel__error">{{ error() }}</p>
-  <p *ngIf="categoriasError()" class="gasto-panel__warning">{{ categoriasError() }}</p>
-  <p *ngIf="periodosError()" class="gasto-panel__warning">{{ periodosError() }}</p>
-  <p *ngIf="periodosDropdownError()" class="gasto-panel__warning">{{ periodosDropdownError() }}</p>
+  <p *ngIf="loading()" class="partida-panel__loading">Cargando información...</p>
+  <p *ngIf="error() && !loading()" class="partida-panel__error">{{ error() }}</p>
+  <p *ngIf="categoriasError()" class="partida-panel__warning">{{ categoriasError() }}</p>
+  <p *ngIf="periodosError()" class="partida-panel__warning">{{ periodosError() }}</p>
+  <p *ngIf="periodosDropdownError()" class="partida-panel__warning">{{ periodosDropdownError() }}</p>
 
-  <section *ngIf="!showForm() && !viewingGasto()" class="gasto-panel__filters">
+  <section *ngIf="!showForm() && !viewingPartida()" class="partida-panel__filters">
     <label class="filter-field">
       <span>Periodo</span>
       <select
@@ -47,13 +47,13 @@
     </label>
   </section>
 
-  <p *ngIf="periodosDropdownLoading() && !showForm() && !viewingGasto()" class="gasto-panel__loading">
+  <p *ngIf="periodosDropdownLoading() && !showForm() && !viewingPartida()" class="partida-panel__loading">
     Cargando periodos...
   </p>
 
-  <section *ngIf="showForm()" class="gasto-form">
+  <section *ngIf="showForm()" class="partida-form">
     <h3>{{ formTitle() }}</h3>
-    <form [formGroup]="form" (ngSubmit)="submitForm()" class="gasto-form__grid">
+    <form [formGroup]="form" (ngSubmit)="submitForm()" class="partida-form__grid">
       <label class="form-field" [class.form-field--invalid]="hasControlError('tipo')">
         <span>Tipo *</span>
         <select formControlName="tipo">
@@ -75,7 +75,7 @@
         </small>
         <small *ngIf="getServerError('categoriaId') as serverError">{{ serverError }}</small>
         <small *ngIf="!categoriasLoading() && categorias().length === 0">
-          Debes crear al menos una categoria para asignarla a la partida presupuestaria.
+          Debes crear al menos una categoría para asignarla a la partida presupuestaria.
         </small>
       </label>
 
@@ -86,7 +86,7 @@
           El concepto es obligatorio.
         </small>
         <small *ngIf="form.controls.concepto.touched && form.controls.concepto.hasError('maxlength')">
-          El concepto debe tener menos de 200 caracteres.
+          El concepto debe tener menos de 120 caracteres.
         </small>
         <small *ngIf="getServerError('concepto') as serverError">{{ serverError }}</small>
       </label>
@@ -129,7 +129,7 @@
     </form>
   </section>
 
-  <div *ngIf="!showForm() && !viewingGasto()" class="gasto-grid">
+  <div *ngIf="!showForm() && !viewingPartida()" class="partida-grid">
     <table class="data-table">
       <thead>
         <tr>
@@ -143,7 +143,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngIf="gastos().length === 0">
+        <tr *ngIf="partidas().length === 0">
           <td class="data-table__empty" colspan="7">
             <ng-container *ngIf="loading(); else emptyMessage">
               Cargando información...
@@ -157,28 +157,28 @@
             </ng-template>
           </td>
         </tr>
-        <tr *ngFor="let gasto of gastos(); trackBy: trackByGastoId">
+        <tr *ngFor="let partida of partidas(); trackBy: trackByPartidaId">
           <td>
-            <div class="gasto-name">{{ gasto.concepto }}</div>
+            <div class="partida-name">{{ partida.concepto }}</div>
           </td>
           <td>
-            <span class="tipo-pill" [ngClass]="gasto.tipo === 'INGRESO' ? 'tipo-pill--ingreso' : 'tipo-pill--egreso'">
-              {{ gasto.tipo }}
+            <span class="tipo-pill" [ngClass]="partida.tipo === 'INGRESO' ? 'tipo-pill--ingreso' : 'tipo-pill--egreso'">
+              {{ partida.tipo }}
             </span>
           </td>
-          <td>{{ gasto.categoriaNombre }}</td>
+          <td>{{ partida.categoriaNombre }}</td>
           <td>
-            <span [ngClass]="'estado estado--' + gasto.estado.toLowerCase()">{{ gasto.estado }}</span>
+            <span [ngClass]="'estado estado--' + partida.estado.toLowerCase()">{{ partida.estado }}</span>
           </td>
-          <td class="data-table__numeric">{{ formatAccounting(gasto.montoReservado) }}</td>
-          <td class="data-table__numeric">{{ formatAccounting(gasto.montoAplicado) }}</td>
+          <td class="data-table__numeric">{{ formatAccounting(partida.montoReservado) }}</td>
+          <td class="data-table__numeric">{{ formatAccounting(partida.montoAplicado) }}</td>
           <td class="data-table__actions">
             <button
               type="button"
               class="ghost-button icon-button"
-              (click)="viewGasto(gasto)"
+              (click)="viewPartida(partida)"
               [disabled]="loading() || saving()"
-              [attr.aria-label]="'Ver partida presupuestaria: ' + gasto.concepto"
+              [attr.aria-label]="'Ver partida presupuestaria: ' + partida.concepto"
               [attr.title]="'Ver partida presupuestaria'"
             >
               <svg
@@ -197,9 +197,9 @@
             <button
               type="button"
               class="danger-button icon-button"
-              (click)="promptDelete(gasto)"
+              (click)="promptDelete(partida)"
               [disabled]="loading() || saving()"
-              [attr.aria-label]="'Eliminar partida presupuestaria: ' + gasto.concepto"
+              [attr.aria-label]="'Eliminar partida presupuestaria: ' + partida.concepto"
               [attr.title]="'Eliminar partida presupuestaria'"
             >
               <svg
@@ -225,7 +225,7 @@
   </div>
 
   <app-confirm-dialog
-    [open]="gastoPendingDelete() !== null"
+    [open]="partidaPendingDelete() !== null"
     title="Eliminar partida presupuestaria"
     [message]="deleteMessage()"
     confirmLabel="Eliminar"
@@ -234,7 +234,7 @@
     [busy]="deleting()"
     [confirmDestructive]="true"
     (cancel)="closeDeleteDialog()"
-    (confirm)="confirmDeleteGasto()"
+    (confirm)="confirmDeletePartida()"
   ></app-confirm-dialog>
 
   <app-confirm-dialog
@@ -247,81 +247,81 @@
     (confirm)="confirmCancelForm()"
   ></app-confirm-dialog>
 
-  <section *ngIf="!showForm() && viewingGasto() as gasto" class="gasto-form">
-    <header class="gasto-panel__header">
+  <section *ngIf="!showForm() && viewingPartida() as partida" class="partida-form">
+    <header class="partida-panel__header">
       <div>
-        <h3>{{ gasto.concepto }}</h3>
-        <p class="gasto-panel__subtitle">Actualizado {{ gasto.actualizadoEn | date: 'short' }}</p>
+        <h3>{{ partida.concepto }}</h3>
+        <p class="partida-panel__subtitle">Actualizado {{ partida.actualizadoEn | date: 'short' }}</p>
       </div>
     </header>
 
-    <div class="gasto-form__grid">
+    <div class="partida-form__grid">
       <div class="form-field form-field--static">
         <span>Tipo</span>
         <p class="form-field__readonly">
           <span
             class="tipo-pill"
-            [ngClass]="gasto.tipo === 'INGRESO' ? 'tipo-pill--ingreso' : 'tipo-pill--egreso'"
+            [ngClass]="partida.tipo === 'INGRESO' ? 'tipo-pill--ingreso' : 'tipo-pill--egreso'"
           >
-            {{ gasto.tipo }}
+            {{ partida.tipo }}
           </span>
         </p>
       </div>
 
       <div class="form-field form-field--static">
         <span>Categoría</span>
-        <p class="form-field__readonly">{{ gasto.categoriaNombre }}</p>
+        <p class="form-field__readonly">{{ partida.categoriaNombre }}</p>
       </div>
 
       <div class="form-field form-field--static">
         <span>Estado</span>
         <p class="form-field__readonly">
-          <span class="estado" [ngClass]="'estado--' + gasto.estado.toLowerCase()">{{ gasto.estado }}</span>
+          <span class="estado" [ngClass]="'estado--' + partida.estado.toLowerCase()">{{ partida.estado }}</span>
         </p>
       </div>
 
       <div class="form-field form-field--static form-field--full">
         <span>Periodo</span>
         <p class="form-field__readonly">
-          {{ gasto.periodoNombre }}
-          ({{ gasto.periodoFechaInicio | date: 'longDate' }} - {{ gasto.periodoFechaFin | date: 'longDate' }})
+          {{ partida.periodoNombre }}
+          ({{ partida.periodoFechaInicio | date: 'longDate' }} - {{ partida.periodoFechaFin | date: 'longDate' }})
         </p>
       </div>
 
       <div class="form-field form-field--static">
         <span>Monto reservado</span>
-        <p class="form-field__readonly">{{ formatAccounting(gasto.montoReservado) }}</p>
+        <p class="form-field__readonly">{{ formatAccounting(partida.montoReservado) }}</p>
       </div>
 
       <div class="form-field form-field--static">
         <span>Monto aplicado</span>
-        <p class="form-field__readonly">{{ formatAccounting(gasto.montoAplicado ?? null) }}</p>
+        <p class="form-field__readonly">{{ formatAccounting(partida.montoAplicado ?? null) }}</p>
       </div>
 
       <div class="form-field form-field--static">
         <span>Creado</span>
         <p class="form-field__readonly">
-          {{ gasto.creadoEn | date: 'longDate' }}
-          a las {{ gasto.creadoEn | date: 'shortTime' }}
+          {{ partida.creadoEn | date: 'longDate' }}
+          a las {{ partida.creadoEn | date: 'shortTime' }}
         </p>
       </div>
 
       <div class="form-field form-field--static">
         <span>Actualizado</span>
         <p class="form-field__readonly">
-          {{ gasto.actualizadoEn | date: 'longDate' }}
-          a las {{ gasto.actualizadoEn | date: 'shortTime' }}
+          {{ partida.actualizadoEn | date: 'longDate' }}
+          a las {{ partida.actualizadoEn | date: 'shortTime' }}
         </p>
       </div>
 
       <div class="form-field form-field--static form-field--full">
         <span>Nota</span>
-        <p class="form-field__readonly">{{ gasto.nota?.trim() || 'Sin nota registrada.' }}</p>
+        <p class="form-field__readonly">{{ partida.nota?.trim() || 'Sin nota registrada.' }}</p>
       </div>
     </div>
 
     <div class="form-actions">
-      <button type="button" class="ghost-button" (click)="closeViewGasto()">
+      <button type="button" class="ghost-button" (click)="closeViewPartida()">
         Volver
       </button>
     </div>

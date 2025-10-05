@@ -4,20 +4,20 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { CategoriaFinanciera } from '../../shared/models/categoria-financiera.model';
 import {
-  GastoReservado,
-  GastoReservadoCreate
-} from '../../shared/models/gasto-reservado.model';
+  PartidaPresupuestaria,
+  PartidaPresupuestariaCreate
+} from '../../shared/models/partida-presupuestaria.model';
 import {
   PeriodoFinanciero,
   PeriodoFinancieroDropdown
 } from '../../shared/models/periodo-financiero.model';
 import { CategoriaFinancieraService } from '../../core/services/categoria-financiera.service';
-import { GastoReservadoService } from '../../core/services/gasto-reservado.service';
+import { PartidaPresupuestariaService } from '../../core/services/partida-presupuestaria.service';
 import { PeriodoFinancieroService } from '../../core/services/periodo-financiero.service';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 
 @Component({
-  selector: 'app-gastos-reservados',
+  selector: 'app-partidas-presupuestarias',
   standalone: true,
   imports: [
     ConfirmDialogComponent,
@@ -29,17 +29,17 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
     ReactiveFormsModule,
   ],
   providers: [DecimalPipe],
-  templateUrl: './gastos-reservados.component.html',
-  styleUrls: ['./gastos-reservados.component.scss']
+  templateUrl: './partidas-presupuestarias.component.html',
+  styleUrls: ['./partidas-presupuestarias.component.scss']
 })
-export class GastosReservadosComponent implements OnInit {
-  private readonly gastoService = inject(GastoReservadoService);
+export class PartidasPresupuestariasComponent implements OnInit {
+  private readonly partidaService = inject(PartidaPresupuestariaService);
   private readonly categoriaService = inject(CategoriaFinancieraService);
   private readonly periodoService = inject(PeriodoFinancieroService);
   private readonly formBuilder = inject(FormBuilder);
   private readonly decimalPipe = inject(DecimalPipe);
 
-  readonly gastos = signal<GastoReservado[]>([]);
+  readonly partidas = signal<PartidaPresupuestaria[]>([]);
   readonly categorias = signal<CategoriaFinanciera[]>([]);
   readonly periodos = signal<PeriodoFinanciero[]>([]);
   readonly periodosDropdown = signal<PeriodoFinancieroDropdown[]>([]);
@@ -53,19 +53,19 @@ export class GastosReservadosComponent implements OnInit {
   readonly categoriasError = signal<string | null>(null);
   readonly periodosError = signal<string | null>(null);
   readonly periodosDropdownError = signal<string | null>(null);
-  readonly gastoPendingDelete = signal<GastoReservado | null>(null);
-  readonly viewingGasto = signal<GastoReservado | null>(null);
+  readonly partidaPendingDelete = signal<PartidaPresupuestaria | null>(null);
+  readonly viewingPartida = signal<PartidaPresupuestaria | null>(null);
   readonly showForm = signal(false);
   readonly selectedPeriodoId = signal<number | null>(null);
   readonly includePeriodosCerrados = signal(false);
   readonly cancelDialogOpen = signal(false);
-  readonly tipoOptions: GastoReservado['tipo'][] = ['INGRESO', 'EGRESO'];
+  readonly tipoOptions: PartidaPresupuestaria['tipo'][] = ['INGRESO', 'EGRESO'];
   readonly form = this.formBuilder.nonNullable.group({
-    tipo: ['EGRESO' as GastoReservado['tipo'], Validators.required],
+    tipo: ['EGRESO' as PartidaPresupuestaria['tipo'], Validators.required],
     categoriaId: this.formBuilder.control<number | null>(null, Validators.required),
-    concepto: ['', [Validators.required, Validators.maxLength(200)]],
+    concepto: ['', [Validators.required, Validators.maxLength(120)]],
     periodoId: this.formBuilder.control<number | null>(null, Validators.required),
-    estado: ['RESERVADO' as GastoReservado['estado'], Validators.required],
+    estado: ['RESERVADO' as PartidaPresupuestaria['estado'], Validators.required],
     montoReservado: this.formBuilder.control<number | null>(null, [
       Validators.required,
       Validators.min(0)
@@ -84,9 +84,9 @@ export class GastosReservadosComponent implements OnInit {
   );
 
   readonly deleteMessage = computed(() => {
-    const gasto = this.gastoPendingDelete();
-    return gasto
-      ? `¿Desea eliminar la partida presupuestaria "${gasto.concepto}"?`
+    const partida = this.partidaPendingDelete();
+    return partida
+      ? `¿Desea eliminar la partida presupuestaria "${partida.concepto}"?`
       : '';
   });
 
@@ -96,7 +96,7 @@ export class GastosReservadosComponent implements OnInit {
     this.loadPeriodosDropdown();
   }
 
-  trackByGastoId = (_: number, gasto: GastoReservado): number => gasto.id;
+  trackByPartidaId = (_: number, partida: PartidaPresupuestaria): number => partida.id;
 
   private loadCategorias(): void {
     this.categoriasLoading.set(true);
@@ -108,7 +108,7 @@ export class GastosReservadosComponent implements OnInit {
         this.categoriasLoading.set(false);
       },
       error: () => {
-        this.categoriasError.set('No se pudieron cargar las categorias.');
+        this.categoriasError.set('No se pudieron cargar las categorías.');
         this.categoriasLoading.set(false);
       }
     });
@@ -130,11 +130,11 @@ export class GastosReservadosComponent implements OnInit {
     });
   }
 
-  loadGastos(): void {
+  loadPartidas(): void {
     const periodoId = this.selectedPeriodoId();
 
     if (periodoId === null) {
-      this.gastos.set([]);
+      this.partidas.set([]);
       this.loading.set(false);
       return;
     }
@@ -142,13 +142,14 @@ export class GastosReservadosComponent implements OnInit {
     this.loading.set(true);
     this.error.set(null);
 
-    this.gastoService.listByPeriodo(periodoId).subscribe({
-      next: (gastos) => {
-        this.gastos.set(gastos);
-        const currentlyViewing = this.viewingGasto();
+    this.partidaService.listByPeriodo(periodoId).subscribe({
+      next: (partidas) => {
+        this.partidas.set(partidas);
+        const currentlyViewing = this.viewingPartida();
         if (currentlyViewing) {
-          const updated = gastos.find((gasto) => gasto.id === currentlyViewing.id) ?? null;
-          this.viewingGasto.set(updated);
+          const updated =
+            partidas.find((partida) => partida.id === currentlyViewing.id) ?? null;
+          this.viewingPartida.set(updated);
         }
         this.loading.set(false);
       },
@@ -168,7 +169,7 @@ export class GastosReservadosComponent implements OnInit {
     }
 
     this.selectedPeriodoId.set(selectedPeriodoId);
-    this.viewingGasto.set(null);
+    this.viewingPartida.set(null);
 
     if (this.showForm()) {
       if (selectedPeriodoId === null) {
@@ -181,21 +182,21 @@ export class GastosReservadosComponent implements OnInit {
     }
 
     if (selectedPeriodoId === null) {
-      this.gastos.set([]);
+      this.partidas.set([]);
       this.loading.set(false);
       this.error.set(null);
       return;
     }
 
-    this.loadGastos();
+    this.loadPartidas();
   }
 
   onIncludePeriodosCerradosChange(checked: boolean): void {
     this.includePeriodosCerrados.set(checked);
     this.selectedPeriodoId.set(null);
-    this.gastos.set([]);
+    this.partidas.set([]);
     this.error.set(null);
-    this.viewingGasto.set(null);
+    this.viewingPartida.set(null);
     if (this.showForm()) {
       this.form.controls.periodoId.reset(null, { emitEvent: false });
     }
@@ -210,7 +211,7 @@ export class GastosReservadosComponent implements OnInit {
       return;
     }
 
-    this.viewingGasto.set(null);
+    this.viewingPartida.set(null);
     this.form.reset({
       tipo: 'EGRESO',
       categoriaId: null,
@@ -226,7 +227,7 @@ export class GastosReservadosComponent implements OnInit {
   }
 
   promptCancelForm(): void {
-    this.viewingGasto.set(null);
+    this.viewingPartida.set(null);
     if (this.saving()) {
       return;
     }
@@ -254,12 +255,12 @@ export class GastosReservadosComponent implements OnInit {
     this.error.set(null);
     const formValue = this.form.getRawValue();
 
-    const payload: GastoReservadoCreate = {
+    const payload: PartidaPresupuestariaCreate = {
       tipo: formValue.tipo,
       categoriaId: Number(formValue.categoriaId),
       concepto: formValue.concepto.trim(),
       periodoId: Number(formValue.periodoId),
-      estado: 'RESERVADO',
+      estado: formValue.estado,
       montoReservado: Number(formValue.montoReservado)
     };
 
@@ -267,14 +268,18 @@ export class GastosReservadosComponent implements OnInit {
       payload.nota = formValue.nota.trim();
     }
 
+    if (formValue.montoAplicado !== null && formValue.montoAplicado !== undefined) {
+      payload.montoAplicado = Number(formValue.montoAplicado);
+    }
+
     this.saving.set(true);
 
-    this.gastoService.create(payload).subscribe({
+    this.partidaService.create(payload).subscribe({
       next: () => {
         this.saving.set(false);
         this.showForm.set(false);
         this.form.controls.periodoId.enable({ emitEvent: false });
-        this.loadGastos();
+        this.loadPartidas();
       },
       error: (err) => {
         const handled = this.handleFormApiErrors(err);
@@ -288,9 +293,9 @@ export class GastosReservadosComponent implements OnInit {
     });
   }
 
-  promptDelete(gasto: GastoReservado): void {
-    this.viewingGasto.set(null);
-    this.gastoPendingDelete.set(gasto);
+  promptDelete(partida: PartidaPresupuestaria): void {
+    this.viewingPartida.set(null);
+    this.partidaPendingDelete.set(partida);
   }
 
   closeDeleteDialog(): void {
@@ -298,13 +303,13 @@ export class GastosReservadosComponent implements OnInit {
       return;
     }
 
-    this.gastoPendingDelete.set(null);
+    this.partidaPendingDelete.set(null);
   }
 
-  confirmDeleteGasto(): void {
-    const gasto = this.gastoPendingDelete();
+  confirmDeletePartida(): void {
+    const partida = this.partidaPendingDelete();
 
-    if (!gasto) {
+    if (!partida) {
       return;
     }
 
@@ -313,16 +318,16 @@ export class GastosReservadosComponent implements OnInit {
 
     this.loading.set(true);
 
-    this.gastoService.delete(gasto.id).subscribe({
+    this.partidaService.delete(partida.id).subscribe({
       next: () => {
         this.deleting.set(false);
-        this.gastoPendingDelete.set(null);
-        this.loadGastos();
+        this.partidaPendingDelete.set(null);
+        this.loadPartidas();
       },
       error: () => {
         this.error.set('No se pudo eliminar la partida presupuestaria seleccionada.');
         this.deleting.set(false);
-        this.gastoPendingDelete.set(null);
+        this.partidaPendingDelete.set(null);
         this.loading.set(false);
       }
     });
@@ -390,7 +395,7 @@ export class GastosReservadosComponent implements OnInit {
     this.form.reset();
     this.form.controls.periodoId.enable({ emitEvent: false });
     this.showForm.set(false);
-    this.viewingGasto.set(null);
+    this.viewingPartida.set(null);
   }
 
   private loadPeriodosDropdown(): void {
@@ -408,7 +413,7 @@ export class GastosReservadosComponent implements OnInit {
 
         if (!selectedStillExists) {
           this.selectedPeriodoId.set(null);
-          this.gastos.set([]);
+          this.partidas.set([]);
           this.loading.set(false);
           this.error.set(null);
         }
@@ -435,11 +440,11 @@ export class GastosReservadosComponent implements OnInit {
     return value < 0 ? `(${formattedAbsolute})` : formattedAbsolute;
   }
 
-  viewGasto(gasto: GastoReservado): void {
-    this.viewingGasto.set(gasto);
+  viewPartida(partida: PartidaPresupuestaria): void {
+    this.viewingPartida.set(partida);
   }
 
-  closeViewGasto(): void {
-    this.viewingGasto.set(null);
+  closeViewPartida(): void {
+    this.viewingPartida.set(null);
   }
 }

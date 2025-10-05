@@ -5,7 +5,7 @@ import {
   PeriodoFinanciero,
   PeriodoFinancieroCreate,
   PeriodoFinancieroDropdown,
-  PeriodoFinancieroReservasResumen,
+  PeriodoFinancieroPartidasResumen,
   PeriodoFinancieroUpdate
 } from '../../shared/models/periodo-financiero.model';
 import { ApiHttpService } from './api-http.service';
@@ -65,11 +65,11 @@ export class PeriodoFinancieroService {
     return this.apiHttp.delete<void>(`${this.basePath}/${id}`);
   }
 
-  getReservasResumen(
+  getPartidasResumen(
     id: number
-  ): Observable<PeriodoFinancieroReservasResumen | null> {
+  ): Observable<PeriodoFinancieroPartidasResumen | null> {
     return this.apiHttp
-      .get<ApiResponse<PeriodoFinancieroReservasResumen | null>>(
+      .get<ApiResponse<PeriodoFinancieroPartidasResumen | null>>(
         `${this.basePath}/${id}/reservas-resumen`
       )
       .pipe(map((response) => response.data ?? null));
