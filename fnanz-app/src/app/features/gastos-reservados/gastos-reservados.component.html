@@ -6,7 +6,12 @@
         Administra los compromisos de ingresos o egresos reservados para futuros períodos.
       </p>
     </div>
-    <button type="button" class="primary-button" (click)="startCreate()" [disabled]="loading() || saving()">
+    <button
+      type="button"
+      class="primary-button"
+      (click)="startCreate()"
+      [disabled]="loading() || saving() || selectedPeriodoId() === null"
+    >
       Nuevo gasto reservado
     </button>
   </header>
@@ -22,6 +27,7 @@
       <span>Periodo financiero</span>
       <select
         [disabled]="periodosDropdownLoading() || periodosDropdown().length === 0"
+        [value]="selectedPeriodoId() ?? ''"
         (change)="onPeriodoDropdownChange($any($event.target).value)"
       >
         <option value="">Selecciona un periodo</option>
@@ -85,22 +91,37 @@
         <small *ngIf="getServerError('concepto') as serverError">{{ serverError }}</small>
       </label>
 
-      <label class="form-field" [class.form-field--invalid]="hasControlError('periodoId')">
-        <span>Periodo *</span>
-        <select formControlName="periodoId" [disabled]="periodosLoading() || periodos().length === 0">
-          <option [ngValue]="null" disabled>Seleccione un periodo</option>
-          <option *ngFor="let periodo of periodos()" [ngValue]="periodo.id">
-            {{ periodo.nombre }} ({{ periodo.fechaInicio | date: 'longDate' }} - {{ periodo.fechaFin | date: 'longDate' }})
-          </option>
-        </select>
-        <small *ngIf="form.controls.periodoId.touched && form.controls.periodoId.hasError('required')">
-          El periodo es obligatorio.
-        </small>
-        <small *ngIf="getServerError('periodoId') as serverError">{{ serverError }}</small>
-        <small *ngIf="!periodosLoading() && periodos().length === 0">
-          Debes crear al menos un periodo financiero para asignarlo al gasto.
-        </small>
-      </label>
+      <ng-container *ngIf="selectedGasto(); else periodoSeleccionado">
+        <label class="form-field" [class.form-field--invalid]="hasControlError('periodoId')">
+          <span>Periodo *</span>
+          <select formControlName="periodoId" [disabled]="periodosLoading() || periodos().length === 0">
+            <option [ngValue]="null" disabled>Seleccione un periodo</option>
+            <option *ngFor="let periodo of periodos()" [ngValue]="periodo.id">
+              {{ periodo.nombre }} ({{ periodo.fechaInicio | date: 'longDate' }} -
+              {{ periodo.fechaFin | date: 'longDate' }})
+            </option>
+          </select>
+          <small *ngIf="form.controls.periodoId.touched && form.controls.periodoId.hasError('required')">
+            El periodo es obligatorio.
+          </small>
+          <small *ngIf="getServerError('periodoId') as serverError">{{ serverError }}</small>
+          <small *ngIf="!periodosLoading() && periodos().length === 0">
+            Debes crear al menos un periodo financiero para asignarlo al gasto.
+          </small>
+        </label>
+      </ng-container>
+      <ng-template #periodoSeleccionado>
+        <div class="form-field form-field--static">
+          <span>Periodo *</span>
+          <p class="form-field__readonly" *ngIf="selectedPeriodoDetalle() as periodo; else periodoSinSeleccion">
+            {{ periodo.nombre }} ({{ periodo.fechaInicio | date: 'longDate' }} -
+            {{ periodo.fechaFin | date: 'longDate' }})
+          </p>
+          <ng-template #periodoSinSeleccion>
+            <p class="form-field__readonly">Selecciona un periodo financiero en el filtro superior.</p>
+          </ng-template>
+        </div>
+      </ng-template>
 
       <label class="form-field" [class.form-field--invalid]="hasControlError('estado')">
         <span>Estado *</span>

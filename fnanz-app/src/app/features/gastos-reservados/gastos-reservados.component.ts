@@ -62,6 +62,15 @@ export class GastosReservadosComponent implements OnInit {
     'APLICADO',
     'CANCELADO'
   ];
+  readonly selectedPeriodoDetalle = computed(() => {
+    const selectedId = this.selectedPeriodoId();
+
+    if (selectedId === null) {
+      return null;
+    }
+
+    return this.periodos().find((periodo) => periodo.id === selectedId) ?? null;
+  });
 
   readonly form = this.formBuilder.nonNullable.group({
     tipo: ['EGRESO' as GastoReservado['tipo'], Validators.required],
@@ -164,6 +173,16 @@ export class GastosReservadosComponent implements OnInit {
 
     this.selectedPeriodoId.set(selectedPeriodoId);
 
+    if (this.showForm() && !this.selectedGasto()) {
+      if (selectedPeriodoId === null) {
+        this.form.controls.periodoId.reset(null, { emitEvent: false });
+      } else {
+        this.form.controls.periodoId.setValue(selectedPeriodoId, {
+          emitEvent: false
+        });
+      }
+    }
+
     if (selectedPeriodoId === null) {
       this.gastos.set([]);
       this.loading.set(false);
@@ -179,25 +198,37 @@ export class GastosReservadosComponent implements OnInit {
     this.selectedPeriodoId.set(null);
     this.gastos.set([]);
     this.error.set(null);
+    if (this.showForm() && !this.selectedGasto()) {
+      this.form.controls.periodoId.reset(null, { emitEvent: false });
+    }
     this.loadPeriodosDropdown();
   }
 
   startCreate(): void {
+    const periodoId = this.selectedPeriodoId();
+
+    if (periodoId === null) {
+      this.error.set('Selecciona un periodo financiero antes de crear un gasto reservado.');
+      return;
+    }
+
     this.selectedGasto.set(null);
     this.form.reset({
       tipo: 'EGRESO',
       categoriaId: null,
       concepto: '',
-      periodoId: null,
+      periodoId,
       estado: 'RESERVADO',
       montoReservado: null,
       montoAplicado: null,
       nota: ''
     });
+    this.form.controls.periodoId.disable({ emitEvent: false });
     this.showForm.set(true);
   }
 
   startEdit(gasto: GastoReservado): void {
+    this.form.controls.periodoId.enable({ emitEvent: false });
     this.selectedGasto.set(gasto);
     this.form.reset({
       tipo: gasto.tipo,
@@ -214,6 +245,7 @@ export class GastosReservadosComponent implements OnInit {
 
   cancelForm(): void {
     this.form.reset();
+    this.form.controls.periodoId.enable({ emitEvent: false });
     this.showForm.set(false);
     this.selectedGasto.set(null);
   }
@@ -257,6 +289,7 @@ export class GastosReservadosComponent implements OnInit {
         this.saving.set(false);
         this.showForm.set(false);
         this.selectedGasto.set(null);
+        this.form.controls.periodoId.enable({ emitEvent: false });
         this.loadGastos();
       },
       error: (err) => {
