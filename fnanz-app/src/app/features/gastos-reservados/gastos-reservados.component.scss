@@ -17,6 +17,10 @@
   margin: 0.25rem 0 0;
 }
 
+.is-hidden {
+  display: none !important;
+}
+
 .gasto-panel__filters {
   align-items: flex-end;
   display: flex;
