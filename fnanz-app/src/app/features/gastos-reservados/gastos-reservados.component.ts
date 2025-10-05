@@ -28,6 +28,7 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
     NgIf,
     ReactiveFormsModule,
   ],
+  providers: [DecimalPipe],
   templateUrl: './gastos-reservados.component.html',
   styleUrls: ['./gastos-reservados.component.scss']
 })
