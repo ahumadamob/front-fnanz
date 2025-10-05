@@ -66,16 +66,6 @@ export class GastosReservadosComponent implements OnInit {
     'APLICADO',
     'CANCELADO'
   ];
-  readonly selectedPeriodoDetalle = computed(() => {
-    const selectedId = this.selectedPeriodoId();
-
-    if (selectedId === null) {
-      return null;
-    }
-
-    return this.periodos().find((periodo) => periodo.id === selectedId) ?? null;
-  });
-
   readonly form = this.formBuilder.nonNullable.group({
     tipo: ['EGRESO' as GastoReservado['tipo'], Validators.required],
     categoriaId: this.formBuilder.control<number | null>(null, Validators.required),
@@ -294,12 +284,14 @@ export class GastosReservadosComponent implements OnInit {
 
     this.error.set(null);
     const formValue = this.form.getRawValue();
+    const estado = this.selectedGasto() ? formValue.estado : 'RESERVADO';
+
     const payload: GastoReservadoCreate = {
       tipo: formValue.tipo,
       categoriaId: Number(formValue.categoriaId),
       concepto: formValue.concepto.trim(),
       periodoId: Number(formValue.periodoId),
-      estado: formValue.estado,
+      estado,
       montoReservado: Number(formValue.montoReservado)
     };
 

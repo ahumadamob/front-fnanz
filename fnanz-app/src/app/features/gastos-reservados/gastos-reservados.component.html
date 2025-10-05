@@ -91,7 +91,7 @@
         <small *ngIf="getServerError('concepto') as serverError">{{ serverError }}</small>
       </label>
 
-      <ng-container *ngIf="selectedGasto(); else periodoSeleccionado">
+      <ng-container *ngIf="selectedGasto()">
         <label class="form-field" [class.form-field--invalid]="hasControlError('periodoId')">
           <span>Periodo *</span>
           <select formControlName="periodoId" [disabled]="periodosLoading() || periodos().length === 0">
@@ -109,27 +109,24 @@
             Debes crear al menos un periodo financiero para asignarlo a la partida presupuestaria.
           </small>
         </label>
-      </ng-container>
-      <ng-template #periodoSeleccionado>
-        <div class="form-field form-field--static">
-          <span>Periodo *</span>
-          <p class="form-field__readonly" *ngIf="selectedPeriodoDetalle() as periodo; else periodoSinSeleccion">
-            {{ periodo.nombre }} ({{ periodo.fechaInicio | date: 'longDate' }} -
-            {{ periodo.fechaFin | date: 'longDate' }})
-          </p>
-          <ng-template #periodoSinSeleccion>
-            <p class="form-field__readonly">Selecciona un periodo financiero en el filtro superior.</p>
-          </ng-template>
-        </div>
-      </ng-template>
 
-      <label class="form-field" [class.form-field--invalid]="hasControlError('estado')">
-        <span>Estado *</span>
-        <select formControlName="estado">
-          <option *ngFor="let estado of estadoOptions" [value]="estado">{{ estado }}</option>
-        </select>
-        <small *ngIf="getServerError('estado') as serverError">{{ serverError }}</small>
-      </label>
+        <label class="form-field" [class.form-field--invalid]="hasControlError('estado')">
+          <span>Estado *</span>
+          <select formControlName="estado">
+            <option *ngFor="let estado of estadoOptions" [value]="estado">{{ estado }}</option>
+          </select>
+          <small *ngIf="getServerError('estado') as serverError">{{ serverError }}</small>
+        </label>
+
+        <label class="form-field" [class.form-field--invalid]="hasControlError('montoAplicado')">
+          <span>Monto aplicado</span>
+          <input type="number" formControlName="montoAplicado" step="0.01" min="0" />
+          <small *ngIf="form.controls.montoAplicado.touched && form.controls.montoAplicado.hasError('min')">
+            El monto aplicado no puede ser negativo.
+          </small>
+          <small *ngIf="getServerError('montoAplicado') as serverError">{{ serverError }}</small>
+        </label>
+      </ng-container>
 
       <label class="form-field" [class.form-field--invalid]="hasControlError('montoReservado')">
         <span>Monto reservado *</span>
@@ -147,15 +144,6 @@
           El monto reservado no puede ser negativo.
         </small>
         <small *ngIf="getServerError('montoReservado') as serverError">{{ serverError }}</small>
-      </label>
-
-      <label class="form-field" [class.form-field--invalid]="hasControlError('montoAplicado')">
-        <span>Monto aplicado</span>
-        <input type="number" formControlName="montoAplicado" step="0.01" min="0" />
-        <small *ngIf="form.controls.montoAplicado.touched && form.controls.montoAplicado.hasError('min')">
-          El monto aplicado no puede ser negativo.
-        </small>
-        <small *ngIf="getServerError('montoAplicado') as serverError">{{ serverError }}</small>
       </label>
 
       <label class="form-field form-field--full" [class.form-field--invalid]="hasControlError('nota')">
@@ -186,7 +174,6 @@
           <th>Tipo</th>
           <th>Categoría</th>
           <th>Estado</th>
-          <th>Periodo</th>
           <th>Monto reservado</th>
           <th>Monto aplicado</th>
           <th class="data-table__actions">Acciones</th>
@@ -194,7 +181,7 @@
       </thead>
       <tbody>
         <tr *ngIf="gastos().length === 0">
-          <td class="data-table__empty" colspan="8">
+          <td class="data-table__empty" colspan="7">
             <ng-container *ngIf="loading(); else emptyMessage">
               Cargando información...
             </ng-container>
@@ -210,7 +197,6 @@
         <tr *ngFor="let gasto of gastos(); trackBy: trackByGastoId">
           <td>
             <div class="gasto-name">{{ gasto.concepto }}</div>
-            <small class="gasto-meta">Actualizado {{ gasto.actualizadoEn | date: 'short' }}</small>
           </td>
           <td>
             <span class="tipo-pill" [ngClass]="gasto.tipo === 'INGRESO' ? 'tipo-pill--ingreso' : 'tipo-pill--egreso'">
@@ -221,7 +207,6 @@
           <td>
             <span [ngClass]="'estado estado--' + gasto.estado.toLowerCase()">{{ gasto.estado }}</span>
           </td>
-          <td>{{ gasto.periodoNombre }}</td>
           <td class="data-table__numeric">{{ formatAccounting(gasto.montoReservado) }}</td>
           <td class="data-table__numeric">{{ formatAccounting(gasto.montoAplicado) }}</td>
           <td class="data-table__actions">
