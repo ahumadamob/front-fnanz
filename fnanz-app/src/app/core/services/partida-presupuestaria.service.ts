@@ -3,6 +3,7 @@ import { map, Observable } from 'rxjs';
 
 import {
   PartidaPresupuestaria,
+  PartidaPresupuestariaApplyPayload,
   PartidaPresupuestariaCreate,
   PartidaPresupuestariaUpdate
 } from '../../shared/models/partida-presupuestaria.model';
@@ -65,6 +66,15 @@ export class PartidaPresupuestariaService {
   ): Observable<PartidaPresupuestaria> {
     return this.apiHttp
       .patch<ApiResponse<PartidaPresupuestaria>>(`${this.basePath}/${id}`, payload)
+      .pipe(map((response) => response.data));
+  }
+
+  apply(
+    id: number,
+    payload: PartidaPresupuestariaApplyPayload
+  ): Observable<PartidaPresupuestaria> {
+    return this.apiHttp
+      .patch<ApiResponse<PartidaPresupuestaria>>(`${this.basePath}/${id}/aplicar`, payload)
       .pipe(map((response) => response.data));
   }
 

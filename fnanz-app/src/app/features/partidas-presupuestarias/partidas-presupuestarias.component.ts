@@ -397,9 +397,8 @@ export class PartidasPresupuestariasComponent implements OnInit {
     this.applyingMontoError.set(null);
 
     this.partidaService
-      .update(partida.id, {
-        montoAplicado: Number(montoAplicado),
-        estado: 'APLICADO'
+      .apply(partida.id, {
+        montoAplicado: Number(montoAplicado)
       })
       .subscribe({
         next: (updatedPartida) => {

@@ -28,3 +28,7 @@ export type PartidaPresupuestariaCreate = {
 };
 
 export type PartidaPresupuestariaUpdate = Partial<PartidaPresupuestariaCreate>;
+
+export interface PartidaPresupuestariaApplyPayload {
+  montoAplicado: number;
+}
