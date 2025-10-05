@@ -17,6 +17,44 @@
   margin: 0.25rem 0 0;
 }
 
+.gasto-panel__filters {
+  align-items: flex-end;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.filter-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.filter-field span {
+  font-weight: 600;
+}
+
+.filter-field select {
+  border: 1px solid #d1d5db;
+  border-radius: 0.65rem;
+  font: inherit;
+  padding: 0.6rem 0.75rem;
+  min-width: 200px;
+}
+
+.filter-checkbox {
+  align-items: center;
+  display: inline-flex;
+  gap: 0.5rem;
+  font-weight: 500;
+}
+
+.filter-checkbox input[type='checkbox'] {
+  accent-color: var(--fnanz-primary);
+  height: 1.1rem;
+  width: 1.1rem;
+}
+
 .primary-button,
 .ghost-button,
 .danger-button {
@@ -139,6 +177,20 @@
   grid-column: 1 / -1;
 }
 
+.form-field--static {
+  grid-column: 1 / -1;
+}
+
+.form-field__readonly {
+  background-color: #fff;
+  border: 1px dashed #d1d5db;
+  border-radius: 0.65rem;
+  color: #374151;
+  font-weight: 500;
+  margin: 0;
+  padding: 0.6rem 0.75rem;
+}
+
 .form-actions {
   align-items: center;
   display: flex;
@@ -174,6 +226,18 @@
 .data-table__actions {
   text-align: right;
   white-space: nowrap;
+}
+
+.data-table__numeric {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.data-table__empty {
+  color: #6b7280;
+  font-style: italic;
+  padding: 2rem 1rem;
+  text-align: center;
 }
 
 .gasto-name {
@@ -238,6 +302,10 @@
   .data-table td {
     border: none;
     padding: 0;
+  }
+
+  .data-table__numeric {
+    text-align: right;
   }
 
   .data-table__actions {

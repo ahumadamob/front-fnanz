@@ -6,7 +6,12 @@
         Administra los compromisos de ingresos o egresos reservados para futuros períodos.
       </p>
     </div>
-    <button type="button" class="primary-button" (click)="startCreate()" [disabled]="loading() || saving()">
+    <button
+      type="button"
+      class="primary-button"
+      (click)="startCreate()"
+      [disabled]="loading() || saving() || selectedPeriodoId() === null"
+    >
       Nuevo gasto reservado
     </button>
   </header>
@@ -15,6 +20,36 @@
   <p *ngIf="error() && !loading()" class="gasto-panel__error">{{ error() }}</p>
   <p *ngIf="categoriasError()" class="gasto-panel__warning">{{ categoriasError() }}</p>
   <p *ngIf="periodosError()" class="gasto-panel__warning">{{ periodosError() }}</p>
+  <p *ngIf="periodosDropdownError()" class="gasto-panel__warning">{{ periodosDropdownError() }}</p>
+
+  <section *ngIf="!showForm()" class="gasto-panel__filters">
+    <label class="filter-field">
+      <span>Periodo financiero</span>
+      <select
+        [disabled]="periodosDropdownLoading() || periodosDropdown().length === 0"
+        [value]="selectedPeriodoId() ?? ''"
+        (change)="onPeriodoDropdownChange($any($event.target).value)"
+      >
+        <option value="">Selecciona un periodo</option>
+        <option *ngFor="let periodo of periodosDropdown()" [value]="periodo.id">
+          {{ periodo.nombre }}
+        </option>
+      </select>
+    </label>
+
+    <label class="filter-checkbox">
+      <input
+        type="checkbox"
+        [checked]="includePeriodosCerrados()"
+        (change)="onIncludePeriodosCerradosChange($any($event.target).checked)"
+      />
+      <span>Incluir periodos cerrados</span>
+    </label>
+  </section>
+
+  <p *ngIf="periodosDropdownLoading() && !showForm()" class="gasto-panel__loading">
+    Cargando periodos financieros...
+  </p>
 
   <section *ngIf="showForm()" class="gasto-form">
     <h3>{{ formTitle() }}</h3>
@@ -56,22 +91,37 @@
         <small *ngIf="getServerError('concepto') as serverError">{{ serverError }}</small>
       </label>
 
-      <label class="form-field" [class.form-field--invalid]="hasControlError('periodoId')">
-        <span>Periodo *</span>
-        <select formControlName="periodoId" [disabled]="periodosLoading() || periodos().length === 0">
-          <option [ngValue]="null" disabled>Seleccione un periodo</option>
-          <option *ngFor="let periodo of periodos()" [ngValue]="periodo.id">
-            {{ periodo.nombre }} ({{ periodo.fechaInicio | date: 'longDate' }} - {{ periodo.fechaFin | date: 'longDate' }})
-          </option>
-        </select>
-        <small *ngIf="form.controls.periodoId.touched && form.controls.periodoId.hasError('required')">
-          El periodo es obligatorio.
-        </small>
-        <small *ngIf="getServerError('periodoId') as serverError">{{ serverError }}</small>
-        <small *ngIf="!periodosLoading() && periodos().length === 0">
-          Debes crear al menos un periodo financiero para asignarlo al gasto.
-        </small>
-      </label>
+      <ng-container *ngIf="selectedGasto(); else periodoSeleccionado">
+        <label class="form-field" [class.form-field--invalid]="hasControlError('periodoId')">
+          <span>Periodo *</span>
+          <select formControlName="periodoId" [disabled]="periodosLoading() || periodos().length === 0">
+            <option [ngValue]="null" disabled>Seleccione un periodo</option>
+            <option *ngFor="let periodo of periodos()" [ngValue]="periodo.id">
+              {{ periodo.nombre }} ({{ periodo.fechaInicio | date: 'longDate' }} -
+              {{ periodo.fechaFin | date: 'longDate' }})
+            </option>
+          </select>
+          <small *ngIf="form.controls.periodoId.touched && form.controls.periodoId.hasError('required')">
+            El periodo es obligatorio.
+          </small>
+          <small *ngIf="getServerError('periodoId') as serverError">{{ serverError }}</small>
+          <small *ngIf="!periodosLoading() && periodos().length === 0">
+            Debes crear al menos un periodo financiero para asignarlo al gasto.
+          </small>
+        </label>
+      </ng-container>
+      <ng-template #periodoSeleccionado>
+        <div class="form-field form-field--static">
+          <span>Periodo *</span>
+          <p class="form-field__readonly" *ngIf="selectedPeriodoDetalle() as periodo; else periodoSinSeleccion">
+            {{ periodo.nombre }} ({{ periodo.fechaInicio | date: 'longDate' }} -
+            {{ periodo.fechaFin | date: 'longDate' }})
+          </p>
+          <ng-template #periodoSinSeleccion>
+            <p class="form-field__readonly">Selecciona un periodo financiero en el filtro superior.</p>
+          </ng-template>
+        </div>
+      </ng-template>
 
       <label class="form-field" [class.form-field--invalid]="hasControlError('estado')">
         <span>Estado *</span>
@@ -118,7 +168,9 @@
       </label>
 
       <div class="form-actions">
-        <button type="button" class="ghost-button" (click)="cancelForm()">Cancelar</button>
+        <button type="button" class="ghost-button" (click)="promptCancelForm()" [disabled]="saving()">
+          Cancelar
+        </button>
         <button type="submit" class="primary-button" [disabled]="saving()">
           {{ saving() ? 'Guardando...' : 'Guardar' }}
         </button>
@@ -126,7 +178,7 @@
     </form>
   </section>
 
-  <div class="gasto-grid" *ngIf="!loading() && gastos().length > 0; else emptyState">
+  <div *ngIf="!showForm()" class="gasto-grid">
     <table class="data-table">
       <thead>
         <tr>
@@ -141,6 +193,20 @@
         </tr>
       </thead>
       <tbody>
+        <tr *ngIf="gastos().length === 0">
+          <td class="data-table__empty" colspan="8">
+            <ng-container *ngIf="loading(); else emptyMessage">
+              Cargando información...
+            </ng-container>
+            <ng-template #emptyMessage>
+              {{
+                selectedPeriodoId() === null
+                  ? 'Selecciona un periodo financiero para ver los gastos reservados.'
+                  : 'No hay gastos reservados registrados para el periodo seleccionado.'
+              }}
+            </ng-template>
+          </td>
+        </tr>
         <tr *ngFor="let gasto of gastos(); trackBy: trackByGastoId">
           <td>
             <div class="gasto-name">{{ gasto.concepto }}</div>
@@ -156,8 +222,8 @@
             <span [ngClass]="'estado estado--' + gasto.estado.toLowerCase()">{{ gasto.estado }}</span>
           </td>
           <td>{{ gasto.periodoNombre }}</td>
-          <td>{{ gasto.montoReservado | currency: 'USD':'symbol-narrow':'1.0-0' }}</td>
-          <td>{{ gasto.montoAplicado != null ? (gasto.montoAplicado | currency: 'USD':'symbol-narrow':'1.0-0') : '—' }}</td>
+          <td class="data-table__numeric">{{ formatAccounting(gasto.montoReservado) }}</td>
+          <td class="data-table__numeric">{{ formatAccounting(gasto.montoAplicado) }}</td>
           <td class="data-table__actions">
             <button
               type="button"
@@ -210,12 +276,6 @@
     </table>
   </div>
 
-  <ng-template #emptyState>
-    <p class="gasto-panel__empty" *ngIf="!loading()">
-      No hay gastos reservados registrados. Registra uno nuevo para comenzar.
-    </p>
-  </ng-template>
-
   <app-confirm-dialog
     [open]="gastoPendingDelete() !== null"
     title="Eliminar gasto reservado"
@@ -227,5 +287,15 @@
     [confirmDestructive]="true"
     (cancel)="closeDeleteDialog()"
     (confirm)="confirmDeleteGasto()"
+  ></app-confirm-dialog>
+
+  <app-confirm-dialog
+    [open]="cancelDialogOpen()"
+    [title]="cancelDialogTitle()"
+    [message]="cancelDialogMessage()"
+    confirmLabel="Sí, cancelar"
+    cancelLabel="Seguir editando"
+    (cancel)="closeCancelDialog()"
+    (confirm)="confirmCancelForm()"
   ></app-confirm-dialog>
 </section>

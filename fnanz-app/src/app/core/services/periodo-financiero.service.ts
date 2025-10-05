@@ -4,6 +4,7 @@ import { map, Observable } from 'rxjs';
 import {
   PeriodoFinanciero,
   PeriodoFinancieroCreate,
+  PeriodoFinancieroDropdown,
   PeriodoFinancieroReservasResumen,
   PeriodoFinancieroUpdate
 } from '../../shared/models/periodo-financiero.model';
@@ -34,6 +35,17 @@ export class PeriodoFinancieroService {
 
     return this.apiHttp
       .get<ApiResponse<PeriodoFinanciero[]>>(this.basePath, { params })
+      .pipe(map((response) => response.data ?? []));
+  }
+
+  dropdown(soloAbiertos: boolean): Observable<PeriodoFinancieroDropdown[]> {
+    const params = soloAbiertos ? { soloAbiertos: true } : {};
+
+    return this.apiHttp
+      .get<ApiResponse<PeriodoFinancieroDropdown[]>>(
+        `${this.basePath}/dropdown`,
+        { params }
+      )
       .pipe(map((response) => response.data ?? []));
   }
 

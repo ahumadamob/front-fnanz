@@ -1,4 +1,4 @@
-import { CurrencyPipe, DatePipe, NgClass, NgFor, NgIf } from '@angular/common';
+import { DatePipe, DecimalPipe, NgClass, NgFor, NgIf } from '@angular/common';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
@@ -7,7 +7,10 @@ import {
   GastoReservado,
   GastoReservadoCreate
 } from '../../shared/models/gasto-reservado.model';
-import { PeriodoFinanciero } from '../../shared/models/periodo-financiero.model';
+import {
+  PeriodoFinanciero,
+  PeriodoFinancieroDropdown
+} from '../../shared/models/periodo-financiero.model';
 import { CategoriaFinancieraService } from '../../core/services/categoria-financiera.service';
 import { GastoReservadoService } from '../../core/services/gasto-reservado.service';
 import { PeriodoFinancieroService } from '../../core/services/periodo-financiero.service';
@@ -18,13 +21,14 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
   standalone: true,
   imports: [
     ConfirmDialogComponent,
-    CurrencyPipe,
     DatePipe,
+    DecimalPipe,
     NgClass,
     NgFor,
     NgIf,
     ReactiveFormsModule,
   ],
+  providers: [DecimalPipe],
   templateUrl: './gastos-reservados.component.html',
   styleUrls: ['./gastos-reservados.component.scss']
 })
@@ -33,27 +37,43 @@ export class GastosReservadosComponent implements OnInit {
   private readonly categoriaService = inject(CategoriaFinancieraService);
   private readonly periodoService = inject(PeriodoFinancieroService);
   private readonly formBuilder = inject(FormBuilder);
+  private readonly decimalPipe = inject(DecimalPipe);
 
   readonly gastos = signal<GastoReservado[]>([]);
   readonly categorias = signal<CategoriaFinanciera[]>([]);
   readonly periodos = signal<PeriodoFinanciero[]>([]);
+  readonly periodosDropdown = signal<PeriodoFinancieroDropdown[]>([]);
   readonly loading = signal(false);
   readonly saving = signal(false);
   readonly deleting = signal(false);
   readonly categoriasLoading = signal(false);
   readonly periodosLoading = signal(false);
+  readonly periodosDropdownLoading = signal(false);
   readonly error = signal<string | null>(null);
   readonly categoriasError = signal<string | null>(null);
   readonly periodosError = signal<string | null>(null);
+  readonly periodosDropdownError = signal<string | null>(null);
   readonly selectedGasto = signal<GastoReservado | null>(null);
   readonly gastoPendingDelete = signal<GastoReservado | null>(null);
   readonly showForm = signal(false);
+  readonly selectedPeriodoId = signal<number | null>(null);
+  readonly includePeriodosCerrados = signal(false);
+  readonly cancelDialogOpen = signal(false);
   readonly tipoOptions: GastoReservado['tipo'][] = ['INGRESO', 'EGRESO'];
   readonly estadoOptions: GastoReservado['estado'][] = [
     'RESERVADO',
     'APLICADO',
     'CANCELADO'
   ];
+  readonly selectedPeriodoDetalle = computed(() => {
+    const selectedId = this.selectedPeriodoId();
+
+    if (selectedId === null) {
+      return null;
+    }
+
+    return this.periodos().find((periodo) => periodo.id === selectedId) ?? null;
+  });
 
   readonly form = this.formBuilder.nonNullable.group({
     tipo: ['EGRESO' as GastoReservado['tipo'], Validators.required],
@@ -75,6 +95,16 @@ export class GastosReservadosComponent implements OnInit {
       : 'Nuevo gasto reservado'
   );
 
+  readonly cancelDialogTitle = computed(() =>
+    this.selectedGasto() ? 'Cancelar edición' : 'Cancelar creación'
+  );
+
+  readonly cancelDialogMessage = computed(() =>
+    this.selectedGasto()
+      ? '¿Deseas cancelar la edición del gasto reservado? Los cambios no guardados se perderán.'
+      : '¿Deseas cancelar la creación del gasto reservado? Los cambios no guardados se perderán.'
+  );
+
   readonly deleteMessage = computed(() => {
     const gasto = this.gastoPendingDelete();
     return gasto
@@ -83,9 +113,9 @@ export class GastosReservadosComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    this.loadGastos();
     this.loadCategorias();
     this.loadPeriodos();
+    this.loadPeriodosDropdown();
   }
 
   trackByGastoId = (_: number, gasto: GastoReservado): number => gasto.id;
@@ -123,10 +153,18 @@ export class GastosReservadosComponent implements OnInit {
   }
 
   loadGastos(): void {
+    const periodoId = this.selectedPeriodoId();
+
+    if (periodoId === null) {
+      this.gastos.set([]);
+      this.loading.set(false);
+      return;
+    }
+
     this.loading.set(true);
     this.error.set(null);
 
-    this.gastoService.list().subscribe({
+    this.gastoService.listByPeriodo(periodoId).subscribe({
       next: (gastos) => {
         this.gastos.set(gastos);
         this.loading.set(false);
@@ -138,22 +176,72 @@ export class GastosReservadosComponent implements OnInit {
     });
   }
 
+  onPeriodoDropdownChange(value: string): void {
+    let selectedPeriodoId: number | null = null;
+
+    if (value) {
+      const parsed = Number(value);
+      selectedPeriodoId = Number.isNaN(parsed) ? null : parsed;
+    }
+
+    this.selectedPeriodoId.set(selectedPeriodoId);
+
+    if (this.showForm() && !this.selectedGasto()) {
+      if (selectedPeriodoId === null) {
+        this.form.controls.periodoId.reset(null, { emitEvent: false });
+      } else {
+        this.form.controls.periodoId.setValue(selectedPeriodoId, {
+          emitEvent: false
+        });
+      }
+    }
+
+    if (selectedPeriodoId === null) {
+      this.gastos.set([]);
+      this.loading.set(false);
+      this.error.set(null);
+      return;
+    }
+
+    this.loadGastos();
+  }
+
+  onIncludePeriodosCerradosChange(checked: boolean): void {
+    this.includePeriodosCerrados.set(checked);
+    this.selectedPeriodoId.set(null);
+    this.gastos.set([]);
+    this.error.set(null);
+    if (this.showForm() && !this.selectedGasto()) {
+      this.form.controls.periodoId.reset(null, { emitEvent: false });
+    }
+    this.loadPeriodosDropdown();
+  }
+
   startCreate(): void {
+    const periodoId = this.selectedPeriodoId();
+
+    if (periodoId === null) {
+      this.error.set('Selecciona un periodo financiero antes de crear un gasto reservado.');
+      return;
+    }
+
     this.selectedGasto.set(null);
     this.form.reset({
       tipo: 'EGRESO',
       categoriaId: null,
       concepto: '',
-      periodoId: null,
+      periodoId,
       estado: 'RESERVADO',
       montoReservado: null,
       montoAplicado: null,
       nota: ''
     });
+    this.form.controls.periodoId.disable({ emitEvent: false });
     this.showForm.set(true);
   }
 
   startEdit(gasto: GastoReservado): void {
+    this.form.controls.periodoId.enable({ emitEvent: false });
     this.selectedGasto.set(gasto);
     this.form.reset({
       tipo: gasto.tipo,
@@ -168,10 +256,21 @@ export class GastosReservadosComponent implements OnInit {
     this.showForm.set(true);
   }
 
-  cancelForm(): void {
-    this.form.reset();
-    this.showForm.set(false);
-    this.selectedGasto.set(null);
+  promptCancelForm(): void {
+    if (this.saving()) {
+      return;
+    }
+
+    this.cancelDialogOpen.set(true);
+  }
+
+  closeCancelDialog(): void {
+    this.cancelDialogOpen.set(false);
+  }
+
+  confirmCancelForm(): void {
+    this.resetFormState();
+    this.cancelDialogOpen.set(false);
   }
 
   submitForm(): void {
@@ -213,6 +312,7 @@ export class GastosReservadosComponent implements OnInit {
         this.saving.set(false);
         this.showForm.set(false);
         this.selectedGasto.set(null);
+        this.form.controls.periodoId.enable({ emitEvent: false });
         this.loadGastos();
       },
       error: (err) => {
@@ -322,5 +422,56 @@ export class GastosReservadosComponent implements OnInit {
     });
 
     return applied;
+  }
+
+  private resetFormState(): void {
+    this.form.reset();
+    this.form.controls.periodoId.enable({ emitEvent: false });
+    this.showForm.set(false);
+    this.selectedGasto.set(null);
+  }
+
+  private loadPeriodosDropdown(): void {
+    const soloAbiertos = !this.includePeriodosCerrados();
+    this.periodosDropdownLoading.set(true);
+    this.periodosDropdownError.set(null);
+
+    this.periodoService.dropdown(soloAbiertos).subscribe({
+      next: (periodos) => {
+        this.periodosDropdown.set(periodos);
+        const selectedId = this.selectedPeriodoId();
+        const selectedStillExists = periodos.some(
+          (periodo) => periodo.id === selectedId
+        );
+
+        if (!selectedStillExists) {
+          this.selectedPeriodoId.set(null);
+          this.gastos.set([]);
+          this.loading.set(false);
+          this.error.set(null);
+        }
+
+        this.periodosDropdownLoading.set(false);
+      },
+      error: () => {
+        this.periodosDropdown.set([]);
+        this.periodosDropdownError.set(
+          'No se pudieron cargar los periodos financieros para filtrar.'
+        );
+        this.periodosDropdownLoading.set(false);
+      }
+    });
+  }
+
+  formatAccounting(value: number | null | undefined): string {
+    if (value === null || value === undefined) {
+      return '—';
+    }
+
+    const absoluteValue = Math.abs(value);
+    const formattedAbsolute =
+      this.decimalPipe.transform(absoluteValue, '1.0-0') ?? absoluteValue.toString();
+
+    return value < 0 ? `(${formattedAbsolute})` : formattedAbsolute;
   }
 }
