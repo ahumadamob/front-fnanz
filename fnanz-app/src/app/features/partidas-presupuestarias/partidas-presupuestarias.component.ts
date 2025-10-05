@@ -33,6 +33,8 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
   styleUrls: ['./partidas-presupuestarias.component.scss']
 })
 export class PartidasPresupuestariasComponent implements OnInit {
+  private readonly selectedPeriodoStorageKey =
+    'partidasPresupuestarias.selectedPeriodoId';
   private readonly partidaService = inject(PartidaPresupuestariaService);
   private readonly categoriaService = inject(CategoriaFinancieraService);
   private readonly periodoService = inject(PeriodoFinancieroService);
@@ -59,6 +61,9 @@ export class PartidasPresupuestariasComponent implements OnInit {
   readonly selectedPeriodoId = signal<number | null>(null);
   readonly includePeriodosCerrados = signal(false);
   readonly cancelDialogOpen = signal(false);
+  readonly applyingMonto = signal(false);
+  readonly applyingMontoSaving = signal(false);
+  readonly applyingMontoError = signal<string | null>(null);
   readonly tipoOptions: PartidaPresupuestaria['tipo'][] = ['INGRESO', 'EGRESO'];
   readonly form = this.formBuilder.nonNullable.group({
     tipo: ['EGRESO' as PartidaPresupuestaria['tipo'], Validators.required],
@@ -73,6 +78,10 @@ export class PartidasPresupuestariasComponent implements OnInit {
     montoAplicado: this.formBuilder.control<number | null>(null, [Validators.min(0)]),
     nota: ['', Validators.maxLength(500)]
   });
+  readonly montoAplicadoControl = this.formBuilder.control<number | null>(null, [
+    Validators.required,
+    Validators.min(0)
+  ]);
 
   readonly formTitle = computed(() => 'Nueva partida presupuestaria');
 
@@ -91,6 +100,7 @@ export class PartidasPresupuestariasComponent implements OnInit {
   });
 
   ngOnInit(): void {
+    this.restoreSelectedPeriodoId();
     this.loadCategorias();
     this.loadPeriodos();
     this.loadPeriodosDropdown();
@@ -149,7 +159,12 @@ export class PartidasPresupuestariasComponent implements OnInit {
         if (currentlyViewing) {
           const updated =
             partidas.find((partida) => partida.id === currentlyViewing.id) ?? null;
-          this.viewingPartida.set(updated);
+          if (updated) {
+            this.viewingPartida.set(updated);
+          } else {
+            this.resetApplyState();
+            this.viewingPartida.set(null);
+          }
         }
         this.loading.set(false);
       },
@@ -169,6 +184,8 @@ export class PartidasPresupuestariasComponent implements OnInit {
     }
 
     this.selectedPeriodoId.set(selectedPeriodoId);
+    this.persistSelectedPeriodoId(selectedPeriodoId);
+    this.resetApplyState();
     this.viewingPartida.set(null);
 
     if (this.showForm()) {
@@ -194,8 +211,10 @@ export class PartidasPresupuestariasComponent implements OnInit {
   onIncludePeriodosCerradosChange(checked: boolean): void {
     this.includePeriodosCerrados.set(checked);
     this.selectedPeriodoId.set(null);
+    this.persistSelectedPeriodoId(null);
     this.partidas.set([]);
     this.error.set(null);
+    this.resetApplyState();
     this.viewingPartida.set(null);
     if (this.showForm()) {
       this.form.controls.periodoId.reset(null, { emitEvent: false });
@@ -211,6 +230,7 @@ export class PartidasPresupuestariasComponent implements OnInit {
       return;
     }
 
+    this.resetApplyState();
     this.viewingPartida.set(null);
     this.form.reset({
       tipo: 'EGRESO',
@@ -227,6 +247,7 @@ export class PartidasPresupuestariasComponent implements OnInit {
   }
 
   promptCancelForm(): void {
+    this.resetApplyState();
     this.viewingPartida.set(null);
     if (this.saving()) {
       return;
@@ -294,6 +315,7 @@ export class PartidasPresupuestariasComponent implements OnInit {
   }
 
   promptDelete(partida: PartidaPresupuestaria): void {
+    this.resetApplyState();
     this.viewingPartida.set(null);
     this.partidaPendingDelete.set(partida);
   }
@@ -331,6 +353,65 @@ export class PartidasPresupuestariasComponent implements OnInit {
         this.loading.set(false);
       }
     });
+  }
+
+  startApplyMonto(partida: PartidaPresupuestaria): void {
+    if (this.applyingMontoSaving()) {
+      return;
+    }
+
+    this.applyingMontoError.set(null);
+    this.montoAplicadoControl.reset(partida.montoReservado, { emitEvent: false });
+    this.montoAplicadoControl.markAsPristine();
+    this.montoAplicadoControl.markAsUntouched();
+    this.applyingMonto.set(true);
+  }
+
+  cancelApplyMonto(): void {
+    if (this.applyingMontoSaving()) {
+      return;
+    }
+
+    this.resetApplyState();
+  }
+
+  confirmApplyMonto(partida: PartidaPresupuestaria): void {
+    if (!this.applyingMonto()) {
+      return;
+    }
+
+    this.montoAplicadoControl.markAsTouched();
+    this.montoAplicadoControl.updateValueAndValidity();
+
+    if (this.montoAplicadoControl.invalid) {
+      return;
+    }
+
+    const montoAplicado = this.montoAplicadoControl.value;
+
+    if (montoAplicado === null) {
+      return;
+    }
+
+    this.applyingMontoSaving.set(true);
+    this.applyingMontoError.set(null);
+
+    this.partidaService
+      .update(partida.id, {
+        montoAplicado: Number(montoAplicado),
+        estado: 'APLICADO'
+      })
+      .subscribe({
+        next: (updatedPartida) => {
+          this.updatePartidaInCollection(updatedPartida);
+          this.viewingPartida.set(updatedPartida);
+          this.resetApplyState();
+        },
+        error: () => {
+          this.applyingMontoError.set('No se pudo aplicar el monto reservado.');
+          this.applyingMontoSaving.set(false);
+        }
+      });
   }
 
   hasControlError(controlName: keyof typeof this.form.controls): boolean {
@@ -395,6 +476,7 @@ export class PartidasPresupuestariasComponent implements OnInit {
     this.form.reset();
     this.form.controls.periodoId.enable({ emitEvent: false });
     this.showForm.set(false);
+    this.resetApplyState();
     this.viewingPartida.set(null);
   }
 
@@ -413,9 +495,12 @@ export class PartidasPresupuestariasComponent implements OnInit {
 
         if (!selectedStillExists) {
           this.selectedPeriodoId.set(null);
+          this.persistSelectedPeriodoId(null);
           this.partidas.set([]);
           this.loading.set(false);
           this.error.set(null);
+        } else if (selectedId !== null) {
+          this.loadPartidas();
         }
 
         this.periodosDropdownLoading.set(false);
@@ -426,6 +511,52 @@ export class PartidasPresupuestariasComponent implements OnInit {
         this.periodosDropdownLoading.set(false);
       }
     });
+  }
+
+  private restoreSelectedPeriodoId(): void {
+    const storage = this.getStorage();
+    if (!storage) {
+      return;
+    }
+
+    const storedValue = storage.getItem(this.selectedPeriodoStorageKey);
+
+    if (!storedValue) {
+      return;
+    }
+
+    const parsed = Number(storedValue);
+
+    if (Number.isNaN(parsed)) {
+      return;
+    }
+
+    this.selectedPeriodoId.set(parsed);
+  }
+
+  private persistSelectedPeriodoId(value: number | null): void {
+    const storage = this.getStorage();
+    if (!storage) {
+      return;
+    }
+
+    if (value === null) {
+      storage.removeItem(this.selectedPeriodoStorageKey);
+    } else {
+      storage.setItem(this.selectedPeriodoStorageKey, String(value));
+    }
+  }
+
+  private getStorage(): Storage | null {
+    if (typeof window === 'undefined') {
+      return null;
+    }
+
+    try {
+      return window.localStorage;
+    } catch {
+      return null;
+    }
   }
 
   formatAccounting(value: number | null | undefined): string {
@@ -441,10 +572,28 @@ export class PartidasPresupuestariasComponent implements OnInit {
   }
 
   viewPartida(partida: PartidaPresupuestaria): void {
+    this.resetApplyState();
     this.viewingPartida.set(partida);
   }
 
   closeViewPartida(): void {
+    this.resetApplyState();
     this.viewingPartida.set(null);
+  }
+
+  private resetApplyState(): void {
+    this.applyingMonto.set(false);
+    this.applyingMontoSaving.set(false);
+    this.applyingMontoError.set(null);
+    this.montoAplicadoControl.reset(null, { emitEvent: false });
+    this.montoAplicadoControl.markAsPristine();
+    this.montoAplicadoControl.markAsUntouched();
+  }
+
+  private updatePartidaInCollection(updatedPartida: PartidaPresupuestaria): void {
+    this.partidas.update((current) =>
+      current.map((partida) => (partida.id === updatedPartida.id ? updatedPartida : partida))
+    );
+    this.applyingMontoSaving.set(false);
   }
 }

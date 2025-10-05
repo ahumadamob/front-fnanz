@@ -290,12 +290,74 @@
 
       <div class="form-field form-field--static">
         <span>Monto reservado</span>
-        <p class="form-field__readonly">{{ formatAccounting(partida.montoReservado) }}</p>
+        <p
+          class="form-field__readonly"
+          style="display: flex; align-items: center; justify-content: space-between; gap: 0.75rem;"
+        >
+          <span>{{ formatAccounting(partida.montoReservado) }}</span>
+          <button
+            *ngIf="partida.estado === 'RESERVADO'"
+            type="button"
+            class="primary-button"
+            style="padding: 0.35rem 0.75rem;"
+            (click)="startApplyMonto(partida)"
+            [disabled]="applyingMonto() || applyingMontoSaving()"
+          >
+            Aplicar
+          </button>
+        </p>
       </div>
 
-      <div class="form-field form-field--static">
+      <div
+        class="form-field form-field--static"
+        [class.form-field--invalid]="applyingMonto() && montoAplicadoControl.touched && montoAplicadoControl.invalid"
+      >
         <span>Monto aplicado</span>
-        <p class="form-field__readonly">{{ formatAccounting(partida.montoAplicado ?? null) }}</p>
+        <ng-container *ngIf="applyingMonto(); else appliedReadonly">
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <div style="flex: 1;">
+              <input
+                type="number"
+                min="0"
+                step="0.01"
+                [formControl]="montoAplicadoControl"
+                style="width: 100%;"
+              />
+            </div>
+            <div style="display: inline-flex; gap: 0.4rem;">
+              <button
+                type="button"
+                class="primary-button"
+                style="padding: 0.35rem 0.75rem;"
+                (click)="confirmApplyMonto(partida)"
+                [disabled]="applyingMontoSaving()"
+                aria-label="Aceptar"
+              >
+                <span aria-hidden="true">&#10003;</span>
+              </button>
+              <button
+                type="button"
+                class="danger-button"
+                style="padding: 0.35rem 0.75rem;"
+                (click)="cancelApplyMonto()"
+                [disabled]="applyingMontoSaving()"
+                aria-label="Cancelar"
+              >
+                <span aria-hidden="true">&#10005;</span>
+              </button>
+            </div>
+          </div>
+          <small *ngIf="montoAplicadoControl.touched && montoAplicadoControl.hasError('required')">
+            Ingresa el monto a aplicar.
+          </small>
+          <small *ngIf="montoAplicadoControl.touched && montoAplicadoControl.hasError('min')">
+            El monto aplicado no puede ser negativo.
+          </small>
+          <small *ngIf="applyingMontoError() as applyError">{{ applyError }}</small>
+        </ng-container>
+        <ng-template #appliedReadonly>
+          <p class="form-field__readonly">{{ formatAccounting(partida.montoAplicado ?? null) }}</p>
+        </ng-template>
       </div>
 
       <div class="form-field form-field--static">
