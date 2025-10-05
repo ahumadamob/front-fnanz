@@ -26,7 +26,7 @@ export interface PeriodoFinancieroDropdown {
   nombre: string;
 }
 
-export interface GastoReservadoCategoriaResumen {
+export interface PartidaPresupuestariaCategoriaResumen {
   categoriaId: number;
   categoriaNombre: string;
   tipo: 'INGRESO' | 'EGRESO';
@@ -35,15 +35,15 @@ export interface GastoReservadoCategoriaResumen {
   montoAplicado: number;
 }
 
-export interface GastoReservadoTotales {
+export interface PartidaPresupuestariaTotales {
   montoReservado: number;
   montoAplicado: number;
 }
 
-export interface PeriodoFinancieroReservasResumen {
-  ingresos: GastoReservadoCategoriaResumen[];
-  totalIngresos: GastoReservadoTotales;
-  egresos: GastoReservadoCategoriaResumen[];
-  totalEgresos: GastoReservadoTotales;
-  totalGeneral: GastoReservadoTotales;
+export interface PeriodoFinancieroPartidasResumen {
+  ingresos: PartidaPresupuestariaCategoriaResumen[];
+  totalIngresos: PartidaPresupuestariaTotales;
+  egresos: PartidaPresupuestariaCategoriaResumen[];
+  totalEgresos: PartidaPresupuestariaTotales;
+  totalGeneral: PartidaPresupuestariaTotales;
 }

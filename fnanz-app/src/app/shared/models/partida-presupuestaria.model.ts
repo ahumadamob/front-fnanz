@@ -1,4 +1,4 @@
-export interface GastoReservado {
+export interface PartidaPresupuestaria {
   id: number;
   tipo: 'INGRESO' | 'EGRESO';
   categoriaId: number;
@@ -16,15 +16,15 @@ export interface GastoReservado {
   actualizadoEn: string;
 }
 
-export type GastoReservadoCreate = {
-  tipo: GastoReservado['tipo'];
+export type PartidaPresupuestariaCreate = {
+  tipo: PartidaPresupuestaria['tipo'];
   categoriaId: number;
   concepto: string;
   periodoId: number;
-  estado: GastoReservado['estado'];
+  estado: PartidaPresupuestaria['estado'];
   montoReservado: number;
   montoAplicado?: number | null;
   nota?: string;
 };
 
-export type GastoReservadoUpdate = Partial<GastoReservadoCreate>;
+export type PartidaPresupuestariaUpdate = Partial<PartidaPresupuestariaCreate>;

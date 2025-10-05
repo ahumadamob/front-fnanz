@@ -1,7 +1,7 @@
 <section class="card resumen-panel">
   <header class="resumen-panel__header">
     <div>
-      <h2>Resumen de reservas por categoría</h2>
+      <h2>Resumen de partidas presupuestarias por categoría</h2>
       <p class="resumen-panel__subtitle">
         Periodo:
         <span *ngIf="periodoNombre(); else periodoFallback">{{ periodoNombre() }}</span>
@@ -30,7 +30,7 @@
           </header>
 
           <p *ngIf="resumenData.ingresos.length === 0" class="resumen-card__empty">
-            No hay ingresos reservados para este periodo.
+            No hay partidas de ingreso para este periodo.
           </p>
 
           <table *ngIf="resumenData.ingresos.length > 0" class="resumen-table">
@@ -70,7 +70,7 @@
           </header>
 
           <p *ngIf="resumenData.egresos.length === 0" class="resumen-card__empty">
-            No hay egresos reservados para este periodo.
+            No hay partidas de egreso para este periodo.
           </p>
 
           <table *ngIf="resumenData.egresos.length > 0" class="resumen-table">
@@ -119,6 +119,6 @@
   </ng-container>
 
   <ng-template #emptyState>
-    <p class="resumen-panel__empty">No hay información de reservas para este periodo.</p>
+    <p class="resumen-panel__empty">No hay información de partidas presupuestarias para este periodo.</p>
   </ng-template>
 </section>

@@ -3,8 +3,8 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import {
-  GastoReservadoCategoriaResumen,
-  PeriodoFinancieroReservasResumen
+  PartidaPresupuestariaCategoriaResumen,
+  PeriodoFinancieroPartidasResumen
 } from '../../../shared/models/periodo-financiero.model';
 import { PeriodoFinancieroService } from '../../../core/services/periodo-financiero.service';
 
@@ -22,7 +22,7 @@ export class ReservasResumenComponent implements OnInit {
 
   readonly loading = signal(false);
   readonly error = signal<string | null>(null);
-  readonly resumen = signal<PeriodoFinancieroReservasResumen | null>(null);
+  readonly resumen = signal<PeriodoFinancieroPartidasResumen | null>(null);
   readonly periodoNombre = signal<string | null>(null);
   readonly periodoId = signal<number | null>(null);
 
@@ -45,7 +45,10 @@ export class ReservasResumenComponent implements OnInit {
     });
   }
 
-  trackByCategoriaId = (_: number, categoria: GastoReservadoCategoriaResumen): number =>
+  trackByCategoriaId = (
+    _: number,
+    categoria: PartidaPresupuestariaCategoriaResumen
+  ): number =>
     categoria.categoriaId;
 
   private resolvePeriodoNombre(): void {
@@ -70,13 +73,13 @@ export class ReservasResumenComponent implements OnInit {
     this.error.set(null);
     this.resumen.set(null);
 
-    this.periodoService.getReservasResumen(id).subscribe({
+    this.periodoService.getPartidasResumen(id).subscribe({
       next: (data) => {
         this.resumen.set(data);
         this.loading.set(false);
       },
       error: () => {
-        this.error.set('No se pudo cargar el resumen de reservas.');
+        this.error.set('No se pudo cargar el resumen de partidas presupuestarias.');
         this.loading.set(false);
       }
     });
