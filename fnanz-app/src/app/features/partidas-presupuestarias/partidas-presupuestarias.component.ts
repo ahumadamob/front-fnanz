@@ -33,6 +33,8 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
   styleUrls: ['./partidas-presupuestarias.component.scss']
 })
 export class PartidasPresupuestariasComponent implements OnInit {
+  private readonly selectedPeriodoStorageKey =
+    'partidasPresupuestarias.selectedPeriodoId';
   private readonly partidaService = inject(PartidaPresupuestariaService);
   private readonly categoriaService = inject(CategoriaFinancieraService);
   private readonly periodoService = inject(PeriodoFinancieroService);
@@ -91,6 +93,7 @@ export class PartidasPresupuestariasComponent implements OnInit {
   });
 
   ngOnInit(): void {
+    this.restoreSelectedPeriodoId();
     this.loadCategorias();
     this.loadPeriodos();
     this.loadPeriodosDropdown();
@@ -169,6 +172,7 @@ export class PartidasPresupuestariasComponent implements OnInit {
     }
 
     this.selectedPeriodoId.set(selectedPeriodoId);
+    this.persistSelectedPeriodoId(selectedPeriodoId);
     this.viewingPartida.set(null);
 
     if (this.showForm()) {
@@ -194,6 +198,7 @@ export class PartidasPresupuestariasComponent implements OnInit {
   onIncludePeriodosCerradosChange(checked: boolean): void {
     this.includePeriodosCerrados.set(checked);
     this.selectedPeriodoId.set(null);
+    this.persistSelectedPeriodoId(null);
     this.partidas.set([]);
     this.error.set(null);
     this.viewingPartida.set(null);
@@ -413,9 +418,12 @@ export class PartidasPresupuestariasComponent implements OnInit {
 
         if (!selectedStillExists) {
           this.selectedPeriodoId.set(null);
+          this.persistSelectedPeriodoId(null);
           this.partidas.set([]);
           this.loading.set(false);
           this.error.set(null);
+        } else if (selectedId !== null) {
+          this.loadPartidas();
         }
 
         this.periodosDropdownLoading.set(false);
@@ -426,6 +434,52 @@ export class PartidasPresupuestariasComponent implements OnInit {
         this.periodosDropdownLoading.set(false);
       }
     });
+  }
+
+  private restoreSelectedPeriodoId(): void {
+    const storage = this.getStorage();
+    if (!storage) {
+      return;
+    }
+
+    const storedValue = storage.getItem(this.selectedPeriodoStorageKey);
+
+    if (!storedValue) {
+      return;
+    }
+
+    const parsed = Number(storedValue);
+
+    if (Number.isNaN(parsed)) {
+      return;
+    }
+
+    this.selectedPeriodoId.set(parsed);
+  }
+
+  private persistSelectedPeriodoId(value: number | null): void {
+    const storage = this.getStorage();
+    if (!storage) {
+      return;
+    }
+
+    if (value === null) {
+      storage.removeItem(this.selectedPeriodoStorageKey);
+    } else {
+      storage.setItem(this.selectedPeriodoStorageKey, String(value));
+    }
+  }
+
+  private getStorage(): Storage | null {
+    if (typeof window === 'undefined') {
+      return null;
+    }
+
+    try {
+      return window.localStorage;
+    } catch {
+      return null;
+    }
   }
 
   formatAccounting(value: number | null | undefined): string {
