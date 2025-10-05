@@ -1,0 +1,85 @@
+<div
+  *ngIf="open && gasto as gastoDetalle"
+  class="modal"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="gasto-reservado-detalle-titulo"
+  (click)="handleBackdropClick($event)"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <header class="modal-header">
+        <h5 id="gasto-reservado-detalle-titulo" class="modal-title">Detalle del gasto reservado</h5>
+        <button type="button" class="modal-close" aria-label="Cerrar" (click)="onClose()">
+          &times;
+        </button>
+      </header>
+      <section class="modal-body">
+        <dl class="gasto-detalle">
+          <div class="gasto-detalle__row">
+            <dt>Concepto</dt>
+            <dd>{{ gastoDetalle.concepto }}</dd>
+          </div>
+          <div class="gasto-detalle__row">
+            <dt>Tipo</dt>
+            <dd>
+              <span class="tipo-pill" [ngClass]="gastoDetalle.tipo === 'INGRESO' ? 'tipo-pill--ingreso' : 'tipo-pill--egreso'">
+                {{ gastoDetalle.tipo }}
+              </span>
+            </dd>
+          </div>
+          <div class="gasto-detalle__row">
+            <dt>Categoría</dt>
+            <dd>{{ gastoDetalle.categoriaNombre }}</dd>
+          </div>
+          <div class="gasto-detalle__row">
+            <dt>Estado</dt>
+            <dd>
+              <span class="estado" [ngClass]="'estado--' + gastoDetalle.estado.toLowerCase()">
+                {{ gastoDetalle.estado }}
+              </span>
+            </dd>
+          </div>
+          <div class="gasto-detalle__row">
+            <dt>Periodo</dt>
+            <dd>
+              {{ gastoDetalle.periodoNombre }}<br />
+              <small class="gasto-detalle__muted">
+                {{ gastoDetalle.periodoFechaInicio | date: 'longDate' }} -
+                {{ gastoDetalle.periodoFechaFin | date: 'longDate' }}
+              </small>
+            </dd>
+          </div>
+          <div class="gasto-detalle__row">
+            <dt>Monto reservado</dt>
+            <dd class="gasto-detalle__numeric">{{ getMontoReservado() }}</dd>
+          </div>
+          <div class="gasto-detalle__row">
+            <dt>Monto aplicado</dt>
+            <dd class="gasto-detalle__numeric">{{ getMontoAplicado() }}</dd>
+          </div>
+          <div class="gasto-detalle__row">
+            <dt>Nota</dt>
+            <dd>{{ gastoDetalle.nota || 'Sin nota registrada' }}</dd>
+          </div>
+          <div class="gasto-detalle__row">
+            <dt>Creado</dt>
+            <dd>
+              {{ gastoDetalle.creadoEn | date: 'medium' }}
+            </dd>
+          </div>
+          <div class="gasto-detalle__row">
+            <dt>Actualizado</dt>
+            <dd>
+              {{ gastoDetalle.actualizadoEn | date: 'medium' }}
+            </dd>
+          </div>
+        </dl>
+      </section>
+      <footer class="modal-footer">
+        <button type="button" class="primary-button" (click)="onClose()">Cerrar</button>
+      </footer>
+    </div>
+  </div>
+</div>
+<div *ngIf="open" class="modal-backdrop"></div>

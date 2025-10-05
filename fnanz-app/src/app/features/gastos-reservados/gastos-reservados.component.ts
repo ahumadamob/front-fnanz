@@ -15,6 +15,7 @@ import { CategoriaFinancieraService } from '../../core/services/categoria-financ
 import { GastoReservadoService } from '../../core/services/gasto-reservado.service';
 import { PeriodoFinancieroService } from '../../core/services/periodo-financiero.service';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
+import { GastoReservadoViewDialogComponent } from './components/gasto-reservado-view-dialog/gasto-reservado-view-dialog.component';
 
 @Component({
   selector: 'app-gastos-reservados',
@@ -23,6 +24,7 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
     ConfirmDialogComponent,
     DatePipe,
     DecimalPipe,
+    GastoReservadoViewDialogComponent,
     NgClass,
     NgFor,
     NgIf,
@@ -55,6 +57,7 @@ export class GastosReservadosComponent implements OnInit {
   readonly periodosDropdownError = signal<string | null>(null);
   readonly selectedGasto = signal<GastoReservado | null>(null);
   readonly gastoPendingDelete = signal<GastoReservado | null>(null);
+  readonly viewingGasto = signal<GastoReservado | null>(null);
   readonly showForm = signal(false);
   readonly selectedPeriodoId = signal<number | null>(null);
   readonly includePeriodosCerrados = signal(false);
@@ -167,6 +170,11 @@ export class GastosReservadosComponent implements OnInit {
     this.gastoService.listByPeriodo(periodoId).subscribe({
       next: (gastos) => {
         this.gastos.set(gastos);
+        const currentlyViewing = this.viewingGasto();
+        if (currentlyViewing) {
+          const updated = gastos.find((gasto) => gasto.id === currentlyViewing.id) ?? null;
+          this.viewingGasto.set(updated);
+        }
         this.loading.set(false);
       },
       error: () => {
@@ -185,6 +193,7 @@ export class GastosReservadosComponent implements OnInit {
     }
 
     this.selectedPeriodoId.set(selectedPeriodoId);
+    this.viewingGasto.set(null);
 
     if (this.showForm() && !this.selectedGasto()) {
       if (selectedPeriodoId === null) {
@@ -211,6 +220,7 @@ export class GastosReservadosComponent implements OnInit {
     this.selectedPeriodoId.set(null);
     this.gastos.set([]);
     this.error.set(null);
+    this.viewingGasto.set(null);
     if (this.showForm() && !this.selectedGasto()) {
       this.form.controls.periodoId.reset(null, { emitEvent: false });
     }
@@ -226,6 +236,7 @@ export class GastosReservadosComponent implements OnInit {
     }
 
     this.selectedGasto.set(null);
+    this.viewingGasto.set(null);
     this.form.reset({
       tipo: 'EGRESO',
       categoriaId: null,
@@ -242,6 +253,7 @@ export class GastosReservadosComponent implements OnInit {
 
   startEdit(gasto: GastoReservado): void {
     this.form.controls.periodoId.enable({ emitEvent: false });
+    this.viewingGasto.set(null);
     this.selectedGasto.set(gasto);
     this.form.reset({
       tipo: gasto.tipo,
@@ -257,6 +269,7 @@ export class GastosReservadosComponent implements OnInit {
   }
 
   promptCancelForm(): void {
+    this.viewingGasto.set(null);
     if (this.saving()) {
       return;
     }
@@ -328,6 +341,7 @@ export class GastosReservadosComponent implements OnInit {
   }
 
   promptDelete(gasto: GastoReservado): void {
+    this.viewingGasto.set(null);
     this.gastoPendingDelete.set(gasto);
   }
 
@@ -429,6 +443,7 @@ export class GastosReservadosComponent implements OnInit {
     this.form.controls.periodoId.enable({ emitEvent: false });
     this.showForm.set(false);
     this.selectedGasto.set(null);
+    this.viewingGasto.set(null);
   }
 
   private loadPeriodosDropdown(): void {
@@ -473,5 +488,13 @@ export class GastosReservadosComponent implements OnInit {
       this.decimalPipe.transform(absoluteValue, '1.0-0') ?? absoluteValue.toString();
 
     return value < 0 ? `(${formattedAbsolute})` : formattedAbsolute;
+  }
+
+  viewGasto(gasto: GastoReservado): void {
+    this.viewingGasto.set(gasto);
+  }
+
+  closeViewGasto(): void {
+    this.viewingGasto.set(null);
   }
 }

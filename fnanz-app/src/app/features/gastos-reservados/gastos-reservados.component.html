@@ -228,6 +228,27 @@
             <button
               type="button"
               class="ghost-button icon-button"
+              (click)="viewGasto(gasto)"
+              [disabled]="loading() || saving()"
+              [attr.aria-label]="'Ver gasto reservado: ' + gasto.concepto"
+              [attr.title]="'Ver gasto reservado'"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+            </button>
+            <button
+              type="button"
+              class="ghost-button icon-button"
               (click)="startEdit(gasto)"
               [disabled]="loading() || saving()"
               [attr.aria-label]="'Editar gasto reservado: ' + gasto.concepto"
@@ -298,4 +319,10 @@
     (cancel)="closeCancelDialog()"
     (confirm)="confirmCancelForm()"
   ></app-confirm-dialog>
+
+  <app-gasto-reservado-view-dialog
+    [open]="viewingGasto() !== null"
+    [gasto]="viewingGasto()"
+    (close)="closeViewGasto()"
+  ></app-gasto-reservado-view-dialog>
 </section>
