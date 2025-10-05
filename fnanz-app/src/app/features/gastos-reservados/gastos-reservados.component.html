@@ -168,7 +168,9 @@
       </label>
 
       <div class="form-actions">
-        <button type="button" class="ghost-button" (click)="cancelForm()">Cancelar</button>
+        <button type="button" class="ghost-button" (click)="promptCancelForm()" [disabled]="saving()">
+          Cancelar
+        </button>
         <button type="submit" class="primary-button" [disabled]="saving()">
           {{ saving() ? 'Guardando...' : 'Guardar' }}
         </button>
@@ -176,7 +178,10 @@
     </form>
   </section>
 
-  <div class="gasto-grid" *ngIf="!loading() && gastos().length > 0; else emptyState">
+  <div
+    class="gasto-grid"
+    *ngIf="!showForm() && !loading() && gastos().length > 0; else emptyState"
+  >
     <table class="data-table">
       <thead>
         <tr>
@@ -206,8 +211,10 @@
             <span [ngClass]="'estado estado--' + gasto.estado.toLowerCase()">{{ gasto.estado }}</span>
           </td>
           <td>{{ gasto.periodoNombre }}</td>
-          <td>{{ gasto.montoReservado | currency: 'USD':'symbol-narrow':'1.0-0' }}</td>
-          <td>{{ gasto.montoAplicado != null ? (gasto.montoAplicado | currency: 'USD':'symbol-narrow':'1.0-0') : '—' }}</td>
+          <td class="data-table__numeric">{{ gasto.montoReservado | number: '1.2-2' }}</td>
+          <td class="data-table__numeric">
+            {{ gasto.montoAplicado != null ? (gasto.montoAplicado | number: '1.2-2') : '—' }}
+          </td>
           <td class="data-table__actions">
             <button
               type="button"
@@ -261,7 +268,7 @@
   </div>
 
   <ng-template #emptyState>
-    <p class="gasto-panel__empty" *ngIf="!loading()">
+    <p class="gasto-panel__empty" *ngIf="!showForm() && !loading()">
       {{
         selectedPeriodoId() === null
           ? 'Selecciona un periodo financiero para ver los gastos reservados.'
@@ -281,5 +288,15 @@
     [confirmDestructive]="true"
     (cancel)="closeDeleteDialog()"
     (confirm)="confirmDeleteGasto()"
+  ></app-confirm-dialog>
+
+  <app-confirm-dialog
+    [open]="cancelDialogOpen()"
+    [title]="cancelDialogTitle()"
+    [message]="cancelDialogMessage()"
+    confirmLabel="Sí, cancelar"
+    cancelLabel="Seguir editando"
+    (cancel)="closeCancelDialog()"
+    (confirm)="confirmCancelForm()"
   ></app-confirm-dialog>
 </section>

@@ -228,6 +228,11 @@
   white-space: nowrap;
 }
 
+.data-table__numeric {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
 .gasto-name {
   font-weight: 600;
 }
@@ -290,6 +295,10 @@
   .data-table td {
     border: none;
     padding: 0;
+  }
+
+  .data-table__numeric {
+    text-align: right;
   }
 
   .data-table__actions {

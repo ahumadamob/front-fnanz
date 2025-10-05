@@ -56,6 +56,7 @@ export class GastosReservadosComponent implements OnInit {
   readonly showForm = signal(false);
   readonly selectedPeriodoId = signal<number | null>(null);
   readonly includePeriodosCerrados = signal(false);
+  readonly cancelDialogOpen = signal(false);
   readonly tipoOptions: GastoReservado['tipo'][] = ['INGRESO', 'EGRESO'];
   readonly estadoOptions: GastoReservado['estado'][] = [
     'RESERVADO',
@@ -90,6 +91,16 @@ export class GastosReservadosComponent implements OnInit {
     this.selectedGasto()
       ? `Editar gasto reservado: ${this.selectedGasto()!.concepto}`
       : 'Nuevo gasto reservado'
+  );
+
+  readonly cancelDialogTitle = computed(() =>
+    this.selectedGasto() ? 'Cancelar edición' : 'Cancelar creación'
+  );
+
+  readonly cancelDialogMessage = computed(() =>
+    this.selectedGasto()
+      ? '¿Deseas cancelar la edición del gasto reservado? Los cambios no guardados se perderán.'
+      : '¿Deseas cancelar la creación del gasto reservado? Los cambios no guardados se perderán.'
   );
 
   readonly deleteMessage = computed(() => {
@@ -243,11 +254,21 @@ export class GastosReservadosComponent implements OnInit {
     this.showForm.set(true);
   }
 
-  cancelForm(): void {
-    this.form.reset();
-    this.form.controls.periodoId.enable({ emitEvent: false });
-    this.showForm.set(false);
-    this.selectedGasto.set(null);
+  promptCancelForm(): void {
+    if (this.saving()) {
+      return;
+    }
+
+    this.cancelDialogOpen.set(true);
+  }
+
+  closeCancelDialog(): void {
+    this.cancelDialogOpen.set(false);
+  }
+
+  confirmCancelForm(): void {
+    this.resetFormState();
+    this.cancelDialogOpen.set(false);
   }
 
   submitForm(): void {
@@ -399,6 +420,13 @@ export class GastosReservadosComponent implements OnInit {
     });
 
     return applied;
+  }
+
+  private resetFormState(): void {
+    this.form.reset();
+    this.form.controls.periodoId.enable({ emitEvent: false });
+    this.showForm.set(false);
+    this.selectedGasto.set(null);
   }
 
   private loadPeriodosDropdown(): void {
