@@ -1,4 +1,4 @@
-import { CurrencyPipe, DatePipe, NgClass, NgFor, NgIf } from '@angular/common';
+import { CurrencyPipe, DatePipe, DecimalPipe, NgClass, NgFor, NgIf } from '@angular/common';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
@@ -23,6 +23,7 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
     ConfirmDialogComponent,
     CurrencyPipe,
     DatePipe,
+    DecimalPipe,
     NgClass,
     NgFor,
     NgIf,
