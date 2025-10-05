@@ -233,6 +233,13 @@
   font-variant-numeric: tabular-nums;
 }
 
+.data-table__empty {
+  color: #6b7280;
+  font-style: italic;
+  padding: 2rem 1rem;
+  text-align: center;
+}
+
 .gasto-name {
   font-weight: 600;
 }
