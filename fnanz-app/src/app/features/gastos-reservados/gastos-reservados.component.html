@@ -91,43 +91,6 @@
         <small *ngIf="getServerError('concepto') as serverError">{{ serverError }}</small>
       </label>
 
-      <ng-container *ngIf="selectedGasto()">
-        <label class="form-field" [class.form-field--invalid]="hasControlError('periodoId')">
-          <span>Periodo *</span>
-          <select formControlName="periodoId" [disabled]="periodosLoading() || periodos().length === 0">
-            <option [ngValue]="null" disabled>Seleccione un periodo</option>
-            <option *ngFor="let periodo of periodos()" [ngValue]="periodo.id">
-              {{ periodo.nombre }} ({{ periodo.fechaInicio | date: 'longDate' }} -
-              {{ periodo.fechaFin | date: 'longDate' }})
-            </option>
-          </select>
-          <small *ngIf="form.controls.periodoId.touched && form.controls.periodoId.hasError('required')">
-            El periodo es obligatorio.
-          </small>
-          <small *ngIf="getServerError('periodoId') as serverError">{{ serverError }}</small>
-          <small *ngIf="!periodosLoading() && periodos().length === 0">
-            Debes crear al menos un periodo financiero para asignarlo a la partida presupuestaria.
-          </small>
-        </label>
-
-        <label class="form-field" [class.form-field--invalid]="hasControlError('estado')">
-          <span>Estado *</span>
-          <select formControlName="estado">
-            <option *ngFor="let estado of estadoOptions" [value]="estado">{{ estado }}</option>
-          </select>
-          <small *ngIf="getServerError('estado') as serverError">{{ serverError }}</small>
-        </label>
-
-        <label class="form-field" [class.form-field--invalid]="hasControlError('montoAplicado')">
-          <span>Monto aplicado</span>
-          <input type="number" formControlName="montoAplicado" step="0.01" min="0" />
-          <small *ngIf="form.controls.montoAplicado.touched && form.controls.montoAplicado.hasError('min')">
-            El monto aplicado no puede ser negativo.
-          </small>
-          <small *ngIf="getServerError('montoAplicado') as serverError">{{ serverError }}</small>
-        </label>
-      </ng-container>
-
       <label class="form-field" [class.form-field--invalid]="hasControlError('montoReservado')">
         <span>Monto reservado *</span>
         <input
@@ -233,27 +196,6 @@
             </button>
             <button
               type="button"
-              class="ghost-button icon-button"
-              (click)="startEdit(gasto)"
-              [disabled]="loading() || saving()"
-              [attr.aria-label]="'Editar partida presupuestaria: ' + gasto.concepto"
-              [attr.title]="'Editar partida presupuestaria'"
-            >
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <path d="M12 20h9" />
-                <path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
-              </svg>
-            </button>
-            <button
-              type="button"
               class="danger-button icon-button"
               (click)="promptDelete(gasto)"
               [disabled]="loading() || saving()"
@@ -300,7 +242,7 @@
     [title]="cancelDialogTitle()"
     [message]="cancelDialogMessage()"
     confirmLabel="Sí, cancelar"
-    cancelLabel="Seguir editando"
+    cancelLabel="Seguir creando"
     (cancel)="closeCancelDialog()"
     (confirm)="confirmCancelForm()"
   ></app-confirm-dialog>

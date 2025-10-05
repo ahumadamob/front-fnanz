@@ -53,7 +53,6 @@ export class GastosReservadosComponent implements OnInit {
   readonly categoriasError = signal<string | null>(null);
   readonly periodosError = signal<string | null>(null);
   readonly periodosDropdownError = signal<string | null>(null);
-  readonly selectedGasto = signal<GastoReservado | null>(null);
   readonly gastoPendingDelete = signal<GastoReservado | null>(null);
   readonly viewingGasto = signal<GastoReservado | null>(null);
   readonly showForm = signal(false);
@@ -61,11 +60,6 @@ export class GastosReservadosComponent implements OnInit {
   readonly includePeriodosCerrados = signal(false);
   readonly cancelDialogOpen = signal(false);
   readonly tipoOptions: GastoReservado['tipo'][] = ['INGRESO', 'EGRESO'];
-  readonly estadoOptions: GastoReservado['estado'][] = [
-    'RESERVADO',
-    'APLICADO',
-    'CANCELADO'
-  ];
   readonly form = this.formBuilder.nonNullable.group({
     tipo: ['EGRESO' as GastoReservado['tipo'], Validators.required],
     categoriaId: this.formBuilder.control<number | null>(null, Validators.required),
@@ -80,20 +74,13 @@ export class GastosReservadosComponent implements OnInit {
     nota: ['', Validators.maxLength(500)]
   });
 
-  readonly formTitle = computed(() =>
-    this.selectedGasto()
-      ? `Editar partida presupuestaria: ${this.selectedGasto()!.concepto}`
-      : 'Nueva partida presupuestaria'
-  );
+  readonly formTitle = computed(() => 'Nueva partida presupuestaria');
 
-  readonly cancelDialogTitle = computed(() =>
-    this.selectedGasto() ? 'Cancelar edición' : 'Cancelar creación'
-  );
+  readonly cancelDialogTitle = computed(() => 'Cancelar creación');
 
-  readonly cancelDialogMessage = computed(() =>
-    this.selectedGasto()
-      ? '¿Deseas cancelar la edición de la partida presupuestaria? Los cambios no guardados se perderán.'
-      : '¿Deseas cancelar la creación de la partida presupuestaria? Los cambios no guardados se perderán.'
+  readonly cancelDialogMessage = computed(
+    () =>
+      '¿Deseas cancelar la creación de la partida presupuestaria? Los cambios no guardados se perderán.'
   );
 
   readonly deleteMessage = computed(() => {
@@ -183,7 +170,7 @@ export class GastosReservadosComponent implements OnInit {
     this.selectedPeriodoId.set(selectedPeriodoId);
     this.viewingGasto.set(null);
 
-    if (this.showForm() && !this.selectedGasto()) {
+    if (this.showForm()) {
       if (selectedPeriodoId === null) {
         this.form.controls.periodoId.reset(null, { emitEvent: false });
       } else {
@@ -209,7 +196,7 @@ export class GastosReservadosComponent implements OnInit {
     this.gastos.set([]);
     this.error.set(null);
     this.viewingGasto.set(null);
-    if (this.showForm() && !this.selectedGasto()) {
+    if (this.showForm()) {
       this.form.controls.periodoId.reset(null, { emitEvent: false });
     }
     this.loadPeriodosDropdown();
@@ -223,7 +210,6 @@ export class GastosReservadosComponent implements OnInit {
       return;
     }
 
-    this.selectedGasto.set(null);
     this.viewingGasto.set(null);
     this.form.reset({
       tipo: 'EGRESO',
@@ -236,23 +222,6 @@ export class GastosReservadosComponent implements OnInit {
       nota: ''
     });
     this.form.controls.periodoId.disable({ emitEvent: false });
-    this.showForm.set(true);
-  }
-
-  startEdit(gasto: GastoReservado): void {
-    this.form.controls.periodoId.enable({ emitEvent: false });
-    this.viewingGasto.set(null);
-    this.selectedGasto.set(gasto);
-    this.form.reset({
-      tipo: gasto.tipo,
-      categoriaId: gasto.categoriaId,
-      concepto: gasto.concepto,
-      periodoId: gasto.periodoId,
-      estado: gasto.estado,
-      montoReservado: gasto.montoReservado,
-      montoAplicado: gasto.montoAplicado ?? null,
-      nota: gasto.nota ?? ''
-    });
     this.showForm.set(true);
   }
 
@@ -284,37 +253,26 @@ export class GastosReservadosComponent implements OnInit {
 
     this.error.set(null);
     const formValue = this.form.getRawValue();
-    const estado = this.selectedGasto() ? formValue.estado : 'RESERVADO';
 
     const payload: GastoReservadoCreate = {
       tipo: formValue.tipo,
       categoriaId: Number(formValue.categoriaId),
       concepto: formValue.concepto.trim(),
       periodoId: Number(formValue.periodoId),
-      estado,
+      estado: 'RESERVADO',
       montoReservado: Number(formValue.montoReservado)
     };
-
-    if (formValue.montoAplicado !== null && formValue.montoAplicado !== undefined) {
-      payload.montoAplicado = Number(formValue.montoAplicado);
-    }
 
     if (formValue.nota?.trim()) {
       payload.nota = formValue.nota.trim();
     }
 
-    const selected = this.selectedGasto();
     this.saving.set(true);
 
-    const request = selected
-      ? this.gastoService.update(selected.id, { ...payload })
-      : this.gastoService.create(payload);
-
-    request.subscribe({
+    this.gastoService.create(payload).subscribe({
       next: () => {
         this.saving.set(false);
         this.showForm.set(false);
-        this.selectedGasto.set(null);
         this.form.controls.periodoId.enable({ emitEvent: false });
         this.loadGastos();
       },
@@ -432,7 +390,6 @@ export class GastosReservadosComponent implements OnInit {
     this.form.reset();
     this.form.controls.periodoId.enable({ emitEvent: false });
     this.showForm.set(false);
-    this.selectedGasto.set(null);
     this.viewingGasto.set(null);
   }
 
