@@ -22,7 +22,7 @@
   <p *ngIf="periodosError()" class="gasto-panel__warning">{{ periodosError() }}</p>
   <p *ngIf="periodosDropdownError()" class="gasto-panel__warning">{{ periodosDropdownError() }}</p>
 
-  <section class="gasto-panel__filters">
+  <section class="gasto-panel__filters" *ngIf="!showForm()">
     <label class="filter-field">
       <span>Periodo financiero</span>
       <select
@@ -211,10 +211,8 @@
             <span [ngClass]="'estado estado--' + gasto.estado.toLowerCase()">{{ gasto.estado }}</span>
           </td>
           <td>{{ gasto.periodoNombre }}</td>
-          <td class="data-table__numeric">{{ gasto.montoReservado | number: '1.2-2' }}</td>
-          <td class="data-table__numeric">
-            {{ gasto.montoAplicado != null ? (gasto.montoAplicado | number: '1.2-2') : '—' }}
-          </td>
+          <td class="data-table__numeric">{{ formatAccounting(gasto.montoReservado) }}</td>
+          <td class="data-table__numeric">{{ formatAccounting(gasto.montoAplicado) }}</td>
           <td class="data-table__actions">
             <button
               type="button"

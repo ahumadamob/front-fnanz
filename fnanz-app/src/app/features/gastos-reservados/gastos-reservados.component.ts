@@ -1,4 +1,4 @@
-import { CurrencyPipe, DatePipe, DecimalPipe, NgClass, NgFor, NgIf } from '@angular/common';
+import { DatePipe, DecimalPipe, NgClass, NgFor, NgIf } from '@angular/common';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
@@ -21,7 +21,6 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
   standalone: true,
   imports: [
     ConfirmDialogComponent,
-    CurrencyPipe,
     DatePipe,
     DecimalPipe,
     NgClass,
@@ -37,6 +36,7 @@ export class GastosReservadosComponent implements OnInit {
   private readonly categoriaService = inject(CategoriaFinancieraService);
   private readonly periodoService = inject(PeriodoFinancieroService);
   private readonly formBuilder = inject(FormBuilder);
+  private readonly decimalPipe = inject(DecimalPipe);
 
   readonly gastos = signal<GastoReservado[]>([]);
   readonly categorias = signal<CategoriaFinanciera[]>([]);
@@ -460,5 +460,17 @@ export class GastosReservadosComponent implements OnInit {
         this.periodosDropdownLoading.set(false);
       }
     });
+  }
+
+  formatAccounting(value: number | null | undefined): string {
+    if (value === null || value === undefined) {
+      return '—';
+    }
+
+    const absoluteValue = Math.abs(value);
+    const formattedAbsolute =
+      this.decimalPipe.transform(absoluteValue, '1.0-0') ?? absoluteValue.toString();
+
+    return value < 0 ? `(${formattedAbsolute})` : formattedAbsolute;
   }
 }
