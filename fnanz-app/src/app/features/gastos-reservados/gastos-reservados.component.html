@@ -22,7 +22,7 @@
   <p *ngIf="periodosError()" class="gasto-panel__warning">{{ periodosError() }}</p>
   <p *ngIf="periodosDropdownError()" class="gasto-panel__warning">{{ periodosDropdownError() }}</p>
 
-  <section class="gasto-panel__filters" [class.is-hidden]="showForm()">
+  <section *ngIf="!showForm()" class="gasto-panel__filters">
     <label class="filter-field">
       <span>Periodo financiero</span>
       <select
@@ -47,7 +47,7 @@
     </label>
   </section>
 
-  <p *ngIf="periodosDropdownLoading()" class="gasto-panel__loading" [class.is-hidden]="showForm()">
+  <p *ngIf="periodosDropdownLoading() && !showForm()" class="gasto-panel__loading">
     Cargando periodos financieros...
   </p>
 
@@ -178,7 +178,7 @@
     </form>
   </section>
 
-  <div class="gasto-grid" [class.is-hidden]="showForm()">
+  <div *ngIf="!showForm()" class="gasto-grid">
     <table class="data-table">
       <thead>
         <tr>
