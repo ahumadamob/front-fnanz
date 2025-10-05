@@ -15,7 +15,6 @@ import { CategoriaFinancieraService } from '../../core/services/categoria-financ
 import { GastoReservadoService } from '../../core/services/gasto-reservado.service';
 import { PeriodoFinancieroService } from '../../core/services/periodo-financiero.service';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
-import { GastoReservadoViewDialogComponent } from './components/gasto-reservado-view-dialog/gasto-reservado-view-dialog.component';
 
 @Component({
   selector: 'app-gastos-reservados',
@@ -24,7 +23,6 @@ import { GastoReservadoViewDialogComponent } from './components/gasto-reservado-
     ConfirmDialogComponent,
     DatePipe,
     DecimalPipe,
-    GastoReservadoViewDialogComponent,
     NgClass,
     NgFor,
     NgIf,

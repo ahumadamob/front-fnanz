@@ -320,9 +320,80 @@
     (confirm)="confirmCancelForm()"
   ></app-confirm-dialog>
 
-  <app-gasto-reservado-view-dialog
-    [open]="viewingGasto() !== null"
-    [gasto]="viewingGasto()"
-    (close)="closeViewGasto()"
-  ></app-gasto-reservado-view-dialog>
+  <section *ngIf="!showForm() && viewingGasto() as gasto" class="gasto-form">
+    <header class="gasto-panel__header">
+      <div>
+        <h3>{{ gasto.concepto }}</h3>
+        <p class="gasto-panel__subtitle">Actualizado {{ gasto.actualizadoEn | date: 'short' }}</p>
+      </div>
+      <button type="button" class="ghost-button" (click)="closeViewGasto()">
+        Cerrar
+      </button>
+    </header>
+
+    <div class="gasto-form__grid">
+      <div class="form-field form-field--static">
+        <span>Tipo</span>
+        <p class="form-field__readonly">
+          <span
+            class="tipo-pill"
+            [ngClass]="gasto.tipo === 'INGRESO' ? 'tipo-pill--ingreso' : 'tipo-pill--egreso'"
+          >
+            {{ gasto.tipo }}
+          </span>
+        </p>
+      </div>
+
+      <div class="form-field form-field--static">
+        <span>Categoría</span>
+        <p class="form-field__readonly">{{ gasto.categoriaNombre }}</p>
+      </div>
+
+      <div class="form-field form-field--static">
+        <span>Estado</span>
+        <p class="form-field__readonly">
+          <span class="estado" [ngClass]="'estado--' + gasto.estado.toLowerCase()">{{ gasto.estado }}</span>
+        </p>
+      </div>
+
+      <div class="form-field form-field--static form-field--full">
+        <span>Periodo</span>
+        <p class="form-field__readonly">
+          {{ gasto.periodoNombre }}
+          ({{ gasto.periodoFechaInicio | date: 'longDate' }} - {{ gasto.periodoFechaFin | date: 'longDate' }})
+        </p>
+      </div>
+
+      <div class="form-field form-field--static">
+        <span>Monto reservado</span>
+        <p class="form-field__readonly">{{ formatAccounting(gasto.montoReservado) }}</p>
+      </div>
+
+      <div class="form-field form-field--static">
+        <span>Monto aplicado</span>
+        <p class="form-field__readonly">{{ formatAccounting(gasto.montoAplicado ?? null) }}</p>
+      </div>
+
+      <div class="form-field form-field--static">
+        <span>Creado</span>
+        <p class="form-field__readonly">
+          {{ gasto.creadoEn | date: 'longDate' }}
+          a las {{ gasto.creadoEn | date: 'shortTime' }}
+        </p>
+      </div>
+
+      <div class="form-field form-field--static">
+        <span>Actualizado</span>
+        <p class="form-field__readonly">
+          {{ gasto.actualizadoEn | date: 'longDate' }}
+          a las {{ gasto.actualizadoEn | date: 'shortTime' }}
+        </p>
+      </div>
+
+      <div class="form-field form-field--static form-field--full">
+        <span>Nota</span>
+        <p class="form-field__readonly">{{ gasto.nota?.trim() || 'Sin nota registrada.' }}</p>
+      </div>
+    </div>
+  </section>
 </section>
