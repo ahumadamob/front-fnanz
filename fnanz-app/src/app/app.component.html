@@ -1,71 +1,104 @@
-<div class="app-layout">
-  <aside class="app-sidebar">
-    <div class="app-sidebar__brand">
-      <div class="app-logo" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M4 19v-6m5 6V5m5 14v-9m5 9V9" />
-          <path d="M3 21h18" />
+<div
+  class="ga-layout"
+  [class.ga-layout--collapsed]="isSidebarCollapsed()"
+  [class.ga-layout--sidebar-open]="!isSidebarCollapsed()"
+>
+  <aside class="ga-sidebar" [class.ga-sidebar--collapsed]="isSidebarCollapsed()">
+    <div class="ga-sidebar__brand">
+      <div class="ga-sidebar__logo" aria-hidden="true">
+        <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6">
+          <path d="M4 26V15" />
+          <path d="M12 26V6" />
+          <path d="M20 26V11" />
+          <path d="M28 26V9" />
+          <path d="M3 28h26" />
         </svg>
       </div>
-      <div class="app-brand-text">
-        <h1>Fnanz Plataforma</h1>
-        <span class="env-pill">{{ envLabel() }}</span>
+      <div class="ga-sidebar__title">
+        <h1>Fnanz</h1>
+        <span class="ga-pill ga-pill--ghost">{{ envLabel() }}</span>
       </div>
     </div>
-    <nav class="app-sidebar__nav">
-      <a routerLink="/" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }">
-        <span class="nav-icon" aria-hidden="true">
+
+    <nav class="ga-sidebar__nav" aria-label="Principal">
+      <a
+        *ngFor="let item of navItems"
+        [routerLink]="item.route"
+        routerLinkActive="is-active"
+        [routerLinkActiveOptions]="item.exact ? { exact: true } : { exact: false }"
+        (click)="closeSidebarOnMobile()"
+      >
+        <span class="ga-sidebar__icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M3 11l9-8 9 8" />
-            <path d="M5 13v7h4v-4h6v4h4v-7" />
+            <ng-container *ngFor="let path of item.iconPaths">
+              <path [attr.d]="path" />
+            </ng-container>
           </svg>
         </span>
-        <span>Dashboard</span>
-      </a>
-      <a routerLink="/categorias" routerLinkActive="active-link">
-        <span class="nav-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z" />
-          </svg>
-        </span>
-        <span>Categorias</span>
-      </a>
-      <a routerLink="/periodos" routerLinkActive="active-link">
-        <span class="nav-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-            <line x1="16" y1="2" x2="16" y2="6" />
-            <line x1="8" y1="2" x2="8" y2="6" />
-            <line x1="3" y1="10" x2="21" y2="10" />
-          </svg>
-        </span>
-        <span>Periodos</span>
-      </a>
-      <a routerLink="/presupuestos" routerLinkActive="active-link">
-        <span class="nav-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 1v4" />
-            <path d="M7 5h10l4 6-4 6H7L3 11z" />
-            <path d="M12 9v4" />
-            <path d="M10 13h4" />
-          </svg>
-        </span>
-        <span>Presupuestos</span>
+        <span class="ga-sidebar__label">{{ item.label }}</span>
       </a>
     </nav>
+
+    <div class="ga-sidebar__footer">
+      <h2>¿Necesitas ayuda?</h2>
+      <p>Revisa la documentación o ponte en contacto con el equipo Fnanz.</p>
+      <a class="ga-sidebar__cta" href="mailto:soporte@fnanz.local">Contactar soporte</a>
+    </div>
   </aside>
-  <div class="app-main">
-    <header class="app-header">
-      <h2>Panel administrativo</h2>
+
+  <div class="ga-main">
+    <header class="ga-topbar">
+      <button type="button" class="ga-topbar__toggle" (click)="toggleSidebar()">
+        <span class="sr-only">Alternar menú lateral</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="3" y1="6" x2="21" y2="6" />
+          <line x1="3" y1="12" x2="21" y2="12" />
+          <line x1="3" y1="18" x2="21" y2="18" />
+        </svg>
+      </button>
+
+      <div class="ga-topbar__search">
+        <label class="sr-only" for="search">Buscar en Fnanz</label>
+        <input id="search" type="search" placeholder="Buscar en la plataforma" />
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="7" />
+          <line x1="16.65" y1="16.65" x2="21" y2="21" />
+        </svg>
+      </div>
+
+      <div class="ga-topbar__actions">
+        <button type="button" class="ga-icon-button" aria-label="Notificaciones">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 16v-5a6 6 0 0 0-12 0v5" />
+            <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+            <path d="M4 16h16" />
+          </svg>
+        </button>
+        <span class="ga-topbar__env">{{ envLabel() }}</span>
+        <div class="ga-topbar__avatar" aria-hidden="true">FN</div>
+      </div>
     </header>
-    <main class="app-main__content">
+
+    <div class="ga-page-header">
+      <div>
+        <p class="ga-page-header__eyebrow">Panel administrativo</p>
+        <h2>Resumen general de la plataforma</h2>
+      </div>
+      <div class="ga-page-header__meta">
+        <span class="ga-pill">{{ currentYear }}</span>
+        <span>Fnanz Platform Control Center</span>
+      </div>
+    </div>
+
+    <main class="ga-main__content">
       <div class="container container--fluid">
         <router-outlet />
       </div>
     </main>
-    <footer class="app-footer">
+
+    <footer class="ga-footer">
       <div class="container">
-        <p>&copy; {{ currentYear }} Fnanz. Construido con Angular standalone y servicios.</p>
+        <p>&copy; {{ currentYear }} Fnanz. Construido con Angular standalone y tema Gradient Able.</p>
       </div>
     </footer>
   </div>

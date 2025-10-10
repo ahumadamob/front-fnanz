@@ -25,11 +25,11 @@ export class DashboardComponent {
   resolveStatusClass(status: SystemHealth['status']): string {
     switch (status) {
       case 'UP':
-        return 'status-pill status-pill--up';
+        return 'ga-status ga-status--up';
       case 'DEGRADED':
-        return 'status-pill status-pill--degraded';
+        return 'ga-status ga-status--degraded';
       default:
-        return 'status-pill status-pill--down';
+        return 'ga-status ga-status--down';
     }
   }
 }
