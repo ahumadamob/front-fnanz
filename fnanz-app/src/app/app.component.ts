@@ -1,25 +1,40 @@
 import { CommonModule } from '@angular/common';
 import {
   Component,
-  CUSTOM_ELEMENTS_SCHEMA,
   DestroyRef,
-  HostListener,
   effect,
   inject,
   signal
 } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import {
+  ButtonModule,
+  DropdownModule,
+  HeaderModule,
+  NavbarModule,
+  SidebarModule,
+  TooltipModule
+} from '@coreui/angular';
 
 import { EnvironmentService } from './core/services/environment.service';
-import { TooltipDirective } from './shared/directives/tooltip.directive';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive, RouterOutlet, TooltipDirective],
+  imports: [
+    CommonModule,
+    RouterLink,
+    RouterLinkActive,
+    RouterOutlet,
+    SidebarModule,
+    HeaderModule,
+    NavbarModule,
+    ButtonModule,
+    DropdownModule,
+    TooltipModule
+  ],
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA]
+  styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
   private readonly environmentService = inject(EnvironmentService);
@@ -55,7 +70,7 @@ export class AppComponent {
 
   toggleSidebarVisible(): void {
     this.sidebarVisible.update((value) => !value);
-    this.closeQuickActions();
+    this.quickActionsOpen.set(false);
   }
 
   toggleSidebarCollapsed(): void {
@@ -66,33 +81,15 @@ export class AppComponent {
     if (this.isMobile()) {
       this.sidebarVisible.set(false);
     }
-    this.closeQuickActions();
   }
 
-  toggleQuickActions(event: MouseEvent): void {
-    event.stopPropagation();
-    this.quickActionsOpen.update((value) => !value);
-  }
-
-  closeQuickActions(): void {
-    if (this.quickActionsOpen()) {
-      this.quickActionsOpen.set(false);
-    }
+  onDropdownVisibleChange(visible: boolean): void {
+    this.quickActionsOpen.set(visible);
   }
 
   onQuickActionSelected(): void {
-    this.closeQuickActions();
     this.closeSidebarOnMobile();
-  }
-
-  @HostListener('document:click')
-  onDocumentClick(): void {
-    this.closeQuickActions();
-  }
-
-  @HostListener('document:keydown.escape')
-  onEscape(): void {
-    this.closeQuickActions();
+    this.quickActionsOpen.set(false);
   }
 
   private evaluateViewport(): void {

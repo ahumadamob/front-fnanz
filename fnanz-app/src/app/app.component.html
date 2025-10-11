@@ -112,21 +112,22 @@
             <c-dropdown
               class="app-dropdown"
               [class.app-dropdown--open]="quickActionsOpen()"
-              (click)="$event.stopPropagation()"
+              [visible]="quickActionsOpen()"
+              (visibleChange)="onDropdownVisibleChange($event)"
             >
               <button
                 cButton
                 color="primary"
                 class="app-dropdown__toggle"
                 type="button"
-                (click)="toggleQuickActions($event)"
+                cDropdownToggle
                 [attr.aria-expanded]="quickActionsOpen()"
                 aria-haspopup="true"
               >
                 Acciones rápidas
                 <span class="dropdown-indicator" aria-hidden="true">▾</span>
               </button>
-              <ul class="app-dropdown__menu" *ngIf="quickActionsOpen()">
+              <ul class="app-dropdown__menu dropdown-menu" cDropdownMenu>
                 <li>
                   <a cDropdownItem routerLink="/" (click)="onQuickActionSelected()">Ir al dashboard</a>
                 </li>
