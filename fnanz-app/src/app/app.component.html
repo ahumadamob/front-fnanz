@@ -1,72 +1,135 @@
-<div class="app-layout">
-  <aside class="app-sidebar">
-    <div class="app-sidebar__brand">
-      <div class="app-logo" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M4 19v-6m5 6V5m5 14v-9m5 9V9" />
-          <path d="M3 21h18" />
-        </svg>
+<c-app>
+  <c-sidebar class="sidebar sidebar-fixed bg-primary text-white" colorScheme="dark">
+    <c-sidebar-brand routerLink="/" class="text-decoration-none text-white fw-semibold">
+      <span class="sidebar-brand-full">Fnanz Plataforma</span>
+      <span class="badge rounded-pill bg-light text-primary ms-2">{{ envLabel() }}</span>
+    </c-sidebar-brand>
+    <c-sidebar-nav>
+      <c-nav class="flex-column">
+        <c-nav-item *ngFor="let item of navigation">
+          <a
+            cNavLink
+            [routerLink]="item.route"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="item.activeOptions ?? { }"
+            class="d-flex align-items-center gap-2 text-white text-decoration-none"
+          >
+            <span class="d-inline-flex align-items-center justify-content-center rounded bg-white bg-opacity-25" style="width: 2rem; height: 2rem">
+              <ng-container [ngSwitch]="item.icon">
+                <svg
+                  *ngSwitchCase="'home'"
+                  viewBox="0 0 24 24"
+                  width="18"
+                  height="18"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M3 11l9-8 9 8" />
+                  <path d="M5 13v7h4v-4h6v4h4v-7" />
+                </svg>
+                <svg
+                  *ngSwitchCase="'categories'"
+                  viewBox="0 0 24 24"
+                  width="18"
+                  height="18"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M4 4h6v6H4z" />
+                  <path d="M14 4h6v6h-6z" />
+                  <path d="M4 14h6v6H4z" />
+                  <path d="M14 14h6v6h-6z" />
+                </svg>
+                <svg
+                  *ngSwitchCase="'calendar'"
+                  viewBox="0 0 24 24"
+                  width="18"
+                  height="18"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                  <line x1="16" y1="2" x2="16" y2="6" />
+                  <line x1="8" y1="2" x2="8" y2="6" />
+                  <line x1="3" y1="10" x2="21" y2="10" />
+                </svg>
+                <svg
+                  *ngSwitchDefault
+                  viewBox="0 0 24 24"
+                  width="18"
+                  height="18"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M12 1v4" />
+                  <path d="M7 5h10l4 6-4 6H7L3 11z" />
+                  <path d="M12 9v4" />
+                  <path d="M10 13h4" />
+                </svg>
+              </ng-container>
+            </span>
+            <span class="flex-fill">{{ item.label }}</span>
+          </a>
+        </c-nav-item>
+      </c-nav>
+    </c-sidebar-nav>
+  </c-sidebar>
+
+  <div class="wrapper d-flex flex-column min-vh-100 bg-body-tertiary">
+    <c-header class="border-bottom px-3 py-2 bg-white shadow-sm">
+      <div class="container-fluid d-flex align-items-center gap-3">
+        <button
+          type="button"
+          class="btn btn-link px-0 text-body"
+          (click)="toggleSidebar()"
+          cTooltip="Mostrar / ocultar navegación"
+        >
+          <span class="visually-hidden">Alternar navegación</span>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="3" y1="6" x2="21" y2="6" />
+            <line x1="3" y1="12" x2="21" y2="12" />
+            <line x1="3" y1="18" x2="21" y2="18" />
+          </svg>
+        </button>
+
+        <div class="ms-auto d-flex align-items-center gap-3">
+          <c-header-nav>
+            <c-dropdown alignment="end">
+              <button cButton color="ghost" cDropdownToggle class="d-flex align-items-center gap-2">
+                <span class="fw-semibold">Administrador</span>
+              </button>
+              <ul cDropdownMenu class="dropdown-menu-end">
+                <li><button cDropdownItem type="button">Perfil</button></li>
+                <li><button cDropdownItem type="button">Cerrar sesión</button></li>
+              </ul>
+            </c-dropdown>
+          </c-header-nav>
+        </div>
       </div>
-      <div class="app-brand-text">
-        <h1>Fnanz Plataforma</h1>
-        <span class="env-pill">{{ envLabel() }}</span>
+    </c-header>
+
+    <div class="body flex-grow-1 px-3">
+      <div class="container-fluid py-4">
+        <router-outlet></router-outlet>
       </div>
     </div>
-    <nav class="app-sidebar__nav">
-      <a routerLink="/" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }">
-        <span class="nav-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M3 11l9-8 9 8" />
-            <path d="M5 13v7h4v-4h6v4h4v-7" />
-          </svg>
-        </span>
-        <span>Dashboard</span>
-      </a>
-      <a routerLink="/categorias" routerLinkActive="active-link">
-        <span class="nav-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z" />
-          </svg>
-        </span>
-        <span>Categorias</span>
-      </a>
-      <a routerLink="/periodos" routerLinkActive="active-link">
-        <span class="nav-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-            <line x1="16" y1="2" x2="16" y2="6" />
-            <line x1="8" y1="2" x2="8" y2="6" />
-            <line x1="3" y1="10" x2="21" y2="10" />
-          </svg>
-        </span>
-        <span>Periodos</span>
-      </a>
-      <a routerLink="/presupuestos" routerLinkActive="active-link">
-        <span class="nav-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 1v4" />
-            <path d="M7 5h10l4 6-4 6H7L3 11z" />
-            <path d="M12 9v4" />
-            <path d="M10 13h4" />
-          </svg>
-        </span>
-        <span>Presupuestos</span>
-      </a>
-    </nav>
-  </aside>
-  <div class="app-main">
-    <header class="app-header">
-      <h2>Panel administrativo</h2>
-    </header>
-    <main class="app-main__content">
-      <div class="container container--fluid">
-        <router-outlet />
+
+    <c-footer class="mt-auto bg-white border-top">
+      <div class="container-fluid text-center text-body-secondary py-3">
+        &copy; {{ currentYear }} Fnanz. Construido con Angular standalone y servicios.
       </div>
-    </main>
-    <footer class="app-footer">
-      <div class="container">
-        <p>&copy; {{ currentYear }} Fnanz. Construido con Angular standalone y servicios.</p>
-      </div>
-    </footer>
+    </c-footer>
   </div>
-</div>
+</c-app>
