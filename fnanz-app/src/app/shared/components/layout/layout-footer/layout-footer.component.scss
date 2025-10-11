@@ -1,0 +1,24 @@
+.shell-footer {
+  background: transparent;
+  color: rgba(31, 41, 55, 0.8);
+  font-size: 0.875rem;
+  padding: 1.5rem 2rem 2rem;
+}
+
+.shell-footer__content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@media (max-width: 600px) {
+  .shell-footer {
+    padding: 1.25rem 1.5rem 1.75rem;
+  }
+
+  .shell-footer__content {
+    flex-direction: column;
+    gap: 0.5rem;
+    text-align: center;
+  }
+}

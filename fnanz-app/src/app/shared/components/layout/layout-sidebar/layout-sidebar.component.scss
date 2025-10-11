@@ -1,0 +1,126 @@
+.sidebar {
+  background: linear-gradient(180deg, var(--fnanz-primary), var(--fnanz-secondary));
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 2rem 1.5rem;
+}
+
+.sidebar__brand {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.sidebar__brand-mark {
+  align-items: center;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 1rem;
+  display: inline-flex;
+  height: 3rem;
+  justify-content: center;
+  width: 3rem;
+}
+
+.sidebar__brand-mark svg {
+  height: 1.75rem;
+  width: 1.75rem;
+}
+
+.sidebar__brand-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0 0 0.35rem;
+}
+
+.sidebar__env {
+  background-color: rgba(255, 255, 255, 0.15);
+  border-radius: 9999px;
+  display: inline-flex;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.85rem;
+}
+
+.sidebar__nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.sidebar__nav a {
+  align-items: center;
+  border-radius: 0.75rem;
+  color: inherit;
+  display: flex;
+  font-weight: 500;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.sidebar__nav a:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  transform: translateX(4px);
+}
+
+.sidebar__nav .is-active {
+  background-color: #fff;
+  color: var(--fnanz-primary);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+.sidebar__icon {
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 0.75rem;
+  display: inline-flex;
+  height: 2.25rem;
+  justify-content: center;
+  width: 2.25rem;
+}
+
+.sidebar__icon svg {
+  height: 1.25rem;
+  width: 1.25rem;
+}
+
+.sidebar__label {
+  letter-spacing: 0.01em;
+}
+
+@media (max-width: 960px) {
+  .sidebar {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding: 1.5rem;
+  }
+
+  .sidebar__nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .sidebar__nav a {
+    flex: 1 1 140px;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 600px) {
+  .sidebar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .sidebar__nav {
+    width: 100%;
+  }
+
+  .sidebar__nav a {
+    justify-content: flex-start;
+  }
+}
