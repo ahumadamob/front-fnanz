@@ -15,6 +15,8 @@
 - Copia sólo los assets globales imprescindibles y registra cada lote en un commit pequeño.
 - Actualiza `angular.json` agregando las rutas a los CSS/JS globales necesarios.
 - Verifica con `ng serve` que no aparezcan errores por assets faltantes.
+- Mantén fuera del repositorio los binarios del tema (fuentes `.woff2` e imágenes `.png`/`.gif`). Consulta `src/assets/gradient-able/fonts/README.md`
+  y `src/assets/gradient-able/images/README.md` para saber qué archivos debes copiar manualmente durante la preparación del entorno.
 
 ## 3. Fase 2 – Estilos globales y variables
 - Extrae los estilos base en parciales SCSS y cárgalos desde `src/styles.scss`.

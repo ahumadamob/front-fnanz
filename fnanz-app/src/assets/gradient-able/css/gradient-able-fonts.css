@@ -1,0 +1,73 @@
+/*
+ * Gradient Able theme font declarations.
+ * These rules load the locally bundled Mada and Poppins font files
+ * so we avoid relying on Google Fonts at runtime.
+ *
+ * NOTE: The `.woff2` files themselves are not tracked in Git. See
+ * `../fonts/README.md` for the filenames that must be copied into place.
+ */
+
+/* Poppins (body font) */
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../fonts/poppins/pxiByp8kv8JHgFVrLGT9Z1xlFQ.woff2') format('woff2'),
+       url('../fonts/poppins/pxiByp8kv8JHgFVrLEj6Z1xlFQ.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('../fonts/poppins/pxiByp8kv8JHgFVrLGT9Z1JlFc-K.woff2') format('woff2'),
+       url('../fonts/poppins/pxiByp8kv8JHgFVrLEj6Z1JlFc-K.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('../fonts/poppins/pxiByp8kv8JHgFVrLGT9Z11lFc-K.woff2') format('woff2'),
+       url('../fonts/poppins/pxiByp8kv8JHgFVrLEj6Z11lFc-K.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Poppins';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../fonts/poppins/pxiEyp8kv8JHgFVrJJfecg.woff2') format('woff2'),
+       url('../fonts/poppins/pxiEyp8kv8JHgFVrJJnecmNE.woff2') format('woff2');
+}
+
+/* Mada (headings and UI accents) */
+@font-face {
+  font-family: 'Mada';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../fonts/mada/7Au_p_0qnzeSdcHlOCD2z3wM.woff2') format('woff2'),
+       url('../fonts/mada/7Au_p_0qnzeSde3iOCD2z3wM.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Mada';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('../fonts/mada/7Au_p_0qnzeSdcHlOCX2zw.woff2') format('woff2'),
+       url('../fonts/mada/7Au_p_0qnzeSde3iOCX2zw.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Mada';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('../fonts/mada/7Auwp_0qnzeSfTLGLQ.woff2') format('woff2'),
+       url('../fonts/mada/7Auwp_0qnzeSfTfGLRrX.woff2') format('woff2');
+}
