@@ -1,9 +1,11 @@
 <div class="app-layout">
   <c-sidebar
     class="app-sidebar"
-    [narrow]="sidebarCollapsed()"
-    [visible]="sidebarVisible()"
-    (visibleChange)="onSidebarVisibleChange($event)"
+    [class.sidebar-narrow]="sidebarCollapsed()"
+    [class.sidebar-hidden]="!sidebarVisible() && !isMobile()"
+    [class.sidebar-mobile-visible]="isMobile() && sidebarVisible()"
+    role="navigation"
+    aria-label="Navegación principal"
   >
     <div class="app-sidebar__brand">
       <div class="app-logo" aria-hidden="true">
@@ -59,6 +61,14 @@
       </a>
     </nav>
   </c-sidebar>
+
+  <div
+    class="app-sidebar__backdrop"
+    *ngIf="isMobile() && sidebarVisible()"
+    (click)="closeSidebarOnMobile()"
+    aria-hidden="true"
+  ></div>
+
   <div class="app-main">
     <c-header class="app-header">
       <div class="app-header__content container container--fluid">
@@ -70,7 +80,7 @@
               color="light"
               class="icon-button header-icon-button"
               (click)="toggleSidebarVisible()"
-              cTooltip="{{ sidebarVisible() ? 'Ocultar menú' : 'Mostrar menú' }}"
+              [cTooltip]="sidebarVisible() ? 'Ocultar menú' : 'Mostrar menú'"
               aria-label="Alternar visibilidad del menú lateral"
             >
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -85,7 +95,7 @@
               color="light"
               class="icon-button header-icon-button"
               (click)="toggleSidebarCollapsed()"
-              cTooltip="{{ sidebarCollapsed() ? 'Expandir menú' : 'Colapsar menú' }}"
+              [cTooltip]="sidebarCollapsed() ? 'Expandir menú' : 'Colapsar menú'"
               aria-label="Alternar colapso del menú lateral"
             >
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -99,13 +109,36 @@
         <c-navbar class="app-navbar">
           <div class="app-header__actions">
             <span class="env-pill" aria-live="polite">{{ envLabel() }}</span>
-            <c-dropdown alignment="end">
-              <button cButton color="primary" cDropdownToggle>Acciones rápidas</button>
-              <ul cDropdownMenu>
-                <li><a cDropdownItem routerLink="/" (click)="closeSidebarOnMobile()">Ir al dashboard</a></li>
-                <li><a cDropdownItem routerLink="/categorias" (click)="closeSidebarOnMobile()">Gestionar categorías</a></li>
-                <li><a cDropdownItem routerLink="/periodos" (click)="closeSidebarOnMobile()">Ver períodos</a></li>
-                <li><a cDropdownItem routerLink="/presupuestos" (click)="closeSidebarOnMobile()">Ir a presupuestos</a></li>
+            <c-dropdown
+              class="app-dropdown"
+              [class.app-dropdown--open]="quickActionsOpen()"
+              (click)="$event.stopPropagation()"
+            >
+              <button
+                cButton
+                color="primary"
+                class="app-dropdown__toggle"
+                type="button"
+                (click)="toggleQuickActions($event)"
+                [attr.aria-expanded]="quickActionsOpen()"
+                aria-haspopup="true"
+              >
+                Acciones rápidas
+                <span class="dropdown-indicator" aria-hidden="true">▾</span>
+              </button>
+              <ul class="app-dropdown__menu" *ngIf="quickActionsOpen()">
+                <li>
+                  <a cDropdownItem routerLink="/" (click)="onQuickActionSelected()">Ir al dashboard</a>
+                </li>
+                <li>
+                  <a cDropdownItem routerLink="/categorias" (click)="onQuickActionSelected()">Gestionar categorías</a>
+                </li>
+                <li>
+                  <a cDropdownItem routerLink="/periodos" (click)="onQuickActionSelected()">Ver períodos</a>
+                </li>
+                <li>
+                  <a cDropdownItem routerLink="/presupuestos" (click)="onQuickActionSelected()">Ir a presupuestos</a>
+                </li>
               </ul>
             </c-dropdown>
           </div>

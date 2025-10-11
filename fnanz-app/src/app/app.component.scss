@@ -8,6 +8,7 @@ c-sidebar.app-sidebar {
   border-right: none;
   box-shadow: none;
   position: relative;
+  transition: transform 0.3s ease;
 }
 
 .app-sidebar {
@@ -18,6 +19,14 @@ c-sidebar.app-sidebar {
   gap: 2rem;
   padding: 2rem 1.5rem;
   width: 280px;
+}
+
+.app-sidebar.sidebar-hidden {
+  transform: translateX(-280px);
+}
+
+.app-sidebar.sidebar-mobile-visible {
+  transform: translateX(0);
 }
 
 .app-sidebar.sidebar-narrow {
@@ -77,6 +86,13 @@ c-sidebar.app-sidebar {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+}
+
+.app-sidebar__backdrop {
+  background: rgba(15, 23, 42, 0.4);
+  inset: 0;
+  position: fixed;
+  z-index: 998;
 }
 
 .app-sidebar__nav a {
@@ -161,6 +177,50 @@ c-sidebar.app-sidebar {
   gap: 1rem;
 }
 
+.app-dropdown {
+  position: relative;
+}
+
+.app-dropdown__toggle {
+  min-height: 2.75rem;
+}
+
+.dropdown-indicator {
+  font-size: 0.9rem;
+  margin-left: 0.35rem;
+}
+
+.app-dropdown__menu {
+  background: #fff;
+  border-radius: 0.75rem;
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.18);
+  list-style: none;
+  margin: 0;
+  min-width: 220px;
+  padding: 0.5rem 0;
+  position: absolute;
+  right: 0;
+  top: calc(100% + 0.5rem);
+  z-index: 1050;
+}
+
+.app-dropdown__menu li {
+  width: 100%;
+}
+
+.app-dropdown__menu a[cDropdownItem] {
+  color: var(--fnanz-primary);
+  display: block;
+  font-weight: 500;
+  padding: 0.6rem 1rem;
+  position: relative;
+  transition: background-color 0.2s ease;
+}
+
+.app-dropdown__menu a[cDropdownItem]:hover {
+  background-color: rgba(24, 144, 255, 0.1);
+}
+
 .sidebar-toggle-group {
   display: flex;
   gap: 0.5rem;
@@ -189,7 +249,6 @@ c-sidebar.app-sidebar {
   padding: 2rem 0;
 }
 
-
 .app-footer {
   background: transparent;
   color: rgba(31, 41, 55, 0.8);
@@ -203,13 +262,19 @@ c-sidebar.app-sidebar {
   }
 
   c-sidebar.app-sidebar {
-    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 260px;
+    z-index: 999;
+    transform: translateX(-260px);
   }
 
   .app-sidebar {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
     width: 100%;
     gap: 1.5rem;
   }
@@ -219,14 +284,12 @@ c-sidebar.app-sidebar {
   }
 
   .app-sidebar__nav {
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 0.75rem;
+    width: 100%;
   }
 
   .app-sidebar__nav a {
-    flex: 1 1 140px;
-    justify-content: center;
+    justify-content: flex-start;
+    width: 100%;
   }
 
   .app-main {
@@ -237,10 +300,6 @@ c-sidebar.app-sidebar {
     align-items: flex-start;
     flex-direction: column;
     gap: 1rem;
-  }
-
-  .app-header__start {
-    width: 100%;
   }
 
   .app-header__actions {
@@ -255,16 +314,15 @@ c-sidebar.app-sidebar {
     align-items: flex-start;
   }
 
-  .app-sidebar__nav {
-    width: 100%;
-  }
-
-  .app-sidebar__nav a {
-    justify-content: flex-start;
-  }
-
   .app-header__actions {
     flex-direction: column;
     align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .app-dropdown__menu {
+    left: 0;
+    min-width: 200px;
+    right: auto;
   }
 }
