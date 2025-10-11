@@ -1,5 +1,10 @@
 <div class="app-layout">
-  <aside class="app-sidebar">
+  <c-sidebar
+    class="app-sidebar"
+    [narrow]="sidebarCollapsed()"
+    [visible]="sidebarVisible()"
+    (visibleChange)="onSidebarVisibleChange($event)"
+  >
     <div class="app-sidebar__brand">
       <div class="app-logo" aria-hidden="true">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -12,7 +17,7 @@
         <span class="env-pill">{{ envLabel() }}</span>
       </div>
     </div>
-    <nav class="app-sidebar__nav">
+    <nav class="app-sidebar__nav" (click)="closeSidebarOnMobile()">
       <a routerLink="/" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }">
         <span class="nav-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -53,11 +58,60 @@
         <span>Presupuestos</span>
       </a>
     </nav>
-  </aside>
+  </c-sidebar>
   <div class="app-main">
-    <header class="app-header">
-      <h2>Panel administrativo</h2>
-    </header>
+    <c-header class="app-header">
+      <div class="app-header__content container container--fluid">
+        <div class="app-header__start">
+          <div class="sidebar-toggle-group">
+            <button
+              type="button"
+              cButton
+              color="light"
+              class="icon-button header-icon-button"
+              (click)="toggleSidebarVisible()"
+              cTooltip="{{ sidebarVisible() ? 'Ocultar menú' : 'Mostrar menú' }}"
+              aria-label="Alternar visibilidad del menú lateral"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="4" y1="6" x2="20" y2="6" />
+                <line x1="4" y1="12" x2="20" y2="12" />
+                <line x1="4" y1="18" x2="14" y2="18" />
+              </svg>
+            </button>
+            <button
+              type="button"
+              cButton
+              color="light"
+              class="icon-button header-icon-button"
+              (click)="toggleSidebarCollapsed()"
+              cTooltip="{{ sidebarCollapsed() ? 'Expandir menú' : 'Colapsar menú' }}"
+              aria-label="Alternar colapso del menú lateral"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="15 18 9 12 15 6" />
+                <polyline points="9 18 15 12 9 6" />
+              </svg>
+            </button>
+          </div>
+          <h2>Panel administrativo</h2>
+        </div>
+        <c-navbar class="app-navbar">
+          <div class="app-header__actions">
+            <span class="env-pill" aria-live="polite">{{ envLabel() }}</span>
+            <c-dropdown alignment="end">
+              <button cButton color="primary" cDropdownToggle>Acciones rápidas</button>
+              <ul cDropdownMenu>
+                <li><a cDropdownItem routerLink="/" (click)="closeSidebarOnMobile()">Ir al dashboard</a></li>
+                <li><a cDropdownItem routerLink="/categorias" (click)="closeSidebarOnMobile()">Gestionar categorías</a></li>
+                <li><a cDropdownItem routerLink="/periodos" (click)="closeSidebarOnMobile()">Ver períodos</a></li>
+                <li><a cDropdownItem routerLink="/presupuestos" (click)="closeSidebarOnMobile()">Ir a presupuestos</a></li>
+              </ul>
+            </c-dropdown>
+          </div>
+        </c-navbar>
+      </div>
+    </c-header>
     <main class="app-main__content">
       <div class="container container--fluid">
         <router-outlet />
