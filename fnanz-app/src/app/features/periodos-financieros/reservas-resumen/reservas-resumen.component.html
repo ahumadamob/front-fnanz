@@ -1,8 +1,9 @@
-<section class="card resumen-panel">
-  <header class="resumen-panel__header">
-    <div>
-      <h2>Resumen de partidas presupuestarias por categoría</h2>
-      <p class="resumen-panel__subtitle">
+<section class="summary">
+  <header class="summary__hero">
+    <div class="summary__hero-text">
+      <p class="summary__eyebrow">Análisis</p>
+      <h2 class="summary__title">Resumen de partidas por categoría</h2>
+      <p class="summary__description">
         Periodo:
         <span *ngIf="periodoNombre(); else periodoFallback">{{ periodoNombre() }}</span>
         <ng-template #periodoFallback>
@@ -10,115 +11,117 @@
         </ng-template>
       </p>
     </div>
-    <button type="button" class="ghost-button" routerLink="/periodos">
+    <button type="button" class="ghost-button summary__hero-action" routerLink="/periodos">
       Volver a periodos
     </button>
   </header>
 
-  <p *ngIf="loading()" class="resumen-panel__loading">Cargando resumen...</p>
-  <p *ngIf="error() && !loading()" class="resumen-panel__error">{{ error() }}</p>
+  <div class="card summary__panel">
+    <p *ngIf="loading()" class="summary__banner summary__banner--info">Cargando resumen...</p>
+    <p *ngIf="error() && !loading()" class="summary__banner summary__banner--error">{{ error() }}</p>
 
-  <ng-container *ngIf="!loading() && resumen() as resumenData">
-    <ng-container *ngIf="resumenData; else emptyState">
-      <section class="resumen-grid">
-        <article class="resumen-card">
-          <header>
-            <h3>Ingresos</h3>
-            <span class="monto-pill monto-pill--ingreso">
-              Reservado: {{ resumenData.totalIngresos.montoReservado | currency: 'USD':'symbol-narrow':'1.0-0' }}
-            </span>
-          </header>
+    <ng-container *ngIf="!loading() && resumen() as resumenData">
+      <ng-container *ngIf="resumenData; else emptyState">
+        <section class="summary__grid">
+          <article class="summary-card">
+            <header class="summary-card__header">
+              <h3>Ingresos</h3>
+              <span class="summary-pill summary-pill--ingreso">
+                Reservado: {{ resumenData.totalIngresos.montoReservado | currency: 'USD':'symbol-narrow':'1.0-0' }}
+              </span>
+            </header>
 
-          <p *ngIf="resumenData.ingresos.length === 0" class="resumen-card__empty">
-            No hay partidas de ingreso para este periodo.
-          </p>
+            <p *ngIf="resumenData.ingresos.length === 0" class="summary-card__empty">
+              No hay partidas de ingreso para este periodo.
+            </p>
 
-          <table *ngIf="resumenData.ingresos.length > 0" class="resumen-table">
-            <thead>
-              <tr>
-                <th>Categoría</th>
-                <th>Reservado</th>
-                <th>Aplicado</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let ingreso of resumenData.ingresos; trackBy: trackByCategoriaId">
-                <td>
-                  <div class="categoria-nombre">{{ ingreso.categoriaNombre }}</div>
-                  <small *ngIf="ingreso.orden != null" class="categoria-orden">Orden {{ ingreso.orden }}</small>
-                </td>
-                <td>{{ ingreso.montoReservado | currency: 'USD':'symbol-narrow':'1.0-0' }}</td>
-                <td>{{ ingreso.montoAplicado | currency: 'USD':'symbol-narrow':'1.0-0' }}</td>
-              </tr>
-            </tbody>
-            <tfoot>
-              <tr>
-                <td>Total</td>
-                <td>{{ resumenData.totalIngresos.montoReservado | currency: 'USD':'symbol-narrow':'1.0-0' }}</td>
-                <td>{{ resumenData.totalIngresos.montoAplicado | currency: 'USD':'symbol-narrow':'1.0-0' }}</td>
-              </tr>
-            </tfoot>
-          </table>
-        </article>
+            <table *ngIf="resumenData.ingresos.length > 0" class="summary-table">
+              <thead>
+                <tr>
+                  <th>Categoría</th>
+                  <th>Reservado</th>
+                  <th>Aplicado</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let ingreso of resumenData.ingresos; trackBy: trackByCategoriaId">
+                  <td>
+                    <div class="summary__category-name">{{ ingreso.categoriaNombre }}</div>
+                    <small *ngIf="ingreso.orden != null" class="summary__category-order">Orden {{ ingreso.orden }}</small>
+                  </td>
+                  <td>{{ ingreso.montoReservado | currency: 'USD':'symbol-narrow':'1.0-0' }}</td>
+                  <td>{{ ingreso.montoAplicado | currency: 'USD':'symbol-narrow':'1.0-0' }}</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td>Total</td>
+                  <td>{{ resumenData.totalIngresos.montoReservado | currency: 'USD':'symbol-narrow':'1.0-0' }}</td>
+                  <td>{{ resumenData.totalIngresos.montoAplicado | currency: 'USD':'symbol-narrow':'1.0-0' }}</td>
+                </tr>
+              </tfoot>
+            </table>
+          </article>
 
-        <article class="resumen-card">
-          <header>
-            <h3>Egresos</h3>
-            <span class="monto-pill monto-pill--egreso">
-              Reservado: {{ resumenData.totalEgresos.montoReservado | currency: 'USD':'symbol-narrow':'1.0-0' }}
-            </span>
-          </header>
+          <article class="summary-card">
+            <header class="summary-card__header">
+              <h3>Egresos</h3>
+              <span class="summary-pill summary-pill--egreso">
+                Reservado: {{ resumenData.totalEgresos.montoReservado | currency: 'USD':'symbol-narrow':'1.0-0' }}
+              </span>
+            </header>
 
-          <p *ngIf="resumenData.egresos.length === 0" class="resumen-card__empty">
-            No hay partidas de egreso para este periodo.
-          </p>
+            <p *ngIf="resumenData.egresos.length === 0" class="summary-card__empty">
+              No hay partidas de egreso para este periodo.
+            </p>
 
-          <table *ngIf="resumenData.egresos.length > 0" class="resumen-table">
-            <thead>
-              <tr>
-                <th>Categoría</th>
-                <th>Reservado</th>
-                <th>Aplicado</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let egreso of resumenData.egresos; trackBy: trackByCategoriaId">
-                <td>
-                  <div class="categoria-nombre">{{ egreso.categoriaNombre }}</div>
-                  <small *ngIf="egreso.orden != null" class="categoria-orden">Orden {{ egreso.orden }}</small>
-                </td>
-                <td>{{ egreso.montoReservado | currency: 'USD':'symbol-narrow':'1.0-0' }}</td>
-                <td>{{ egreso.montoAplicado | currency: 'USD':'symbol-narrow':'1.0-0' }}</td>
-              </tr>
-            </tbody>
-            <tfoot>
-              <tr>
-                <td>Total</td>
-                <td>{{ resumenData.totalEgresos.montoReservado | currency: 'USD':'symbol-narrow':'1.0-0' }}</td>
-                <td>{{ resumenData.totalEgresos.montoAplicado | currency: 'USD':'symbol-narrow':'1.0-0' }}</td>
-              </tr>
-            </tfoot>
-          </table>
-        </article>
-      </section>
+            <table *ngIf="resumenData.egresos.length > 0" class="summary-table">
+              <thead>
+                <tr>
+                  <th>Categoría</th>
+                  <th>Reservado</th>
+                  <th>Aplicado</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let egreso of resumenData.egresos; trackBy: trackByCategoriaId">
+                  <td>
+                    <div class="summary__category-name">{{ egreso.categoriaNombre }}</div>
+                    <small *ngIf="egreso.orden != null" class="summary__category-order">Orden {{ egreso.orden }}</small>
+                  </td>
+                  <td>{{ egreso.montoReservado | currency: 'USD':'symbol-narrow':'1.0-0' }}</td>
+                  <td>{{ egreso.montoAplicado | currency: 'USD':'symbol-narrow':'1.0-0' }}</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td>Total</td>
+                  <td>{{ resumenData.totalEgresos.montoReservado | currency: 'USD':'symbol-narrow':'1.0-0' }}</td>
+                  <td>{{ resumenData.totalEgresos.montoAplicado | currency: 'USD':'symbol-narrow':'1.0-0' }}</td>
+                </tr>
+              </tfoot>
+            </table>
+          </article>
+        </section>
 
-      <section class="resumen-totales">
-        <h3>Total general</h3>
-        <div class="totales-grid">
-          <div class="total-card">
-            <span class="total-label">Monto reservado</span>
-            <strong>{{ resumenData.totalGeneral.montoReservado | currency: 'USD':'symbol-narrow':'1.0-0' }}</strong>
+        <section class="summary__totals">
+          <h3>Total general</h3>
+          <div class="summary__totals-grid">
+            <div class="summary-total">
+              <span class="summary-total__label">Monto reservado</span>
+              <strong>{{ resumenData.totalGeneral.montoReservado | currency: 'USD':'symbol-narrow':'1.0-0' }}</strong>
+            </div>
+            <div class="summary-total">
+              <span class="summary-total__label">Monto aplicado</span>
+              <strong>{{ resumenData.totalGeneral.montoAplicado | currency: 'USD':'symbol-narrow':'1.0-0' }}</strong>
+            </div>
           </div>
-          <div class="total-card">
-            <span class="total-label">Monto aplicado</span>
-            <strong>{{ resumenData.totalGeneral.montoAplicado | currency: 'USD':'symbol-narrow':'1.0-0' }}</strong>
-          </div>
-        </div>
-      </section>
+        </section>
+      </ng-container>
     </ng-container>
-  </ng-container>
 
-  <ng-template #emptyState>
-    <p class="resumen-panel__empty">No hay información de partidas presupuestarias para este periodo.</p>
-  </ng-template>
+    <ng-template #emptyState>
+      <p class="summary__empty">No hay información de partidas presupuestarias para este periodo.</p>
+    </ng-template>
+  </div>
 </section>
