@@ -1,5 +1,5 @@
 <div class="app-layout">
-  <c-sidebar
+  <aside
     class="app-sidebar"
     [class.sidebar-narrow]="sidebarCollapsed()"
     [class.sidebar-hidden]="!sidebarVisible() && !isMobile()"
@@ -60,7 +60,7 @@
         <span>Presupuestos</span>
       </a>
     </nav>
-  </c-sidebar>
+  </aside>
 
   <div
     class="app-sidebar__backdrop"
@@ -70,17 +70,15 @@
   ></div>
 
   <div class="app-main">
-    <c-header class="app-header">
+    <header class="app-header">
       <div class="app-header__content container container--fluid">
         <div class="app-header__start">
           <div class="sidebar-toggle-group">
             <button
               type="button"
-              cButton
-              color="light"
-              class="icon-button header-icon-button"
+              class="icon-button header-icon-button app-btn app-btn--light"
               (click)="toggleSidebarVisible()"
-              [cTooltip]="sidebarVisible() ? 'Ocultar menú' : 'Mostrar menú'"
+              [fnTooltip]="sidebarVisible() ? 'Ocultar menú' : 'Mostrar menú'"
               aria-label="Alternar visibilidad del menú lateral"
             >
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -91,11 +89,9 @@
             </button>
             <button
               type="button"
-              cButton
-              color="light"
-              class="icon-button header-icon-button"
+              class="icon-button header-icon-button app-btn app-btn--light"
               (click)="toggleSidebarCollapsed()"
-              [cTooltip]="sidebarCollapsed() ? 'Expandir menú' : 'Colapsar menú'"
+              [fnTooltip]="sidebarCollapsed() ? 'Expandir menú' : 'Colapsar menú'"
               aria-label="Alternar colapso del menú lateral"
             >
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -106,46 +102,49 @@
           </div>
           <h2>Panel administrativo</h2>
         </div>
-        <c-navbar class="app-navbar">
+        <nav class="app-navbar">
           <div class="app-header__actions">
             <span class="env-pill" aria-live="polite">{{ envLabel() }}</span>
-            <c-dropdown
+            <div
               class="app-dropdown"
+              #quickActionsDropdown
               [class.app-dropdown--open]="quickActionsOpen()"
-              [visible]="quickActionsOpen()"
-              (visibleChange)="onDropdownVisibleChange($event)"
+              (keydown.escape)="closeQuickActions()"
+              (focusout)="onDropdownFocusOut($event)"
             >
               <button
-                cButton
-                color="primary"
-                class="app-dropdown__toggle"
+                class="app-dropdown__toggle app-btn app-btn--primary"
                 type="button"
-                cDropdownToggle
+                (click)="toggleQuickActions()"
                 [attr.aria-expanded]="quickActionsOpen()"
                 aria-haspopup="true"
               >
                 Acciones rápidas
                 <span class="dropdown-indicator" aria-hidden="true">▾</span>
               </button>
-              <ul class="app-dropdown__menu dropdown-menu" cDropdownMenu>
+              <ul
+                class="app-dropdown__menu"
+                *ngIf="quickActionsOpen()"
+                role="menu"
+              >
                 <li>
-                  <a cDropdownItem routerLink="/" (click)="onQuickActionSelected()">Ir al dashboard</a>
+                  <a class="app-dropdown__item" routerLink="/" role="menuitem" (click)="onQuickActionSelected()">Ir al dashboard</a>
                 </li>
                 <li>
-                  <a cDropdownItem routerLink="/categorias" (click)="onQuickActionSelected()">Gestionar categorías</a>
+                  <a class="app-dropdown__item" routerLink="/categorias" role="menuitem" (click)="onQuickActionSelected()">Gestionar categorías</a>
                 </li>
                 <li>
-                  <a cDropdownItem routerLink="/periodos" (click)="onQuickActionSelected()">Ver períodos</a>
+                  <a class="app-dropdown__item" routerLink="/periodos" role="menuitem" (click)="onQuickActionSelected()">Ver períodos</a>
                 </li>
                 <li>
-                  <a cDropdownItem routerLink="/presupuestos" (click)="onQuickActionSelected()">Ir a presupuestos</a>
+                  <a class="app-dropdown__item" routerLink="/presupuestos" role="menuitem" (click)="onQuickActionSelected()">Ir a presupuestos</a>
                 </li>
               </ul>
-            </c-dropdown>
+            </div>
           </div>
-        </c-navbar>
+        </nav>
       </div>
-    </c-header>
+    </header>
     <main class="app-main__content">
       <div class="container container--fluid">
         <router-outlet />

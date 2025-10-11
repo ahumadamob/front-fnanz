@@ -2,21 +2,16 @@ import { CommonModule } from '@angular/common';
 import {
   Component,
   DestroyRef,
+  ElementRef,
+  ViewChild,
   effect,
   inject,
   signal
 } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-import {
-  ButtonModule,
-  DropdownModule,
-  HeaderModule,
-  NavbarModule,
-  SidebarModule,
-  TooltipModule
-} from '@coreui/angular';
 
 import { EnvironmentService } from './core/services/environment.service';
+import { TooltipDirective } from './shared/directives/tooltip.directive';
 
 @Component({
   selector: 'app-root',
@@ -26,12 +21,7 @@ import { EnvironmentService } from './core/services/environment.service';
     RouterLink,
     RouterLinkActive,
     RouterOutlet,
-    SidebarModule,
-    HeaderModule,
-    NavbarModule,
-    ButtonModule,
-    DropdownModule,
-    TooltipModule
+    TooltipDirective
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
@@ -39,6 +29,7 @@ import { EnvironmentService } from './core/services/environment.service';
 export class AppComponent {
   private readonly environmentService = inject(EnvironmentService);
   private readonly destroyRef = inject(DestroyRef);
+  @ViewChild('quickActionsDropdown') quickActionsDropdown?: ElementRef<HTMLElement>;
   readonly envLabel = signal(this.environmentService.environmentLabel);
   readonly currentYear = new Date().getFullYear();
   readonly sidebarVisible = signal(true);
@@ -66,6 +57,24 @@ export class AppComponent {
         this.sidebarVisible.set(true);
       }
     });
+
+    if (typeof document !== 'undefined') {
+      const handleDocumentClick = (event: MouseEvent) => {
+        if (!this.quickActionsOpen()) {
+          return;
+        }
+
+        const dropdown = this.quickActionsDropdown?.nativeElement;
+        if (!dropdown || dropdown.contains(event.target as Node)) {
+          return;
+        }
+
+        this.quickActionsOpen.set(false);
+      };
+
+      document.addEventListener('click', handleDocumentClick);
+      this.destroyRef.onDestroy(() => document.removeEventListener('click', handleDocumentClick));
+    }
   }
 
   toggleSidebarVisible(): void {
@@ -77,19 +86,38 @@ export class AppComponent {
     this.sidebarCollapsed.update((value) => !value);
   }
 
+  toggleQuickActions(): void {
+    this.quickActionsOpen.update((value) => !value);
+  }
+
+  closeQuickActions(): void {
+    this.quickActionsOpen.set(false);
+  }
+
+  onDropdownFocusOut(event: FocusEvent): void {
+    if (!this.quickActionsOpen()) {
+      return;
+    }
+
+    const dropdown = this.quickActionsDropdown?.nativeElement;
+    const nextTarget = event.relatedTarget as Node | null;
+
+    if (!dropdown || (nextTarget && dropdown.contains(nextTarget))) {
+      return;
+    }
+
+    this.closeQuickActions();
+  }
+
   closeSidebarOnMobile(): void {
     if (this.isMobile()) {
       this.sidebarVisible.set(false);
     }
   }
 
-  onDropdownVisibleChange(visible: boolean): void {
-    this.quickActionsOpen.set(visible);
-  }
-
   onQuickActionSelected(): void {
     this.closeSidebarOnMobile();
-    this.quickActionsOpen.set(false);
+    this.closeQuickActions();
   }
 
   private evaluateViewport(): void {

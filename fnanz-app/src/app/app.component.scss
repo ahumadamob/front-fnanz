@@ -4,20 +4,17 @@
   background: linear-gradient(180deg, rgba(24, 144, 255, 0.1), rgba(0, 80, 179, 0.08));
 }
 
-c-sidebar.app-sidebar {
-  border-right: none;
-  box-shadow: none;
-  position: relative;
-  transition: transform 0.3s ease;
-}
-
 .app-sidebar {
   background: linear-gradient(180deg, var(--fnanz-primary), var(--fnanz-secondary));
+  border-right: none;
+  box-shadow: none;
   color: #fff;
   display: flex;
   flex-direction: column;
   gap: 2rem;
+  position: relative;
   padding: 2rem 1.5rem;
+  transition: transform 0.3s ease;
   width: 280px;
 }
 
@@ -208,7 +205,7 @@ c-sidebar.app-sidebar {
   width: 100%;
 }
 
-.app-dropdown__menu a[cDropdownItem] {
+.app-dropdown__item {
   color: var(--fnanz-primary);
   display: block;
   font-weight: 500;
@@ -217,7 +214,7 @@ c-sidebar.app-sidebar {
   transition: background-color 0.2s ease;
 }
 
-.app-dropdown__menu a[cDropdownItem]:hover {
+.app-dropdown__item:hover {
   background-color: rgba(24, 144, 255, 0.1);
 }
 
@@ -261,7 +258,7 @@ c-sidebar.app-sidebar {
     flex-direction: column;
   }
 
-  c-sidebar.app-sidebar {
+  .app-sidebar {
     position: fixed;
     top: 0;
     left: 0;
