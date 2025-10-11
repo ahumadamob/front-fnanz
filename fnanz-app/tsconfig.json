@@ -18,6 +18,18 @@
     "target": "es2022",
     "module": "es2022",
     "useDefineForClassFields": false,
+    "baseUrl": "./src",
+    "paths": {
+      "@app/*": [
+        "app/*"
+      ],
+      "@core/*": [
+        "app/core/*"
+      ],
+      "@shared/*": [
+        "app/shared/*"
+      ]
+    },
     "lib": [
       "es2022",
       "dom"

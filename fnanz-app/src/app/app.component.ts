@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 
-import { EnvironmentService } from './core/services/environment.service';
-import { LayoutShellComponent } from './shared/components/layout/layout-shell/layout-shell.component';
-import { NavigationLink } from './shared/models/navigation-link.model';
+import { EnvironmentService } from '@core/services/environment.service';
+import { LayoutShellComponent } from '@shared/components/layout/layout-shell/layout-shell.component';
+import type { NavigationLink } from '@shared/models/navigation-link.model';
 
 @Component({
   selector: 'app-root',
