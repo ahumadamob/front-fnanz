@@ -1,15 +1,15 @@
-<section class="budgets">
-  <header class="budgets__hero">
-    <div class="budgets__hero-text">
-      <p class="budgets__eyebrow">Asignaciones</p>
-      <h2 class="budgets__title">Presupuestos</h2>
-      <p class="budgets__description">
+<section class="feature feature--budgets">
+  <header class="feature__hero">
+    <div class="feature__intro">
+      <p class="feature__eyebrow">Asignaciones</p>
+      <h2 class="feature__title">Presupuestos</h2>
+      <p class="feature__description">
         Administra las partidas presupuestarias asignadas a los periodos financieros de tu organización.
       </p>
     </div>
     <button
       type="button"
-      class="primary-button budgets__hero-action"
+      class="btn btn--primary feature__cta"
       (click)="startCreate()"
       [disabled]="loading() || saving() || selectedPeriodoId() === null"
     >
@@ -17,15 +17,15 @@
     </button>
   </header>
 
-  <div class="card budgets__panel">
-    <p *ngIf="loading()" class="budgets__banner budgets__banner--info">Cargando información...</p>
-    <p *ngIf="error() && !loading()" class="budgets__banner budgets__banner--error">{{ error() }}</p>
-    <p *ngIf="categoriasError()" class="budgets__banner budgets__banner--warning">{{ categoriasError() }}</p>
-    <p *ngIf="periodosError()" class="budgets__banner budgets__banner--warning">{{ periodosError() }}</p>
-    <p *ngIf="periodosDropdownError()" class="budgets__banner budgets__banner--warning">{{ periodosDropdownError() }}</p>
+  <div class="card feature__panel">
+    <p *ngIf="loading()" class="feature__banner feature__banner--info">Cargando información...</p>
+    <p *ngIf="error() && !loading()" class="feature__banner feature__banner--error">{{ error() }}</p>
+    <p *ngIf="categoriasError()" class="feature__banner feature__banner--warning">{{ categoriasError() }}</p>
+    <p *ngIf="periodosError()" class="feature__banner feature__banner--warning">{{ periodosError() }}</p>
+    <p *ngIf="periodosDropdownError()" class="feature__banner feature__banner--warning">{{ periodosDropdownError() }}</p>
 
-    <section *ngIf="!showForm() && !viewingPartida()" class="budgets__filters">
-      <label class="filter-field">
+    <section *ngIf="!showForm() && !viewingPartida()" class="feature__filters">
+      <label class="form-field form-field--compact">
         <span>Periodo</span>
         <select
           [disabled]="periodosDropdownLoading() || periodosDropdown().length === 0"
@@ -39,7 +39,7 @@
         </select>
       </label>
 
-      <label class="filter-checkbox">
+      <label class="budgets__checkbox">
         <input
           type="checkbox"
           [checked]="includePeriodosCerrados()"
@@ -51,18 +51,18 @@
 
     <p
       *ngIf="periodosDropdownLoading() && !showForm() && !viewingPartida()"
-      class="budgets__banner budgets__banner--info budgets__banner--inline"
+      class="feature__banner feature__banner--info feature__banner--inline"
     >
       Cargando periodos...
     </p>
 
-    <section *ngIf="showForm()" class="budgets-form">
-      <header class="budgets-form__header">
-        <h3 class="budgets-form__title">{{ formTitle() }}</h3>
-        <p class="budgets-form__subtitle">Completa los detalles para registrar la partida presupuestaria.</p>
+    <section *ngIf="showForm()" class="form-card">
+      <header class="form-card__header">
+        <h3 class="form-card__title">{{ formTitle() }}</h3>
+        <p class="form-card__subtitle">Completa los detalles para registrar la partida presupuestaria.</p>
       </header>
 
-      <form [formGroup]="form" (ngSubmit)="submitForm()" class="budgets-form__grid">
+      <form [formGroup]="form" (ngSubmit)="submitForm()" class="form-grid">
         <label class="form-field" [class.form-field--invalid]="hasControlError('tipo')">
           <span>Tipo *</span>
           <select formControlName="tipo">
@@ -128,10 +128,10 @@
         </label>
 
         <div class="form-actions">
-          <button type="button" class="ghost-button" (click)="promptCancelForm()" [disabled]="saving()">
+          <button type="button" class="btn btn--ghost" (click)="promptCancelForm()" [disabled]="saving()">
             Cancelar
           </button>
-          <button type="submit" class="primary-button" [disabled]="saving()">
+          <button type="submit" class="btn btn--primary" [disabled]="saving()">
             {{ saving() ? 'Guardando...' : 'Guardar' }}
           </button>
         </div>
@@ -184,7 +184,7 @@
             <td class="data-table__actions">
               <button
                 type="button"
-                class="ghost-button icon-button"
+                class="btn btn--ghost icon-button"
                 (click)="viewPartida(partida)"
                 [disabled]="loading() || saving()"
                 [attr.aria-label]="'Ver partida presupuestaria: ' + partida.concepto"
@@ -205,7 +205,7 @@
               </button>
               <button
                 type="button"
-                class="danger-button icon-button"
+                class="btn btn--danger icon-button"
                 (click)="promptDelete(partida)"
                 [disabled]="loading() || saving()"
                 [attr.aria-label]="'Eliminar partida presupuestaria: ' + partida.concepto"
@@ -257,15 +257,15 @@
     (confirm)="confirmCancelForm()"
   ></app-confirm-dialog>
 
-  <section *ngIf="!showForm() && viewingPartida() as partida" class="budgets-form budgets-form--viewer">
-    <header class="budgets-form__header">
+  <section *ngIf="!showForm() && viewingPartida() as partida" class="form-card form-card--viewer">
+    <header class="form-card__header">
       <div>
-        <h3 class="budgets-form__title">{{ partida.concepto }}</h3>
-        <p class="budgets-form__subtitle">Actualizado {{ partida.actualizadoEn | date: 'short' }}</p>
+        <h3 class="form-card__title">{{ partida.concepto }}</h3>
+        <p class="form-card__subtitle">Actualizado {{ partida.actualizadoEn | date: 'short' }}</p>
       </div>
     </header>
 
-    <div class="budgets-form__grid">
+    <div class="form-grid">
       <div class="form-field form-field--static">
         <span>Tipo</span>
         <p class="form-field__readonly">
@@ -302,7 +302,7 @@
           <button
             *ngIf="partida.estado === 'RESERVADO'"
             type="button"
-            class="primary-button primary-button--compact"
+            class="btn btn--primary btn--compact"
             (click)="startApplyMonto(partida)"
             [disabled]="applyingMonto() || applyingMontoSaving()"
           >
@@ -324,7 +324,7 @@
             <div class="budgets__apply-actions">
               <button
                 type="button"
-                class="primary-button primary-button--compact"
+                class="btn btn--primary btn--compact"
                 (click)="confirmApplyMonto(partida)"
                 [disabled]="applyingMontoSaving()"
                 aria-label="Aceptar"
@@ -333,7 +333,7 @@
               </button>
               <button
                 type="button"
-                class="danger-button danger-button--compact"
+                class="btn btn--danger btn--compact"
                 (click)="cancelApplyMonto()"
                 [disabled]="applyingMontoSaving()"
                 aria-label="Cancelar"
@@ -378,7 +378,7 @@
     </div>
 
     <div class="form-actions">
-      <button type="button" class="ghost-button" (click)="closeViewPartida()">
+      <button type="button" class="btn btn--ghost" (click)="closeViewPartida()">
         Volver
       </button>
     </div>

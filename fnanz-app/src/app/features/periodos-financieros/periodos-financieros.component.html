@@ -1,28 +1,28 @@
-<section class="periods">
-  <header class="periods__hero">
-    <div class="periods__hero-text">
-      <p class="periods__eyebrow">Calendario</p>
-      <h2 class="periods__title">Periodos financieros</h2>
-      <p class="periods__description">
+<section class="feature feature--periods">
+  <header class="feature__hero">
+    <div class="feature__intro">
+      <p class="feature__eyebrow">Calendario</p>
+      <h2 class="feature__title">Periodos financieros</h2>
+      <p class="feature__description">
         Gestiona los periodos utilizados para organizar tus registros financieros.
       </p>
     </div>
-    <button type="button" class="primary-button periods__hero-action" (click)="startCreate()" [disabled]="loading() || saving()">
+    <button type="button" class="btn btn--primary feature__cta" (click)="startCreate()" [disabled]="loading() || saving()">
       Nuevo periodo
     </button>
   </header>
 
-  <div class="card periods__panel">
-    <p *ngIf="loading()" class="periods__banner periods__banner--info">Cargando información...</p>
-    <p *ngIf="error() && !loading()" class="periods__banner periods__banner--error">{{ error() }}</p>
+  <div class="card feature__panel">
+    <p *ngIf="loading()" class="feature__banner feature__banner--info">Cargando información...</p>
+    <p *ngIf="error() && !loading()" class="feature__banner feature__banner--error">{{ error() }}</p>
 
-    <section *ngIf="showForm()" class="periods-form">
-      <header class="periods-form__header">
-        <h3 class="periods-form__title">{{ formTitle() }}</h3>
-        <p class="periods-form__subtitle">Completa los detalles para definir el periodo financiero.</p>
+    <section *ngIf="showForm()" class="form-card">
+      <header class="form-card__header">
+        <h3 class="form-card__title">{{ formTitle() }}</h3>
+        <p class="form-card__subtitle">Completa los detalles para definir el periodo financiero.</p>
       </header>
 
-      <form [formGroup]="form" (ngSubmit)="submitForm()" class="periods-form__grid">
+      <form [formGroup]="form" (ngSubmit)="submitForm()" class="form-grid">
         <label class="form-field" [class.form-field--invalid]="hasControlError('nombre')">
           <span>Nombre *</span>
           <input type="text" formControlName="nombre" />
@@ -68,15 +68,15 @@
           <small *ngIf="getServerError('descripcion') as serverError">{{ serverError }}</small>
         </label>
 
-        <label class="form-field form-field--inline" [class.form-field--invalid]="hasControlError('cerrado')">
+        <label class="form-field form-field--checkbox" [class.form-field--invalid]="hasControlError('cerrado')">
           <input type="checkbox" formControlName="cerrado" />
-          <span>Periodo cerrado</span>
+          <span class="form-field__label">Periodo cerrado</span>
           <small *ngIf="getServerError('cerrado') as serverError">{{ serverError }}</small>
         </label>
 
         <div class="form-actions">
-          <button type="button" class="ghost-button" (click)="cancelForm()">Cancelar</button>
-          <button type="submit" class="primary-button" [disabled]="saving()">
+          <button type="button" class="btn btn--ghost" (click)="cancelForm()">Cancelar</button>
+          <button type="submit" class="btn btn--primary" [disabled]="saving()">
             {{ saving() ? 'Guardando...' : 'Guardar' }}
           </button>
         </div>
@@ -114,7 +114,7 @@
             <td class="data-table__actions">
               <button
                 type="button"
-                class="ghost-button"
+                class="btn btn--ghost"
                 [routerLink]="['/periodos', periodo.id, 'reservas-resumen']"
                 [state]="{ periodoNombre: periodo.nombre }"
               >
@@ -122,7 +122,7 @@
               </button>
               <button
                 type="button"
-                class="ghost-button icon-button"
+                class="btn btn--ghost icon-button"
                 (click)="startEdit(periodo)"
                 [disabled]="loading() || saving()"
                 [attr.aria-label]="'Editar periodo: ' + periodo.nombre"
@@ -143,7 +143,7 @@
               </button>
               <button
                 type="button"
-                class="danger-button icon-button"
+                class="btn btn--danger icon-button"
                 (click)="promptDelete(periodo)"
                 [disabled]="loading() || saving()"
                 [attr.aria-label]="'Eliminar periodo: ' + periodo.nombre"

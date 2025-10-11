@@ -1,0 +1,86 @@
+.status-pill {
+  background: rgba(15, 23, 42, 0.06);
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 0.35rem 0.75rem;
+  text-transform: uppercase;
+}
+
+.status-pill--up {
+  background: rgba(16, 185, 129, 0.16);
+  color: #047857;
+}
+
+.status-pill--degraded {
+  background: rgba(234, 179, 8, 0.2);
+  color: #92400e;
+}
+
+.status-pill--down {
+  background: rgba(239, 68, 68, 0.2);
+  color: #b91c1c;
+}
+
+.tipo-pill {
+  border-radius: 999px;
+  color: #fff;
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.75rem;
+  text-transform: uppercase;
+}
+
+.tipo-pill--ingreso {
+  background: linear-gradient(135deg, #0f766e, #14b8a6);
+}
+
+.tipo-pill--egreso {
+  background: linear-gradient(135deg, #1d4ed8, #3b82f6);
+}
+
+.estado {
+  border-radius: 999px;
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.75rem;
+  text-transform: uppercase;
+}
+
+.estado--activo {
+  background-color: rgba(34, 197, 94, 0.14);
+  color: #15803d;
+}
+
+.estado--inactivo {
+  background-color: rgba(239, 68, 68, 0.16);
+  color: #b91c1c;
+}
+
+.estado--abierto {
+  background-color: rgba(34, 197, 94, 0.16);
+  color: #15803d;
+}
+
+.estado--cerrado {
+  background-color: rgba(239, 68, 68, 0.16);
+  color: #b91c1c;
+}
+
+.estado--reservado {
+  background-color: rgba(37, 99, 235, 0.16);
+  color: #1d4ed8;
+}
+
+.estado--aplicado {
+  background-color: rgba(16, 185, 129, 0.16);
+  color: #047857;
+}
+
+.estado--cancelado {
+  background-color: rgba(239, 68, 68, 0.16);
+  color: #b91c1c;
+}

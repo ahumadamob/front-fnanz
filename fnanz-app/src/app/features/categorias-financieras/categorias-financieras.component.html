@@ -1,15 +1,15 @@
-<section class="categories">
-  <header class="categories__hero">
-    <div class="categories__hero-text">
-      <p class="categories__eyebrow">Catálogo</p>
-      <h2 class="categories__title">Categorías financieras</h2>
-      <p class="categories__description">
+<section class="feature feature--categories">
+  <header class="feature__hero">
+    <div class="feature__intro">
+      <p class="feature__eyebrow">Catálogo</p>
+      <h2 class="feature__title">Categorías financieras</h2>
+      <p class="feature__description">
         Administra las categorías utilizadas para clasificar ingresos y egresos.
       </p>
     </div>
     <button
       type="button"
-      class="primary-button categories__hero-action"
+      class="btn btn--primary feature__cta"
       (click)="startCreate()"
       [disabled]="loading() || saving()"
     >
@@ -17,16 +17,16 @@
     </button>
   </header>
 
-  <div class="card categories__panel">
-    <p *ngIf="loading()" class="categories__banner categories__banner--info">Cargando información...</p>
-    <p *ngIf="error() && !loading()" class="categories__banner categories__banner--error">{{ error() }}</p>
+  <div class="card feature__panel">
+    <p *ngIf="loading()" class="feature__banner feature__banner--info">Cargando información...</p>
+    <p *ngIf="error() && !loading()" class="feature__banner feature__banner--error">{{ error() }}</p>
 
-    <section *ngIf="showForm()" class="categories-form">
-      <header class="categories-form__header">
-        <h3 class="categories-form__title">{{ formTitle() }}</h3>
-        <p class="categories-form__subtitle">Completa la información de la categoría para continuar.</p>
+    <section *ngIf="showForm()" class="form-card">
+      <header class="form-card__header">
+        <h3 class="form-card__title">{{ formTitle() }}</h3>
+        <p class="form-card__subtitle">Completa la información de la categoría para continuar.</p>
       </header>
-      <form [formGroup]="form" (ngSubmit)="submitForm()" class="categories-form__grid">
+      <form [formGroup]="form" (ngSubmit)="submitForm()" class="form-grid">
         <label class="form-field" [class.form-field--invalid]="hasControlError('nombre')">
           <span>Nombre *</span>
           <input type="text" formControlName="nombre" [class.invalid]="form.controls.nombre.touched && form.controls.nombre.invalid" />
@@ -76,8 +76,8 @@
       </label>
 
       <div class="form-actions">
-        <button type="button" class="ghost-button" (click)="cancelForm()">Cancelar</button>
-        <button type="submit" class="primary-button" [disabled]="saving()">
+        <button type="button" class="btn btn--ghost" (click)="cancelForm()">Cancelar</button>
+        <button type="submit" class="btn btn--primary" [disabled]="saving()">
           {{ saving() ? 'Guardando...' : 'Guardar' }}
         </button>
       </div>
@@ -117,7 +117,7 @@
             <td class="data-table__actions">
               <button
                 type="button"
-                class="ghost-button icon-button"
+                class="btn btn--ghost icon-button"
                 (click)="startEdit(categoria)"
                 [disabled]="loading() || saving()"
                 [attr.aria-label]="'Editar categoría: ' + categoria.nombre"
@@ -138,7 +138,7 @@
               </button>
               <button
                 type="button"
-                class="danger-button icon-button"
+                class="btn btn--danger icon-button"
                 (click)="promptDelete(categoria)"
                 [disabled]="loading() || saving()"
                 [attr.aria-label]="'Eliminar categoría: ' + categoria.nombre"
