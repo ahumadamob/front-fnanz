@@ -1,0 +1,133 @@
+// Minimal CoreUI design tokens and helpers to keep the application layout functional
+// inside the execution environment where the official stylesheets cannot be fetched.
+
+$cui-sidebar-width: 16rem;
+$cui-transition: 0.3s ease;
+
+.c-app {
+  min-height: 100vh;
+}
+
+.c-sidebar {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: $cui-sidebar-width;
+  background-color: var(--cui-sidebar-bg, #0d6efd);
+  color: #fff;
+  transition: transform $cui-transition;
+  z-index: 1030;
+}
+
+.c-sidebar.sidebar-collapsed {
+  transform: translateX(-100%);
+}
+
+.c-sidebar-nav {
+  padding: 1rem 0.75rem;
+}
+
+.c-sidebar-brand {
+  font-size: 1.125rem;
+  padding: 1rem 0.75rem;
+}
+
+.c-header {
+  min-height: 4rem;
+  background-color: #fff;
+}
+
+.c-footer {
+  background-color: #fff;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.nav-link {
+  display: block;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.375rem;
+  color: inherit;
+  transition: background-color $cui-transition, color $cui-transition;
+}
+
+.nav-link:hover,
+.nav-link:focus {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: inherit;
+}
+
+.nav-link.active {
+  background-color: rgba(255, 255, 255, 0.35);
+  color: #0d6efd;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  display: none;
+  min-width: 10rem;
+  padding: 0.5rem 0;
+  margin: 0.125rem 0 0;
+  font-size: 1rem;
+  color: #212529;
+  text-align: left;
+  list-style: none;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 0.375rem;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.dropdown-menu.show {
+  display: block;
+}
+
+.dropdown-item {
+  display: block;
+  width: 100%;
+  padding: 0.375rem 1rem;
+  clear: both;
+  font-weight: 400;
+  color: #212529;
+  text-align: inherit;
+  white-space: nowrap;
+  background-color: transparent;
+  border: 0;
+}
+
+.dropdown-item:hover,
+.dropdown-item:focus {
+  color: #1e2125;
+  background-color: rgba(13, 110, 253, 0.1);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  padding: 0.375rem 0.75rem;
+  font-size: 1rem;
+  border-radius: 0.375rem;
+  border: 1px solid transparent;
+  transition: background-color $cui-transition, color $cui-transition;
+}
+
+.btn-ghost {
+  background-color: transparent;
+  color: inherit;
+}
+
+.btn-ghost:hover,
+.btn-ghost:focus {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+[data-c-tooltip]::after {
+  display: none;
+}
