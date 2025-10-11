@@ -1,0 +1,19 @@
+.container {
+  margin: 0 auto;
+  max-width: 960px;
+  padding: 1.5rem;
+}
+
+.container--fluid {
+  max-width: 100%;
+  width: 100%;
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
+@media (max-width: 768px) {
+  .container--fluid {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}

@@ -1,0 +1,24 @@
+:root {
+  /**
+   * Application color tokens.
+   * The `--fnanz-*` custom properties are the source of truth
+   * for feature styles that were already using them.
+   */
+  --fnanz-primary: #0050b3;
+  --fnanz-secondary: #1890ff;
+  --fnanz-background: #f5f9ff;
+  --fnanz-surface: #ffffff;
+  --fnanz-text: #1f2937;
+
+  /**
+   * Gradient Able template aliases.
+   * Keeping both naming schemes simplifies future upgrades
+   * while letting existing components continue to rely on
+   * the `--fnanz-*` variables.
+   */
+  --ga-primary: var(--fnanz-primary);
+  --ga-primary-accent: var(--fnanz-secondary);
+  --ga-surface: var(--fnanz-surface);
+  --ga-background: var(--fnanz-background);
+  --ga-text: var(--fnanz-text);
+}

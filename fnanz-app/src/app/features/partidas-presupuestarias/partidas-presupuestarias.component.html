@@ -1,14 +1,15 @@
-<section class="card partida-panel">
-  <header class="partida-panel__header">
-    <div>
-      <h2>Presupuestos</h2>
-      <p class="partida-panel__subtitle">
+<section class="feature feature--budgets">
+  <header class="feature__hero">
+    <div class="feature__intro">
+      <p class="feature__eyebrow">Asignaciones</p>
+      <h2 class="feature__title">Presupuestos</h2>
+      <p class="feature__description">
         Administra las partidas presupuestarias asignadas a los periodos financieros de tu organización.
       </p>
     </div>
     <button
       type="button"
-      class="primary-button"
+      class="btn btn--primary feature__cta"
       (click)="startCreate()"
       [disabled]="loading() || saving() || selectedPeriodoId() === null"
     >
@@ -16,212 +17,221 @@
     </button>
   </header>
 
-  <p *ngIf="loading()" class="partida-panel__loading">Cargando información...</p>
-  <p *ngIf="error() && !loading()" class="partida-panel__error">{{ error() }}</p>
-  <p *ngIf="categoriasError()" class="partida-panel__warning">{{ categoriasError() }}</p>
-  <p *ngIf="periodosError()" class="partida-panel__warning">{{ periodosError() }}</p>
-  <p *ngIf="periodosDropdownError()" class="partida-panel__warning">{{ periodosDropdownError() }}</p>
+  <div class="card feature__panel">
+    <p *ngIf="loading()" class="feature__banner feature__banner--info">Cargando información...</p>
+    <p *ngIf="error() && !loading()" class="feature__banner feature__banner--error">{{ error() }}</p>
+    <p *ngIf="categoriasError()" class="feature__banner feature__banner--warning">{{ categoriasError() }}</p>
+    <p *ngIf="periodosError()" class="feature__banner feature__banner--warning">{{ periodosError() }}</p>
+    <p *ngIf="periodosDropdownError()" class="feature__banner feature__banner--warning">{{ periodosDropdownError() }}</p>
 
-  <section *ngIf="!showForm() && !viewingPartida()" class="partida-panel__filters">
-    <label class="filter-field">
-      <span>Periodo</span>
-      <select
-        [disabled]="periodosDropdownLoading() || periodosDropdown().length === 0"
-        [value]="selectedPeriodoId() ?? ''"
-        (change)="onPeriodoDropdownChange($any($event.target).value)"
-      >
-        <option value="">Selecciona un periodo</option>
-        <option *ngFor="let periodo of periodosDropdown()" [value]="periodo.id">
-          {{ periodo.nombre }}
-        </option>
-      </select>
-    </label>
-
-    <label class="filter-checkbox">
-      <input
-        type="checkbox"
-        [checked]="includePeriodosCerrados()"
-        (change)="onIncludePeriodosCerradosChange($any($event.target).checked)"
-      />
-      <span>Incluir periodos cerrados</span>
-    </label>
-  </section>
-
-  <p *ngIf="periodosDropdownLoading() && !showForm() && !viewingPartida()" class="partida-panel__loading">
-    Cargando periodos...
-  </p>
-
-  <section *ngIf="showForm()" class="partida-form">
-    <h3>{{ formTitle() }}</h3>
-    <form [formGroup]="form" (ngSubmit)="submitForm()" class="partida-form__grid">
-      <label class="form-field" [class.form-field--invalid]="hasControlError('tipo')">
-        <span>Tipo *</span>
-        <select formControlName="tipo">
-          <option *ngFor="let tipo of tipoOptions" [value]="tipo">{{ tipo }}</option>
-        </select>
-        <small *ngIf="getServerError('tipo') as serverError">{{ serverError }}</small>
-      </label>
-
-      <label class="form-field" [class.form-field--invalid]="hasControlError('categoriaId')">
-        <span>Categoría *</span>
-        <select formControlName="categoriaId" [disabled]="categoriasLoading() || categorias().length === 0">
-          <option [ngValue]="null" disabled>Seleccione una categoría</option>
-          <option *ngFor="let categoria of categorias()" [ngValue]="categoria.id">
-            {{ categoria.nombre }} ({{ categoria.tipo }})
+    <section *ngIf="!showForm() && !viewingPartida()" class="feature__filters">
+      <label class="form-field form-field--compact">
+        <span>Periodo</span>
+        <select
+          [disabled]="periodosDropdownLoading() || periodosDropdown().length === 0"
+          [value]="selectedPeriodoId() ?? ''"
+          (change)="onPeriodoDropdownChange($any($event.target).value)"
+        >
+          <option value="">Selecciona un periodo</option>
+          <option *ngFor="let periodo of periodosDropdown()" [value]="periodo.id">
+            {{ periodo.nombre }}
           </option>
         </select>
-        <small *ngIf="form.controls.categoriaId.touched && form.controls.categoriaId.hasError('required')">
-          La categoría es obligatoria.
-        </small>
-        <small *ngIf="getServerError('categoriaId') as serverError">{{ serverError }}</small>
-        <small *ngIf="!categoriasLoading() && categorias().length === 0">
-          Debes crear al menos una categoría para asignarla a la partida presupuestaria.
-        </small>
       </label>
 
-      <label class="form-field" [class.form-field--invalid]="hasControlError('concepto')">
-        <span>Concepto *</span>
-        <input type="text" formControlName="concepto" [class.invalid]="form.controls.concepto.touched && form.controls.concepto.invalid" />
-        <small *ngIf="form.controls.concepto.touched && form.controls.concepto.hasError('required')">
-          El concepto es obligatorio.
-        </small>
-        <small *ngIf="form.controls.concepto.touched && form.controls.concepto.hasError('maxlength')">
-          El concepto debe tener menos de 120 caracteres.
-        </small>
-        <small *ngIf="getServerError('concepto') as serverError">{{ serverError }}</small>
-      </label>
-
-      <label class="form-field" [class.form-field--invalid]="hasControlError('montoReservado')">
-        <span>Monto reservado *</span>
+      <label class="budgets__checkbox">
         <input
-          type="number"
-          formControlName="montoReservado"
-          step="0.01"
-          min="0"
-          [class.invalid]="form.controls.montoReservado.touched && form.controls.montoReservado.invalid"
+          type="checkbox"
+          [checked]="includePeriodosCerrados()"
+          (change)="onIncludePeriodosCerradosChange($any($event.target).checked)"
         />
-        <small *ngIf="form.controls.montoReservado.touched && form.controls.montoReservado.hasError('required')">
-          El monto reservado es obligatorio.
-        </small>
-        <small *ngIf="form.controls.montoReservado.touched && form.controls.montoReservado.hasError('min')">
-          El monto reservado no puede ser negativo.
-        </small>
-        <small *ngIf="getServerError('montoReservado') as serverError">{{ serverError }}</small>
+        <span>Incluir periodos cerrados</span>
       </label>
+    </section>
 
-      <label class="form-field form-field--full" [class.form-field--invalid]="hasControlError('nota')">
-        <span>Nota</span>
-        <textarea rows="3" formControlName="nota"></textarea>
-        <small *ngIf="form.controls.nota.touched && form.controls.nota.hasError('maxlength')">
-          La nota debe tener menos de 500 caracteres.
-        </small>
-        <small *ngIf="getServerError('nota') as serverError">{{ serverError }}</small>
-      </label>
+    <p
+      *ngIf="periodosDropdownLoading() && !showForm() && !viewingPartida()"
+      class="feature__banner feature__banner--info feature__banner--inline"
+    >
+      Cargando periodos...
+    </p>
 
-      <div class="form-actions">
-        <button type="button" class="ghost-button" (click)="promptCancelForm()" [disabled]="saving()">
-          Cancelar
-        </button>
-        <button type="submit" class="primary-button" [disabled]="saving()">
-          {{ saving() ? 'Guardando...' : 'Guardar' }}
-        </button>
-      </div>
-    </form>
-  </section>
+    <section *ngIf="showForm()" class="form-card">
+      <header class="form-card__header">
+        <h3 class="form-card__title">{{ formTitle() }}</h3>
+        <p class="form-card__subtitle">Completa los detalles para registrar la partida presupuestaria.</p>
+      </header>
 
-  <div *ngIf="!showForm() && !viewingPartida()" class="partida-grid">
-    <table class="data-table">
-      <thead>
-        <tr>
-          <th>Concepto</th>
-          <th>Tipo</th>
-          <th>Categoría</th>
-          <th>Estado</th>
-          <th>Monto reservado</th>
-          <th>Monto aplicado</th>
-          <th class="data-table__actions">Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngIf="partidas().length === 0">
-          <td class="data-table__empty" colspan="7">
-            <ng-container *ngIf="loading(); else emptyMessage">
-              Cargando información...
-            </ng-container>
-            <ng-template #emptyMessage>
-              {{
-                selectedPeriodoId() === null
-                  ? 'Selecciona un periodo para ver las partidas presupuestarias.'
-                  : 'No hay partidas presupuestarias registradas para el periodo seleccionado.'
-              }}
-            </ng-template>
-          </td>
-        </tr>
-        <tr *ngFor="let partida of partidas(); trackBy: trackByPartidaId">
-          <td>
-            <div class="partida-name">{{ partida.concepto }}</div>
-          </td>
-          <td>
-            <span class="tipo-pill" [ngClass]="partida.tipo === 'INGRESO' ? 'tipo-pill--ingreso' : 'tipo-pill--egreso'">
-              {{ partida.tipo }}
-            </span>
-          </td>
-          <td>{{ partida.categoriaNombre }}</td>
-          <td>
-            <span [ngClass]="'estado estado--' + partida.estado.toLowerCase()">{{ partida.estado }}</span>
-          </td>
-          <td class="data-table__numeric">{{ formatAccounting(partida.montoReservado) }}</td>
-          <td class="data-table__numeric">{{ formatAccounting(partida.montoAplicado) }}</td>
-          <td class="data-table__actions">
-            <button
-              type="button"
-              class="ghost-button icon-button"
-              (click)="viewPartida(partida)"
-              [disabled]="loading() || saving()"
-              [attr.aria-label]="'Ver partida presupuestaria: ' + partida.concepto"
-              [attr.title]="'Ver partida presupuestaria'"
-            >
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
+      <form [formGroup]="form" (ngSubmit)="submitForm()" class="form-grid">
+        <label class="form-field" [class.form-field--invalid]="hasControlError('tipo')">
+          <span>Tipo *</span>
+          <select formControlName="tipo">
+            <option *ngFor="let tipo of tipoOptions" [value]="tipo">{{ tipo }}</option>
+          </select>
+          <small *ngIf="getServerError('tipo') as serverError">{{ serverError }}</small>
+        </label>
+
+        <label class="form-field" [class.form-field--invalid]="hasControlError('categoriaId')">
+          <span>Categoría *</span>
+          <select formControlName="categoriaId" [disabled]="categoriasLoading() || categorias().length === 0">
+            <option [ngValue]="null" disabled>Seleccione una categoría</option>
+            <option *ngFor="let categoria of categorias()" [ngValue]="categoria.id">
+              {{ categoria.nombre }} ({{ categoria.tipo }})
+            </option>
+          </select>
+          <small *ngIf="form.controls.categoriaId.touched && form.controls.categoriaId.hasError('required')">
+            La categoría es obligatoria.
+          </small>
+          <small *ngIf="getServerError('categoriaId') as serverError">{{ serverError }}</small>
+          <small *ngIf="!categoriasLoading() && categorias().length === 0">
+            Debes crear al menos una categoría para asignarla a la partida presupuestaria.
+          </small>
+        </label>
+
+        <label class="form-field" [class.form-field--invalid]="hasControlError('concepto')">
+          <span>Concepto *</span>
+          <input type="text" formControlName="concepto" [class.invalid]="form.controls.concepto.touched && form.controls.concepto.invalid" />
+          <small *ngIf="form.controls.concepto.touched && form.controls.concepto.hasError('required')">
+            El concepto es obligatorio.
+          </small>
+          <small *ngIf="form.controls.concepto.touched && form.controls.concepto.hasError('maxlength')">
+            El concepto debe tener menos de 120 caracteres.
+          </small>
+          <small *ngIf="getServerError('concepto') as serverError">{{ serverError }}</small>
+        </label>
+
+        <label class="form-field" [class.form-field--invalid]="hasControlError('montoReservado')">
+          <span>Monto reservado *</span>
+          <input
+            type="number"
+            formControlName="montoReservado"
+            step="0.01"
+            min="0"
+            [class.invalid]="form.controls.montoReservado.touched && form.controls.montoReservado.invalid"
+          />
+          <small *ngIf="form.controls.montoReservado.touched && form.controls.montoReservado.hasError('required')">
+            El monto reservado es obligatorio.
+          </small>
+          <small *ngIf="form.controls.montoReservado.touched && form.controls.montoReservado.hasError('min')">
+            El monto reservado no puede ser negativo.
+          </small>
+          <small *ngIf="getServerError('montoReservado') as serverError">{{ serverError }}</small>
+        </label>
+
+        <label class="form-field form-field--full" [class.form-field--invalid]="hasControlError('nota')">
+          <span>Nota</span>
+          <textarea rows="3" formControlName="nota"></textarea>
+          <small *ngIf="form.controls.nota.touched && form.controls.nota.hasError('maxlength')">
+            La nota debe tener menos de 500 caracteres.
+          </small>
+          <small *ngIf="getServerError('nota') as serverError">{{ serverError }}</small>
+        </label>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn--ghost" (click)="promptCancelForm()" [disabled]="saving()">
+            Cancelar
+          </button>
+          <button type="submit" class="btn btn--primary" [disabled]="saving()">
+            {{ saving() ? 'Guardando...' : 'Guardar' }}
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <div *ngIf="!showForm() && !viewingPartida()" class="budgets__table">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Concepto</th>
+            <th>Tipo</th>
+            <th>Categoría</th>
+            <th>Estado</th>
+            <th>Monto reservado</th>
+            <th>Monto aplicado</th>
+            <th class="data-table__actions">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngIf="partidas().length === 0">
+            <td class="data-table__empty" colspan="7">
+              <ng-container *ngIf="loading(); else emptyMessage">
+                Cargando información...
+              </ng-container>
+              <ng-template #emptyMessage>
+                {{
+                  selectedPeriodoId() === null
+                    ? 'Selecciona un periodo para ver las partidas presupuestarias.'
+                    : 'No hay partidas presupuestarias registradas para el periodo seleccionado.'
+                }}
+              </ng-template>
+            </td>
+          </tr>
+          <tr *ngFor="let partida of partidas(); trackBy: trackByPartidaId">
+            <td>
+              <div class="budgets__name">{{ partida.concepto }}</div>
+            </td>
+            <td>
+              <span class="tipo-pill" [ngClass]="partida.tipo === 'INGRESO' ? 'tipo-pill--ingreso' : 'tipo-pill--egreso'">
+                {{ partida.tipo }}
+              </span>
+            </td>
+            <td>{{ partida.categoriaNombre }}</td>
+            <td>
+              <span [ngClass]="'estado estado--' + partida.estado.toLowerCase()">{{ partida.estado }}</span>
+            </td>
+            <td class="data-table__numeric">{{ formatAccounting(partida.montoReservado) }}</td>
+            <td class="data-table__numeric">{{ formatAccounting(partida.montoAplicado) }}</td>
+            <td class="data-table__actions">
+              <button
+                type="button"
+                class="btn btn--ghost icon-button"
+                (click)="viewPartida(partida)"
+                [disabled]="loading() || saving()"
+                [attr.aria-label]="'Ver partida presupuestaria: ' + partida.concepto"
+                [attr.title]="'Ver partida presupuestaria'"
               >
-                <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z" />
-                <circle cx="12" cy="12" r="3" />
-              </svg>
-            </button>
-            <button
-              type="button"
-              class="danger-button icon-button"
-              (click)="promptDelete(partida)"
-              [disabled]="loading() || saving()"
-              [attr.aria-label]="'Eliminar partida presupuestaria: ' + partida.concepto"
-              [attr.title]="'Eliminar partida presupuestaria'"
-            >
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z" />
+                  <circle cx="12" cy="12" r="3" />
+                </svg>
+              </button>
+              <button
+                type="button"
+                class="btn btn--danger icon-button"
+                (click)="promptDelete(partida)"
+                [disabled]="loading() || saving()"
+                [attr.aria-label]="'Eliminar partida presupuestaria: ' + partida.concepto"
+                [attr.title]="'Eliminar partida presupuestaria'"
               >
-                <polyline points="3 6 5 6 21 6" />
-                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
-                <path d="M10 11v6" />
-                <path d="M14 11v6" />
-                <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
-              </svg>
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <polyline points="3 6 5 6 21 6" />
+                  <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                  <path d="M10 11v6" />
+                  <path d="M14 11v6" />
+                  <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+                </svg>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 
   <app-confirm-dialog
@@ -247,22 +257,19 @@
     (confirm)="confirmCancelForm()"
   ></app-confirm-dialog>
 
-  <section *ngIf="!showForm() && viewingPartida() as partida" class="partida-form">
-    <header class="partida-panel__header">
+  <section *ngIf="!showForm() && viewingPartida() as partida" class="form-card form-card--viewer">
+    <header class="form-card__header">
       <div>
-        <h3>{{ partida.concepto }}</h3>
-        <p class="partida-panel__subtitle">Actualizado {{ partida.actualizadoEn | date: 'short' }}</p>
+        <h3 class="form-card__title">{{ partida.concepto }}</h3>
+        <p class="form-card__subtitle">Actualizado {{ partida.actualizadoEn | date: 'short' }}</p>
       </div>
     </header>
 
-    <div class="partida-form__grid">
+    <div class="form-grid">
       <div class="form-field form-field--static">
         <span>Tipo</span>
         <p class="form-field__readonly">
-          <span
-            class="tipo-pill"
-            [ngClass]="partida.tipo === 'INGRESO' ? 'tipo-pill--ingreso' : 'tipo-pill--egreso'"
-          >
+          <span class="tipo-pill" [ngClass]="partida.tipo === 'INGRESO' ? 'tipo-pill--ingreso' : 'tipo-pill--egreso'">
             {{ partida.tipo }}
           </span>
         </p>
@@ -290,16 +297,12 @@
 
       <div class="form-field form-field--static">
         <span>Monto reservado</span>
-        <p
-          class="form-field__readonly"
-          style="display: flex; align-items: center; justify-content: space-between; gap: 0.75rem;"
-        >
+        <p class="form-field__readonly form-field__readonly--split">
           <span>{{ formatAccounting(partida.montoReservado) }}</span>
           <button
             *ngIf="partida.estado === 'RESERVADO'"
             type="button"
-            class="primary-button"
-            style="padding: 0.35rem 0.75rem;"
+            class="btn btn--primary btn--compact"
             (click)="startApplyMonto(partida)"
             [disabled]="applyingMonto() || applyingMontoSaving()"
           >
@@ -314,21 +317,14 @@
       >
         <span>Monto aplicado</span>
         <ng-container *ngIf="applyingMonto(); else appliedReadonly">
-          <div style="display: flex; align-items: center; gap: 0.75rem;">
-            <div style="flex: 1;">
-              <input
-                type="number"
-                min="0"
-                step="0.01"
-                [formControl]="montoAplicadoControl"
-                style="width: 100%;"
-              />
+          <div class="budgets__apply-grid">
+            <div class="budgets__apply-input">
+              <input type="number" min="0" step="0.01" [formControl]="montoAplicadoControl" />
             </div>
-            <div style="display: inline-flex; gap: 0.4rem;">
+            <div class="budgets__apply-actions">
               <button
                 type="button"
-                class="primary-button"
-                style="padding: 0.35rem 0.75rem;"
+                class="btn btn--primary btn--compact"
                 (click)="confirmApplyMonto(partida)"
                 [disabled]="applyingMontoSaving()"
                 aria-label="Aceptar"
@@ -337,8 +333,7 @@
               </button>
               <button
                 type="button"
-                class="danger-button"
-                style="padding: 0.35rem 0.75rem;"
+                class="btn btn--danger btn--compact"
                 (click)="cancelApplyMonto()"
                 [disabled]="applyingMontoSaving()"
                 aria-label="Cancelar"
@@ -383,7 +378,7 @@
     </div>
 
     <div class="form-actions">
-      <button type="button" class="ghost-button" (click)="closeViewPartida()">
+      <button type="button" class="btn btn--ghost" (click)="closeViewPartida()">
         Volver
       </button>
     </div>

@@ -1,0 +1,19 @@
+<div class="shell">
+  <fn-layout-sidebar
+    class="shell__sidebar"
+    [envLabel]="envLabel"
+    [links]="links"
+  ></fn-layout-sidebar>
+
+  <div class="shell__main">
+    <fn-layout-header class="shell__header" [pageTitle]="pageTitle"></fn-layout-header>
+
+    <section class="shell__content" aria-label="Contenido principal">
+      <div class="shell__content-inner container container--fluid">
+        <router-outlet />
+      </div>
+    </section>
+
+    <fn-layout-footer class="shell__footer" [currentYear]="currentYear"></fn-layout-footer>
+  </div>
+</div>
