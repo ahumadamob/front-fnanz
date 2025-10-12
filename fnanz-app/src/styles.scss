@@ -1,5 +1,9 @@
 @use 'sass:color';
 
+@import "bootswatch/dist/yeti/variables";
+@import "bootstrap/scss/bootstrap";
+@import "bootswatch/dist/yeti/bootswatch";
+
 :root {
   --fnanz-primary: #0050b3;
   --fnanz-secondary: #1890ff;
