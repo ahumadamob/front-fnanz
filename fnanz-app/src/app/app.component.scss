@@ -7,17 +7,20 @@
 .app-sidebar {
   background: linear-gradient(180deg, var(--fnanz-primary), var(--fnanz-secondary));
   color: #fff;
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-  padding: 2rem 1.5rem;
-  width: 280px;
+  padding: 1.5rem;
+  width: 100%;
+  border: none;
+}
+
+.app-sidebar .container-fluid {
+  gap: 1.5rem;
 }
 
 .app-sidebar__brand {
   align-items: center;
   display: flex;
   gap: 1rem;
+  margin: 0;
 }
 
 .app-logo {
@@ -48,32 +51,50 @@
   padding: 0.25rem 0.85rem;
 }
 
-.app-sidebar__nav {
+.app-sidebar .navbar-toggler {
+  border-color: rgba(255, 255, 255, 0.45);
+  color: #fff;
+  margin-left: auto;
+}
+
+.app-sidebar .navbar-toggler:focus {
+  box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.25);
+}
+
+.app-sidebar .navbar-collapse {
+  width: 100%;
+}
+
+.app-sidebar .navbar-nav {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 }
 
-.app-sidebar__nav a {
+.app-sidebar .nav-link {
   align-items: center;
   border-radius: 0.75rem;
-  color: inherit;
+  color: rgba(255, 255, 255, 0.85);
   display: flex;
   font-weight: 500;
   gap: 0.75rem;
   padding: 0.75rem 1rem;
-  transition: background-color 0.2s ease, transform 0.2s ease;
+  width: 100%;
+  transition: background-color 0.2s ease, transform 0.2s ease, color 0.2s ease;
 }
 
-.app-sidebar__nav a:hover {
+.app-sidebar .nav-link:hover,
+.app-sidebar .nav-link:focus {
   background-color: rgba(255, 255, 255, 0.2);
+  color: #fff;
   transform: translateX(4px);
 }
 
-.app-sidebar__nav .active-link {
+.app-sidebar .nav-link.active {
   background-color: #fff;
-  color: var(--fnanz-primary);
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+  color: var(--fnanz-primary);
+  transform: none;
 }
 
 .nav-icon {
@@ -114,7 +135,6 @@
   padding: 2rem 0;
 }
 
-
 .app-footer {
   background: transparent;
   color: rgba(31, 41, 55, 0.8);
@@ -122,46 +142,45 @@
   padding: 1.5rem 0 2rem;
 }
 
-@media (max-width: 960px) {
+@media (min-width: 992px) {
+  .app-sidebar {
+    padding: 2rem 1.5rem;
+    width: 280px;
+    flex: 0 0 280px;
+  }
+
+  .app-sidebar .container-fluid {
+    align-items: stretch;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .app-sidebar .navbar-collapse {
+    display: flex !important;
+  }
+}
+
+@media (max-width: 991.98px) {
   .app-layout {
     flex-direction: column;
   }
 
   .app-sidebar {
-    flex-direction: row;
+    border-bottom-left-radius: 1.5rem;
+    border-bottom-right-radius: 1.5rem;
+  }
+
+  .app-sidebar .container-fluid {
     align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    gap: 1.5rem;
   }
 
-  .app-sidebar__nav {
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-  }
-
-  .app-sidebar__nav a {
-    flex: 1 1 140px;
-    justify-content: center;
-  }
-
-  .app-main {
-    min-height: calc(100vh - 200px);
+  .app-sidebar .navbar-collapse {
+    margin-top: 1rem;
   }
 }
 
 @media (max-width: 600px) {
   .app-sidebar {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .app-sidebar__nav {
-    width: 100%;
-  }
-
-  .app-sidebar__nav a {
-    justify-content: flex-start;
+    padding: 1.25rem;
   }
 }
