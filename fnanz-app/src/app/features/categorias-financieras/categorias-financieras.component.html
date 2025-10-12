@@ -122,10 +122,7 @@
               </thead>
               <tbody>
                 <tr *ngFor="let categoria of categorias(); trackBy: trackByCategoriaId">
-                  <td>
-                    <div class="fw-semibold">{{ categoria.nombre }}</div>
-                    <small class="text-muted">Creada {{ categoria.creadoEn | date: 'short' }}</small>
-                  </td>
+                  <td class="fw-semibold">{{ categoria.nombre }}</td>
                   <td>
                     <span class="tipo-pill" [ngClass]="categoria.tipo === 'INGRESO' ? 'tipo-pill--ingreso' : 'tipo-pill--egreso'">
                       {{ categoria.tipo }}
