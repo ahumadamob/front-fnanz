@@ -43,18 +43,6 @@
   flex-direction: column;
 }
 
-.app-header {
-  background: var(--fnanz-surface);
-  border-bottom: 1px solid rgba(15, 23, 42, 0.08);
-  padding: 1.5rem 2rem;
-}
-
-.app-header h2 {
-  margin: 0;
-  font-size: 1.5rem;
-  font-weight: 600;
-}
-
 .app-main__content {
   flex: 1;
   padding: 2rem 0;
