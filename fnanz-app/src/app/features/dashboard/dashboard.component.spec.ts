@@ -1,16 +1,26 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 
+import { PeriodoFinancieroService } from '../../core/services/periodo-financiero.service';
+import { PeriodoFinancieroPartidasResumen } from '../../shared/models/periodo-financiero.model';
 import { DashboardComponent } from './dashboard.component';
-import { DashboardService } from './dashboard.service';
 
-class DashboardServiceStub {
-  loadSystemHealth() {
-    return of([]);
+const resumenMock: PeriodoFinancieroPartidasResumen = {
+  ingresos: [],
+  totalIngresos: { montoReservado: 0, montoAplicado: 0 },
+  egresos: [],
+  totalEgresos: { montoReservado: 0, montoAplicado: 0 },
+  totalGeneral: { montoReservado: 0, montoAplicado: 0 }
+};
+
+class PeriodoFinancieroServiceStub {
+  dropdown() {
+    return of([{ id: 1, nombre: '2024' }]);
   }
 
-  refresh(): void {
-    // noop
+  getPartidasResumen() {
+    return of(resumenMock);
   }
 }
 
@@ -20,7 +30,10 @@ describe('DashboardComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [DashboardComponent],
-      providers: [{ provide: DashboardService, useClass: DashboardServiceStub }]
+      providers: [
+        provideRouter([]),
+        { provide: PeriodoFinancieroService, useClass: PeriodoFinancieroServiceStub }
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(DashboardComponent);
