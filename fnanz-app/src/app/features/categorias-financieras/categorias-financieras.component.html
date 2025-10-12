@@ -15,14 +15,14 @@
     <div *ngIf="loading()" class="alert alert-info mt-3 mb-0" role="status">Cargando información...</div>
     <div *ngIf="error() && !loading()" class="alert alert-danger mt-3 mb-0" role="alert">{{ error() }}</div>
 
-    <section *ngIf="showForm()" class="categoria-form card border-0 shadow-sm mt-4">
-      <div class="card-body">
-        <form [formGroup]="form" (ngSubmit)="submitForm()" novalidate>
-          <fieldset class="categoria-form__fieldset">
-            <legend class="categoria-form__legend">{{ formTitle() }}</legend>
-
-          <div class="row g-4">
-            <div class="col-12 col-md-6 col-lg-3">
+    <section *ngIf="showForm()" class="categoria-form-wrapper mt-4">
+      <div class="card border-dark mb-3 categoria-form-card">
+        <div class="card-header">
+          <h5 class="mb-0">{{ formTitle() }}</h5>
+        </div>
+        <div class="card-body">
+          <form [formGroup]="form" (ngSubmit)="submitForm()" novalidate>
+            <div class="mb-3">
               <label for="categoriaNombre" class="form-label fw-semibold">Nombre</label>
               <input
                 id="categoriaNombre"
@@ -40,7 +40,7 @@
               <div class="invalid-feedback" *ngIf="getServerError('nombre') as serverError">{{ serverError }}</div>
             </div>
 
-            <div class="col-12 col-md-6 col-lg-3">
+            <div class="mb-3">
               <label for="categoriaTipo" class="form-label fw-semibold">Tipo</label>
               <select
                 id="categoriaTipo"
@@ -53,7 +53,7 @@
               <div class="invalid-feedback" *ngIf="getServerError('tipo') as serverError">{{ serverError }}</div>
             </div>
 
-            <div class="col-12 col-md-6 col-lg-3">
+            <div class="mb-3">
               <label class="form-label d-block" for="categoriaActiva">Estado</label>
               <div class="form-check form-switch">
                 <input
@@ -69,7 +69,7 @@
               <div class="invalid-feedback d-block" *ngIf="getServerError('activo') as serverError">{{ serverError }}</div>
             </div>
 
-            <div class="col-12 col-md-6 col-lg-3">
+            <div class="mb-3">
               <label for="categoriaOrden" class="form-label">Orden</label>
               <input
                 id="categoriaOrden"
@@ -81,7 +81,7 @@
               <div class="invalid-feedback" *ngIf="getServerError('orden') as serverError">{{ serverError }}</div>
             </div>
 
-            <div class="col-12">
+            <div class="mb-4">
               <label for="categoriaDescripcion" class="form-label">Descripción</label>
               <textarea
                 id="categoriaDescripcion"
@@ -92,18 +92,17 @@
               ></textarea>
               <div class="invalid-feedback" *ngIf="getServerError('descripcion') as serverError">{{ serverError }}</div>
             </div>
-          </div>
 
-          <div class="d-flex justify-content-end gap-2 mt-4">
-            <button type="button" class="btn btn-outline-secondary" (click)="cancelForm()">Cancelar</button>
-            <button type="submit" class="btn btn-primary" [disabled]="saving()">
-              {{ saving() ? 'Guardando...' : 'Guardar' }}
-            </button>
-          </div>
-        </fieldset>
-      </form>
-    </div>
-  </section>
+            <div class="d-flex justify-content-end gap-2">
+              <button type="button" class="btn btn-outline-secondary" (click)="cancelForm()">Cancelar</button>
+              <button type="submit" class="btn btn-primary" [disabled]="saving()">
+                {{ saving() ? 'Guardando...' : 'Guardar' }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
 
     <ng-container *ngIf="!showForm()">
       <div class="categoria-grid" *ngIf="!loading() && categorias().length > 0; else emptyState">

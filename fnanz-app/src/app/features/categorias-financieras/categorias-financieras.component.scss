@@ -7,21 +7,14 @@
   margin-bottom: 1rem;
 }
 
-.categoria-form {
-  border-radius: 1rem;
+.categoria-form-wrapper {
+  display: flex;
+  justify-content: flex-start;
 }
 
-.categoria-form__fieldset {
-  border: 1px solid rgba(0, 0, 0, 0.075);
-  border-radius: 1rem;
-  margin: 0;
-  padding: 1.5rem;
-}
-
-.categoria-form__legend {
-  font-size: 1.25rem;
-  font-weight: 600;
-  margin-bottom: 1.5rem;
+.categoria-form-card {
+  max-width: 20rem;
+  width: 100%;
 }
 
 .tipo-pill {
