@@ -203,17 +203,54 @@
       </div>
     </ng-template>
 
-    <app-confirm-dialog
-      [open]="categoriaPendingDelete() !== null"
-      title="Eliminar categoria"
-      [message]="deleteMessage()"
-      confirmLabel="Eliminar"
-      cancelLabel="Cancelar"
-      busyLabel="Eliminando..."
-      [busy]="deleting()"
-      [confirmDestructive]="true"
-      (cancel)="closeDeleteDialog()"
-      (confirm)="confirmDeleteCategoria()"
-    ></app-confirm-dialog>
+    <ng-container *ngIf="categoriaPendingDelete() as categoria">
+      <div
+        class="modal fade show d-block categoria-delete-modal"
+        tabindex="-1"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="categoriaDeleteModalLabel"
+      >
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="categoriaDeleteModalLabel">Eliminar categoria</h5>
+              <button
+                type="button"
+                class="btn-close"
+                aria-label="Cerrar"
+                (click)="closeDeleteDialog()"
+                [disabled]="deleting()"
+              >
+                <span aria-hidden="true"></span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <p>¿Desea eliminar la categoria "{{ categoria.nombre }}"?</p>
+              <p class="mb-0 text-muted">Esta acción no se puede deshacer.</p>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-danger"
+                (click)="confirmDeleteCategoria()"
+                [disabled]="deleting()"
+              >
+                {{ deleting() ? 'Eliminando...' : 'Eliminar' }}
+              </button>
+              <button
+                type="button"
+                class="btn btn-secondary"
+                (click)="closeDeleteDialog()"
+                [disabled]="deleting()"
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-backdrop fade show" style="display: block;"></div>
+    </ng-container>
   </div>
 </section>
