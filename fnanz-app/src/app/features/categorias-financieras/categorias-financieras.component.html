@@ -14,64 +14,96 @@
   <p *ngIf="loading()" class="categoria-panel__loading">Cargando información...</p>
   <p *ngIf="error() && !loading()" class="categoria-panel__error">{{ error() }}</p>
 
-  <section *ngIf="showForm()" class="categoria-form">
-    <h3>{{ formTitle() }}</h3>
-    <form [formGroup]="form" (ngSubmit)="submitForm()" class="categoria-form__grid">
-      <label class="form-field" [class.form-field--invalid]="hasControlError('nombre')">
-        <span>Nombre *</span>
-        <input type="text" formControlName="nombre" [class.invalid]="form.controls.nombre.touched && form.controls.nombre.invalid" />
-        <small *ngIf="form.controls.nombre.touched && form.controls.nombre.hasError('required')">
-          El nombre es obligatorio.
-        </small>
-        <small *ngIf="form.controls.nombre.touched && form.controls.nombre.hasError('maxlength')">
-          El nombre debe tener menos de 120 caracteres.
-        </small>
-        <small *ngIf="getServerError('nombre') as serverError">{{ serverError }}</small>
-      </label>
+  <section *ngIf="showForm()" class="categoria-form card border-0 shadow-sm">
+    <div class="card-body">
+      <form [formGroup]="form" (ngSubmit)="submitForm()" novalidate>
+        <fieldset class="categoria-form__fieldset">
+          <legend class="categoria-form__legend">{{ formTitle() }}</legend>
 
-      <label class="form-field" [class.form-field--invalid]="hasControlError('tipo')">
-        <span>Tipo *</span>
-        <select formControlName="tipo">
-          <option *ngFor="let tipo of tipoOptions" [value]="tipo">{{ tipo }}</option>
-        </select>
-        <small *ngIf="getServerError('tipo') as serverError">{{ serverError }}</small>
-      </label>
+          <div class="row g-4">
+            <div class="col-md-6">
+              <label for="categoriaNombre" class="form-label">Nombre *</label>
+              <input
+                id="categoriaNombre"
+                type="text"
+                formControlName="nombre"
+                class="form-control"
+                [class.is-invalid]="hasControlError('nombre')"
+              />
+              <div class="invalid-feedback" *ngIf="form.controls.nombre.touched && form.controls.nombre.hasError('required')">
+                El nombre es obligatorio.
+              </div>
+              <div class="invalid-feedback" *ngIf="form.controls.nombre.touched && form.controls.nombre.hasError('maxlength')">
+                El nombre debe tener menos de 120 caracteres.
+              </div>
+              <div class="invalid-feedback" *ngIf="getServerError('nombre') as serverError">{{ serverError }}</div>
+            </div>
 
-      <div class="form-field form-field--switch" [class.form-field--invalid]="hasControlError('activo')">
-        <div class="form-field__row">
-          <span class="form-field__label">Activo</span>
-          <label class="switch">
-            <input type="checkbox" formControlName="activo" />
-            <span class="switch__track">
-              <span class="switch__thumb"></span>
-            </span>
-          </label>
-          <span class="switch__status" aria-live="polite">
-            {{ form.controls.activo.value ? 'On' : 'Off' }}
-          </span>
-        </div>
-        <small *ngIf="getServerError('activo') as serverError">{{ serverError }}</small>
-      </div>
+            <div class="col-md-6">
+              <label for="categoriaTipo" class="form-label">Tipo *</label>
+              <select
+                id="categoriaTipo"
+                formControlName="tipo"
+                class="form-select"
+                [class.is-invalid]="hasControlError('tipo')"
+              >
+                <option *ngFor="let tipo of tipoOptions" [value]="tipo">{{ tipo }}</option>
+              </select>
+              <div class="invalid-feedback" *ngIf="getServerError('tipo') as serverError">{{ serverError }}</div>
+            </div>
 
-      <label class="form-field" [class.form-field--invalid]="hasControlError('orden')">
-        <span>Orden</span>
-        <input type="number" formControlName="orden" />
-        <small *ngIf="getServerError('orden') as serverError">{{ serverError }}</small>
-      </label>
+            <div class="col-md-6">
+              <fieldset class="categoria-form__switch-group">
+                <legend class="col-form-label pt-0">Estado</legend>
+                <div class="form-check form-switch">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    role="switch"
+                    id="categoriaActiva"
+                    formControlName="activo"
+                  />
+                  <label class="form-check-label" for="categoriaActiva">Activo</label>
+                </div>
+                <div class="form-text">{{ form.controls.activo.value ? 'La categoria estará activa' : 'La categoria estará inactiva' }}</div>
+                <div class="invalid-feedback d-block" *ngIf="getServerError('activo') as serverError">{{ serverError }}</div>
+              </fieldset>
+            </div>
 
-      <label class="form-field form-field--full" [class.form-field--invalid]="hasControlError('descripcion')">
-        <span>Descripción</span>
-        <textarea rows="3" formControlName="descripcion"></textarea>
-        <small *ngIf="getServerError('descripcion') as serverError">{{ serverError }}</small>
-      </label>
+            <div class="col-md-6">
+              <label for="categoriaOrden" class="form-label">Orden</label>
+              <input
+                id="categoriaOrden"
+                type="number"
+                formControlName="orden"
+                class="form-control"
+                [class.is-invalid]="hasControlError('orden')"
+              />
+              <div class="invalid-feedback" *ngIf="getServerError('orden') as serverError">{{ serverError }}</div>
+            </div>
 
-      <div class="form-actions">
-        <button type="button" class="ghost-button" (click)="cancelForm()">Cancelar</button>
-        <button type="submit" class="primary-button" [disabled]="saving()">
-          {{ saving() ? 'Guardando...' : 'Guardar' }}
-        </button>
-      </div>
-    </form>
+            <div class="col-12">
+              <label for="categoriaDescripcion" class="form-label">Descripción</label>
+              <textarea
+                id="categoriaDescripcion"
+                rows="3"
+                formControlName="descripcion"
+                class="form-control"
+                [class.is-invalid]="hasControlError('descripcion')"
+              ></textarea>
+              <div class="invalid-feedback" *ngIf="getServerError('descripcion') as serverError">{{ serverError }}</div>
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-end gap-2 mt-4">
+            <button type="button" class="btn btn-outline-secondary" (click)="cancelForm()">Cancelar</button>
+            <button type="submit" class="btn btn-primary" [disabled]="saving()">
+              {{ saving() ? 'Guardando...' : 'Guardar' }}
+            </button>
+          </div>
+        </fieldset>
+      </form>
+    </div>
   </section>
 
   <div class="categoria-grid" *ngIf="!loading() && categorias().length > 0; else emptyState">
