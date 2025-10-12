@@ -8,13 +8,11 @@ import {
   PeriodoFinancieroCreate
 } from '../../shared/models/periodo-financiero.model';
 import { PeriodoFinancieroService } from '../../core/services/periodo-financiero.service';
-import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-periodos-financieros',
   standalone: true,
   imports: [
-    ConfirmDialogComponent,
     DatePipe,
     NgClass,
     NgFor,
@@ -78,11 +76,6 @@ export class PeriodosFinancierosComponent implements OnInit {
       ? `Editar periodo: ${this.selectedPeriodo()!.nombre}`
       : 'Nuevo periodo'
   );
-
-  readonly deleteMessage = computed(() => {
-    const periodo = this.periodoPendingDelete();
-    return periodo ? `¿Desea eliminar el periodo "${periodo.nombre}"?` : '';
-  });
 
   ngOnInit(): void {
     this.form.controls.fechaFin.addValidators(this.fechaFinValidator);
