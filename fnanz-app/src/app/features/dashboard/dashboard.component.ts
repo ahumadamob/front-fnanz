@@ -1,4 +1,4 @@
-import { CurrencyPipe, NgFor, NgIf } from '@angular/common';
+import { CurrencyPipe, NgClass, NgFor, NgIf } from '@angular/common';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
@@ -12,7 +12,7 @@ import { PeriodoFinancieroService } from '../../core/services/periodo-financiero
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CurrencyPipe, NgFor, NgIf, RouterLink],
+  imports: [CurrencyPipe, NgClass, NgFor, NgIf, RouterLink],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })

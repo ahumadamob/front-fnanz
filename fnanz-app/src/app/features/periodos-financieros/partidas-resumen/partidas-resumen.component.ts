@@ -1,4 +1,4 @@
-import { CurrencyPipe, NgFor, NgIf } from '@angular/common';
+import { CurrencyPipe, NgClass, NgFor, NgIf } from '@angular/common';
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
@@ -11,7 +11,7 @@ import { PeriodoFinancieroService } from '../../../core/services/periodo-financi
 @Component({
   selector: 'app-periodo-partidas-resumen',
   standalone: true,
-  imports: [CurrencyPipe, NgFor, NgIf, RouterLink],
+  imports: [CurrencyPipe, NgClass, NgFor, NgIf, RouterLink],
   templateUrl: './partidas-resumen.component.html',
   styleUrls: ['./partidas-resumen.component.scss']
 })

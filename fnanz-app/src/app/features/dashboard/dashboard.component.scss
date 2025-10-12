@@ -163,6 +163,18 @@
   padding: 1rem 1.25rem;
 }
 
+.total-card--neto {
+  border: 1px solid #d1d5db;
+}
+
+.total-card--positivo {
+  border-color: rgba(4, 120, 87, 0.4);
+}
+
+.total-card--negativo {
+  border-color: rgba(185, 28, 28, 0.4);
+}
+
 .total-label {
   color: #6b7280;
   display: block;
@@ -172,4 +184,12 @@
 
 .total-card strong {
   font-size: 1.4rem;
+}
+
+.total-card--positivo strong {
+  color: #047857;
+}
+
+.total-card--negativo strong {
+  color: #b91c1c;
 }

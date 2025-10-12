@@ -165,7 +165,7 @@
         </section>
 
         <section class="resumen-totales">
-          <h3>Total general</h3>
+          <h3>Totales del periodo</h3>
           <div class="totales-grid">
             <div class="total-card">
               <span class="total-label">Monto reservado</span>
@@ -177,6 +177,30 @@
               <span class="total-label">Monto aplicado</span>
               <strong>
                 {{ resumenData.totalGeneral.montoAplicado | currency: 'USD':'symbol-narrow':'1.0-0' }}
+              </strong>
+            </div>
+            <div
+              class="total-card total-card--neto"
+              [ngClass]="{
+                'total-card--positivo': resumenData.netoReservado >= 0,
+                'total-card--negativo': resumenData.netoReservado < 0
+              }"
+            >
+              <span class="total-label">Neto reservado</span>
+              <strong>
+                {{ resumenData.netoReservado | currency: 'USD':'symbol-narrow':'1.0-0' }}
+              </strong>
+            </div>
+            <div
+              class="total-card total-card--neto"
+              [ngClass]="{
+                'total-card--positivo': resumenData.netoAplicado >= 0,
+                'total-card--negativo': resumenData.netoAplicado < 0
+              }"
+            >
+              <span class="total-label">Neto aplicado</span>
+              <strong>
+                {{ resumenData.netoAplicado | currency: 'USD':'symbol-narrow':'1.0-0' }}
               </strong>
             </div>
           </div>

@@ -40,10 +40,25 @@ export interface PartidaPresupuestariaTotales {
   montoAplicado: number;
 }
 
+export type PartidaPresupuestariaCategoriaResumenDto =
+  Partial<PartidaPresupuestariaCategoriaResumen>;
+
+export interface PeriodoFinancieroPartidasResumenDto {
+  ingresos?: PartidaPresupuestariaCategoriaResumenDto[] | null;
+  totalIngresos?: PartidaPresupuestariaTotales | null;
+  egresos?: PartidaPresupuestariaCategoriaResumenDto[] | null;
+  totalEgresos?: PartidaPresupuestariaTotales | null;
+  totalGeneral?: PartidaPresupuestariaTotales | null;
+  netoReservado?: number | null;
+  netoAplicado?: number | null;
+}
+
 export interface PeriodoFinancieroPartidasResumen {
   ingresos: PartidaPresupuestariaCategoriaResumen[];
   totalIngresos: PartidaPresupuestariaTotales;
   egresos: PartidaPresupuestariaCategoriaResumen[];
   totalEgresos: PartidaPresupuestariaTotales;
   totalGeneral: PartidaPresupuestariaTotales;
+  netoReservado: number;
+  netoAplicado: number;
 }

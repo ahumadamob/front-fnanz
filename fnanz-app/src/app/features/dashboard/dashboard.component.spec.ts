@@ -11,7 +11,9 @@ const resumenMock: PeriodoFinancieroPartidasResumen = {
   totalIngresos: { montoReservado: 0, montoAplicado: 0 },
   egresos: [],
   totalEgresos: { montoReservado: 0, montoAplicado: 0 },
-  totalGeneral: { montoReservado: 0, montoAplicado: 0 }
+  totalGeneral: { montoReservado: 0, montoAplicado: 0 },
+  netoReservado: 0,
+  netoAplicado: 0
 };
 
 class PeriodoFinancieroServiceStub {
