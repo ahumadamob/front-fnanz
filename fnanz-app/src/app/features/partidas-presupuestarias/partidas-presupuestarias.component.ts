@@ -92,13 +92,6 @@ export class PartidasPresupuestariasComponent implements OnInit {
       '¿Deseas cancelar la creación de la partida presupuestaria? Los cambios no guardados se perderán.'
   );
 
-  readonly deleteMessage = computed(() => {
-    const partida = this.partidaPendingDelete();
-    return partida
-      ? `¿Desea eliminar la partida presupuestaria "${partida.concepto}"?`
-      : '';
-  });
-
   ngOnInit(): void {
     this.restoreSelectedPeriodoId();
     this.loadCategorias();
