@@ -7,13 +7,11 @@ import {
   CategoriaFinancieraCreate,
 } from '../../shared/models/categoria-financiera.model';
 import { CategoriaFinancieraService } from '../../core/services/categoria-financiera.service';
-import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-categorias-financieras',
   standalone: true,
   imports: [
-    ConfirmDialogComponent,
     DatePipe,
     NgClass,
     NgFor,
@@ -50,11 +48,6 @@ export class CategoriasFinancierasComponent implements OnInit {
       ? `Editar categoria: ${this.selectedCategoria()!.nombre}`
       : 'Nueva categoria'
   );
-
-  readonly deleteMessage = computed(() => {
-    const categoria = this.categoriaPendingDelete();
-    return categoria ? `¿Desea eliminar la categoria "${categoria.nombre}"?` : '';
-  });
 
   ngOnInit(): void {
     this.loadCategorias();

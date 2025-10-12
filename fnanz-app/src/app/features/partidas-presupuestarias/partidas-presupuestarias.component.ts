@@ -92,13 +92,6 @@ export class PartidasPresupuestariasComponent implements OnInit {
       '¿Deseas cancelar la creación de la partida presupuestaria? Los cambios no guardados se perderán.'
   );
 
-  readonly deleteMessage = computed(() => {
-    const partida = this.partidaPendingDelete();
-    return partida
-      ? `¿Desea eliminar la partida presupuestaria "${partida.concepto}"?`
-      : '';
-  });
-
   ngOnInit(): void {
     this.restoreSelectedPeriodoId();
     this.loadCategorias();
@@ -107,6 +100,19 @@ export class PartidasPresupuestariasComponent implements OnInit {
   }
 
   trackByPartidaId = (_: number, partida: PartidaPresupuestaria): number => partida.id;
+
+  estadoRowClass(partida: PartidaPresupuestaria): string {
+    switch (partida.estado) {
+      case 'APLICADO':
+        return 'table-success';
+      case 'RESERVADO':
+        return 'table-warning';
+      case 'CANCELADO':
+        return 'table-danger';
+      default:
+        return '';
+    }
+  }
 
   private loadCategorias(): void {
     this.categoriasLoading.set(true);

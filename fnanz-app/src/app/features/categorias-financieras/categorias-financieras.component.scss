@@ -7,21 +7,14 @@
   margin-bottom: 1rem;
 }
 
-.categoria-form {
-  border-radius: 1rem;
+.categoria-form-wrapper {
+  display: flex;
+  justify-content: flex-start;
+  width: 100%;
 }
 
-.categoria-form__fieldset {
-  border: 1px solid rgba(0, 0, 0, 0.075);
-  border-radius: 1rem;
-  margin: 0;
-  padding: 1.5rem;
-}
-
-.categoria-form__legend {
-  font-size: 1.25rem;
-  font-weight: 600;
-  margin-bottom: 1.5rem;
+.categoria-form-card {
+  width: 100%;
 }
 
 .tipo-pill {
@@ -57,4 +50,27 @@
 .estado--inactivo {
   background-color: #fee2e2;
   color: #b91c1c;
+}
+
+.action-icon-button {
+  align-items: center;
+  border-radius: 999px;
+  display: inline-flex;
+  height: 2.5rem;
+  justify-content: center;
+  padding: 0;
+  width: 2.5rem;
+}
+
+.action-icon-button svg {
+  height: 1.25rem;
+  width: 1.25rem;
+}
+
+.categoria-delete-modal {
+  background-color: rgba(33, 37, 41, 0.6);
+}
+
+.categoria-delete-modal .modal-dialog {
+  margin-top: 10vh;
 }
