@@ -11,7 +11,7 @@
             cNavLink
             [routerLink]="item.route"
             routerLinkActive="active"
-            [routerLinkActiveOptions]="item.activeOptions ?? { }"
+            [routerLinkActiveOptions]="item.activeOptions ?? { exact: false }"
             class="d-flex align-items-center gap-2 text-white text-decoration-none"
           >
             <span class="d-inline-flex align-items-center justify-content-center rounded bg-white bg-opacity-25" style="width: 2rem; height: 2rem">
