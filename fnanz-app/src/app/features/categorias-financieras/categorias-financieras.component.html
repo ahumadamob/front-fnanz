@@ -1,24 +1,25 @@
-<section class="card categoria-panel">
-  <header class="categoria-panel__header">
-    <div>
-      <h2>Categorias</h2>
-      <p class="categoria-panel__subtitle">
-        Administra las categorias utilizadas para clasificar ingresos y egresos.
-      </p>
+<section class="card categoria-panel shadow-sm border-0">
+  <div class="card-body">
+    <div class="categoria-panel__header">
+      <div>
+        <h2 class="card-title mb-1">Categorias</h2>
+        <p class="card-subtitle text-muted">
+          Administra las categorias utilizadas para clasificar ingresos y egresos.
+        </p>
+      </div>
+      <button type="button" class="btn btn-primary" (click)="startCreate()" [disabled]="loading() || saving()">
+        Nueva categoria
+      </button>
     </div>
-    <button type="button" class="primary-button" (click)="startCreate()" [disabled]="loading() || saving()">
-      Nueva categoria
-    </button>
-  </header>
 
-  <p *ngIf="loading()" class="categoria-panel__loading">Cargando información...</p>
-  <p *ngIf="error() && !loading()" class="categoria-panel__error">{{ error() }}</p>
+    <div *ngIf="loading()" class="alert alert-info mt-3 mb-0" role="status">Cargando información...</div>
+    <div *ngIf="error() && !loading()" class="alert alert-danger mt-3 mb-0" role="alert">{{ error() }}</div>
 
-  <section *ngIf="showForm()" class="categoria-form card border-0 shadow-sm">
-    <div class="card-body">
-      <form [formGroup]="form" (ngSubmit)="submitForm()" novalidate>
-        <fieldset class="categoria-form__fieldset">
-          <legend class="categoria-form__legend">{{ formTitle() }}</legend>
+    <section *ngIf="showForm()" class="categoria-form card border-0 shadow-sm mt-4">
+      <div class="card-body">
+        <form [formGroup]="form" (ngSubmit)="submitForm()" novalidate>
+          <fieldset class="categoria-form__fieldset">
+            <legend class="categoria-form__legend">{{ formTitle() }}</legend>
 
           <div class="row g-4">
             <div class="col-12 col-md-6 col-lg-3">
@@ -104,104 +105,86 @@
     </div>
   </section>
 
-  <div class="categoria-grid" *ngIf="!loading() && categorias().length > 0; else emptyState">
-    <table class="data-table">
-      <thead>
-        <tr>
-          <th>Nombre</th>
-          <th>Tipo</th>
-          <th>Estado</th>
-          <th>Orden</th>
-          <th>Descripción</th>
-          <th class="data-table__actions">Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let categoria of categorias(); trackBy: trackByCategoriaId">
-          <td>
-            <div class="categoria-name">{{ categoria.nombre }}</div>
-            <small class="categoria-meta">Creada {{ categoria.creadoEn | date: 'short' }}</small>
-          </td>
-          <td>
-            <span class="tipo-pill" [ngClass]="categoria.tipo === 'INGRESO' ? 'tipo-pill--ingreso' : 'tipo-pill--egreso'">
-              {{ categoria.tipo }}
-            </span>
-          </td>
-          <td>
-            <span [ngClass]="categoria.activo ? 'estado estado--activo' : 'estado estado--inactivo'">
-              {{ categoria.activo ? 'Activo' : 'Inactivo' }}
-            </span>
-          </td>
-          <td>{{ categoria.orden ?? '—' }}</td>
-          <td>{{ categoria.descripcion || 'Sin descripción' }}</td>
-          <td class="data-table__actions">
-            <button
-              type="button"
-              class="ghost-button icon-button"
-              (click)="startEdit(categoria)"
-              [disabled]="loading() || saving()"
-              [attr.aria-label]="'Editar categoria: ' + categoria.nombre"
-              [attr.title]="'Editar categoria'"
-            >
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <path d="M12 20h9" />
-                <path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
-              </svg>
-            </button>
-            <button
-              type="button"
-              class="danger-button icon-button"
-              (click)="promptDelete(categoria)"
-              [disabled]="loading() || saving()"
-              [attr.aria-label]="'Eliminar categoria: ' + categoria.nombre"
-              [attr.title]="'Eliminar categoria'"
-            >
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <polyline points="3 6 5 6 21 6" />
-                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
-                <path d="M10 11v6" />
-                <path d="M14 11v6" />
-                <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
-              </svg>
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="categoria-grid" *ngIf="!loading() && categorias().length > 0; else emptyState">
+      <div class="card border-0 shadow-sm mt-4">
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th scope="col">Nombre</th>
+                  <th scope="col">Tipo</th>
+                  <th scope="col">Estado</th>
+                  <th scope="col">Orden</th>
+                  <th scope="col">Descripción</th>
+                  <th scope="col" class="text-end">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let categoria of categorias(); trackBy: trackByCategoriaId">
+                  <td>
+                    <div class="fw-semibold">{{ categoria.nombre }}</div>
+                    <small class="text-muted">Creada {{ categoria.creadoEn | date: 'short' }}</small>
+                  </td>
+                  <td>
+                    <span class="tipo-pill" [ngClass]="categoria.tipo === 'INGRESO' ? 'tipo-pill--ingreso' : 'tipo-pill--egreso'">
+                      {{ categoria.tipo }}
+                    </span>
+                  </td>
+                  <td>
+                    <span [ngClass]="categoria.activo ? 'estado estado--activo' : 'estado estado--inactivo'">
+                      {{ categoria.activo ? 'Activo' : 'Inactivo' }}
+                    </span>
+                  </td>
+                  <td>{{ categoria.orden ?? '—' }}</td>
+                  <td>{{ categoria.descripcion || 'Sin descripción' }}</td>
+                  <td class="text-end">
+                    <button
+                      type="button"
+                      class="btn btn-outline-secondary btn-sm me-1"
+                      (click)="startEdit(categoria)"
+                      [disabled]="loading() || saving()"
+                      [attr.aria-label]="'Editar categoria: ' + categoria.nombre"
+                      [attr.title]="'Editar categoria'"
+                    >
+                      Editar
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-outline-danger btn-sm"
+                      (click)="promptDelete(categoria)"
+                      [disabled]="loading() || saving()"
+                      [attr.aria-label]="'Eliminar categoria: ' + categoria.nombre"
+                      [attr.title]="'Eliminar categoria'"
+                    >
+                      Eliminar
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <ng-template #emptyState>
+      <div class="alert alert-secondary mt-4" *ngIf="!loading()">
+        No hay categorias registradas aún. Crea la primera para comenzar.
+      </div>
+    </ng-template>
+
+    <app-confirm-dialog
+      [open]="categoriaPendingDelete() !== null"
+      title="Eliminar categoria"
+      [message]="deleteMessage()"
+      confirmLabel="Eliminar"
+      cancelLabel="Cancelar"
+      busyLabel="Eliminando..."
+      [busy]="deleting()"
+      [confirmDestructive]="true"
+      (cancel)="closeDeleteDialog()"
+      (confirm)="confirmDeleteCategoria()"
+    ></app-confirm-dialog>
   </div>
-
-  <ng-template #emptyState>
-    <p class="categoria-panel__empty" *ngIf="!loading()">
-      No hay categorias registradas aún. Crea la primera para comenzar.
-    </p>
-  </ng-template>
-
-  <app-confirm-dialog
-    [open]="categoriaPendingDelete() !== null"
-    title="Eliminar categoria"
-    [message]="deleteMessage()"
-    confirmLabel="Eliminar"
-    cancelLabel="Cancelar"
-    busyLabel="Eliminando..."
-    [busy]="deleting()"
-    [confirmDestructive]="true"
-    (cancel)="closeDeleteDialog()"
-    (confirm)="confirmDeleteCategoria()"
-  ></app-confirm-dialog>
 </section>

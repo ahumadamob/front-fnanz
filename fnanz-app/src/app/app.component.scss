@@ -21,7 +21,7 @@
 }
 
 .app-layout {
-  background: linear-gradient(180deg, rgba(24, 144, 255, 0.1), rgba(0, 80, 179, 0.08));
+  background-color: #ffffff;
   display: flex;
   min-height: calc(100vh - 4.5rem);
 }
@@ -44,6 +44,7 @@
 }
 
 .app-main__content {
+  background-color: #ffffff;
   flex: 1;
   padding: 2rem 0;
 }

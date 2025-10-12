@@ -1,30 +1,32 @@
-<section class="card">
-  <header class="card__header">
-    <div>
-      <h2>Estado de microservicios</h2>
-      <p class="card__subtitle">Última actualización: {{ lastRefresh() | date: 'short' }}</p>
+<section class="card shadow-sm border-0">
+  <div class="card-body">
+    <div class="dashboard-header">
+      <div>
+        <h2 class="card-title mb-1">Estado de microservicios</h2>
+        <p class="card-subtitle text-muted">Última actualización: {{ lastRefresh() | date: 'short' }}</p>
+      </div>
+      <button type="button" class="btn btn-primary" (click)="refresh()">
+        Actualizar
+      </button>
     </div>
-    <button type="button" class="refresh-button" (click)="refresh()">
-      Actualizar
-    </button>
-  </header>
 
-  <ng-container *ngIf="healthSnapshot$ | async as snapshot; else loading">
-    <div class="service-grid">
-      <article class="service" *ngFor="let service of snapshot">
-        <header class="service__header">
-          <h3>{{ service.name }}</h3>
-          <span [ngClass]="resolveStatusClass(service.status)">
-            {{ service.status }}
-          </span>
-        </header>
-        <p class="service__meta">Último chequeo: {{ service.lastCheckedAt | date: 'medium' }}</p>
-        <p class="service__notes" *ngIf="service.notes as notes">{{ notes }}</p>
-      </article>
-    </div>
-  </ng-container>
+    <ng-container *ngIf="healthSnapshot$ | async as snapshot; else loading">
+      <div class="service-grid">
+        <article class="service" *ngFor="let service of snapshot">
+          <header class="service__header">
+            <h3>{{ service.name }}</h3>
+            <span [ngClass]="resolveStatusClass(service.status)">
+              {{ service.status }}
+            </span>
+          </header>
+          <p class="service__meta">Último chequeo: {{ service.lastCheckedAt | date: 'medium' }}</p>
+          <p class="service__notes" *ngIf="service.notes as notes">{{ notes }}</p>
+        </article>
+      </div>
+    </ng-container>
 
-  <ng-template #loading>
-    <p class="loading">Cargando estado del sistema...</p>
-  </ng-template>
+    <ng-template #loading>
+      <p class="loading">Cargando estado del sistema...</p>
+    </ng-template>
+  </div>
 </section>

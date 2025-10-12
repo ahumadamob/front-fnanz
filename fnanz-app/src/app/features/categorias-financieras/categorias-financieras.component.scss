@@ -1,73 +1,10 @@
-.categoria-panel {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
 .categoria-panel__header {
   align-items: flex-start;
   display: flex;
   gap: 1rem;
   justify-content: space-between;
   flex-wrap: wrap;
-}
-
-.categoria-panel__subtitle {
-  color: #6b7280;
-  margin: 0.25rem 0 0;
-}
-
-.primary-button,
-.ghost-button,
-.danger-button {
-  border: none;
-  border-radius: 0.75rem;
-  cursor: pointer;
-  font-weight: 600;
-  padding: 0.65rem 1.4rem;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
-}
-
-.primary-button {
-  background: linear-gradient(90deg, var(--fnanz-primary), var(--fnanz-secondary));
-  color: #fff;
-  box-shadow: 0 8px 18px rgba(0, 80, 179, 0.25);
-}
-
-.primary-button:disabled {
-  cursor: not-allowed;
-  opacity: 0.6;
-  box-shadow: none;
-}
-
-.ghost-button {
-  background: #f3f4f6;
-  color: var(--fnanz-primary);
-}
-
-.danger-button {
-  background: #fee2e2;
-  color: #b91c1c;
-}
-
-.ghost-button:hover:not(:disabled),
-.danger-button:hover:not(:disabled),
-.primary-button:hover:not(:disabled) {
-  transform: translateY(-1px);
-}
-
-.categoria-panel__loading,
-.categoria-panel__error,
-.categoria-panel__empty {
-  background-color: #f9fafb;
-  border-radius: 0.75rem;
-  padding: 1rem;
-  margin: 0;
-}
-
-.categoria-panel__error {
-  background-color: #fee2e2;
-  color: #991b1b;
+  margin-bottom: 1rem;
 }
 
 .categoria-form {
@@ -85,43 +22,6 @@
   font-size: 1.25rem;
   font-weight: 600;
   margin-bottom: 1.5rem;
-}
-
-.data-table {
-  border-collapse: collapse;
-  width: 100%;
-}
-
-.data-table th,
-.data-table td {
-  border-bottom: 1px solid #e5e7eb;
-  padding: 0.75rem 1rem;
-  text-align: left;
-  vertical-align: top;
-}
-
-.data-table thead th {
-  color: #6b7280;
-  font-size: 0.85rem;
-  font-weight: 600;
-  text-transform: uppercase;
-}
-
-.data-table tbody tr:hover {
-  background-color: #f9fafb;
-}
-
-.data-table__actions {
-  text-align: right;
-  white-space: nowrap;
-}
-
-.categoria-name {
-  font-weight: 600;
-}
-
-.categoria-meta {
-  color: #6b7280;
 }
 
 .tipo-pill {
@@ -157,27 +57,4 @@
 .estado--inactivo {
   background-color: #fee2e2;
   color: #b91c1c;
-}
-
-@media (max-width: 640px) {
-  .data-table thead {
-    display: none;
-  }
-
-  .data-table tbody tr {
-    display: grid;
-    gap: 0.75rem;
-    padding: 1rem 0;
-  }
-
-  .data-table td {
-    border: none;
-    padding: 0;
-  }
-
-  .data-table__actions {
-    display: flex;
-    gap: 0.5rem;
-    justify-content: flex-end;
-  }
 }
