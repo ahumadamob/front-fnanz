@@ -21,8 +21,8 @@
           <legend class="categoria-form__legend">{{ formTitle() }}</legend>
 
           <div class="row g-4">
-            <div class="col-md-6">
-              <label for="categoriaNombre" class="form-label">Nombre *</label>
+            <div class="col-12 col-md-6 col-lg-3">
+              <label for="categoriaNombre" class="form-label fw-semibold">Nombre</label>
               <input
                 id="categoriaNombre"
                 type="text"
@@ -39,8 +39,8 @@
               <div class="invalid-feedback" *ngIf="getServerError('nombre') as serverError">{{ serverError }}</div>
             </div>
 
-            <div class="col-md-6">
-              <label for="categoriaTipo" class="form-label">Tipo *</label>
+            <div class="col-12 col-md-6 col-lg-3">
+              <label for="categoriaTipo" class="form-label fw-semibold">Tipo</label>
               <select
                 id="categoriaTipo"
                 formControlName="tipo"
@@ -52,25 +52,23 @@
               <div class="invalid-feedback" *ngIf="getServerError('tipo') as serverError">{{ serverError }}</div>
             </div>
 
-            <div class="col-md-6">
-              <fieldset class="categoria-form__switch-group">
-                <legend class="col-form-label pt-0">Estado</legend>
-                <div class="form-check form-switch">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    role="switch"
-                    id="categoriaActiva"
-                    formControlName="activo"
-                  />
-                  <label class="form-check-label" for="categoriaActiva">Activo</label>
-                </div>
-                <div class="form-text">{{ form.controls.activo.value ? 'La categoria estará activa' : 'La categoria estará inactiva' }}</div>
-                <div class="invalid-feedback d-block" *ngIf="getServerError('activo') as serverError">{{ serverError }}</div>
-              </fieldset>
+            <div class="col-12 col-md-6 col-lg-3">
+              <label class="form-label d-block" for="categoriaActiva">Estado</label>
+              <div class="form-check form-switch">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  role="switch"
+                  id="categoriaActiva"
+                  formControlName="activo"
+                />
+                <label class="form-check-label" for="categoriaActiva">Activo</label>
+              </div>
+              <div class="form-text">{{ form.controls.activo.value ? 'La categoria estará activa' : 'La categoria estará inactiva' }}</div>
+              <div class="invalid-feedback d-block" *ngIf="getServerError('activo') as serverError">{{ serverError }}</div>
             </div>
 
-            <div class="col-md-6">
+            <div class="col-12 col-md-6 col-lg-3">
               <label for="categoriaOrden" class="form-label">Orden</label>
               <input
                 id="categoriaOrden"
