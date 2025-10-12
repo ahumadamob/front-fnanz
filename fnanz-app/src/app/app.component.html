@@ -1,3 +1,49 @@
+<nav class="app-topbar navbar navbar-expand-lg bg-light" data-bs-theme="light">
+  <div class="container-fluid">
+    <a class="navbar-brand" routerLink="/">Fnanz Plataforma</a>
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#fnanzMainNav"
+      aria-controls="fnanzMainNav"
+      aria-expanded="false"
+      aria-label="Alternar navegación principal"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="fnanzMainNav">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            routerLink="/"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            ariaCurrentWhenActive="page"
+          >
+            Dashboard
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/categorias" routerLinkActive="active" ariaCurrentWhenActive="page">
+            Categorias
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/periodos" routerLinkActive="active" ariaCurrentWhenActive="page">
+            Periodos
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/presupuestos" routerLinkActive="active" ariaCurrentWhenActive="page">
+            Presupuestos
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
 <div class="app-layout">
   <aside class="app-sidebar navbar navbar-expand-lg navbar-dark">
     <div class="container-fluid flex-lg-column align-items-stretch">
