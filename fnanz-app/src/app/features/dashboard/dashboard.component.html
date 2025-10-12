@@ -17,10 +17,11 @@
       <div class="resumen-panel__controls">
         <label class="resumen-panel__label" for="resumenPeriodoSelect">Periodo financiero</label>
         <select
+          #periodoSelect
           id="resumenPeriodoSelect"
           class="form-select"
           [disabled]="loadingPeriodos()"
-          (change)="onPeriodoChange($event.target.value)"
+          (change)="onPeriodoChange(periodoSelect.value)"
         >
           <option *ngIf="loadingPeriodos()" selected>
             Cargando periodos...
