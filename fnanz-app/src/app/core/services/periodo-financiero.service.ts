@@ -70,7 +70,7 @@ export class PeriodoFinancieroService {
   ): Observable<PeriodoFinancieroPartidasResumen | null> {
     return this.apiHttp
       .get<ApiResponse<PeriodoFinancieroPartidasResumen | null>>(
-        `${this.basePath}/${id}/reservas-resumen`
+        `${this.basePath}/${id}/partidas-resumen`
       )
       .pipe(map((response) => response.data ?? null));
   }

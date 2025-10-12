@@ -9,13 +9,13 @@ import {
 import { PeriodoFinancieroService } from '../../../core/services/periodo-financiero.service';
 
 @Component({
-  selector: 'app-periodo-reservas-resumen',
+  selector: 'app-periodo-partidas-resumen',
   standalone: true,
   imports: [CurrencyPipe, NgFor, NgIf, RouterLink],
-  templateUrl: './reservas-resumen.component.html',
-  styleUrls: ['./reservas-resumen.component.scss']
+  templateUrl: './partidas-resumen.component.html',
+  styleUrls: ['./partidas-resumen.component.scss']
 })
-export class ReservasResumenComponent implements OnInit {
+export class PartidasResumenComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly periodoService = inject(PeriodoFinancieroService);
