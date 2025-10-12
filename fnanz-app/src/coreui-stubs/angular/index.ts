@@ -52,7 +52,7 @@ export class CAppComponent {}
   standalone: false,
   template: '<ng-content></ng-content>',
   host: {
-    class: 'c-sidebar'
+    class: 'sidebar d-flex flex-column c-sidebar'
   }
 })
 export class CSidebarComponent {
@@ -70,6 +70,7 @@ export class CSidebarComponent {
   }
 
   @HostBinding('class.sidebar-collapsed') collapsed = false;
+  @HostBinding('class.show') show = true;
   @HostBinding('attr.aria-hidden') ariaHidden: 'true' | null = null;
   @HostBinding('attr.hidden') hidden: '' | null = null;
 
@@ -82,6 +83,7 @@ export class CSidebarComponent {
     const effectRef = effect(() => {
       const visible = sidebar.visible();
       this.collapsed = !visible;
+      this.show = visible;
       this.ariaHidden = visible ? null : 'true';
       this.hidden = visible ? null : '';
     });
@@ -89,6 +91,16 @@ export class CSidebarComponent {
     this.destroyRef.onDestroy(() => effectRef.destroy());
   }
 }
+
+@Component({
+  selector: 'c-sidebar-header',
+  standalone: false,
+  template: '<ng-content></ng-content>',
+  host: {
+    class: 'sidebar-header'
+  }
+})
+export class CSidebarHeaderComponent {}
 
 @Component({
   selector: 'c-sidebar-brand',
@@ -109,6 +121,64 @@ export class CSidebarBrandComponent {}
   }
 })
 export class CSidebarNavComponent {}
+
+@Component({
+  selector: 'c-sidebar-nav-title',
+  standalone: false,
+  template: '<ng-content></ng-content>',
+  host: {
+    class: 'nav-title'
+  }
+})
+export class CSidebarNavTitleComponent {}
+
+@Component({
+  selector: 'c-sidebar-nav-link',
+  standalone: false,
+  template: '<ng-content></ng-content>',
+  host: {
+    class: 'nav-item'
+  }
+})
+export class CSidebarNavLinkComponent {}
+
+@Component({
+  selector: 'c-sidebar-nav-link-content',
+  standalone: false,
+  template: '<ng-content></ng-content>',
+  host: {
+    class: 'nav-link-content flex-grow-1'
+  }
+})
+export class CSidebarNavLinkContentComponent {}
+
+@Component({
+  selector: 'c-sidebar-nav-group',
+  standalone: false,
+  template: '<ng-content></ng-content>',
+  host: {
+    class: 'nav-group'
+  }
+})
+export class CSidebarNavGroupComponent {
+  @HostBinding('class.show')
+  open = false;
+
+  @Input()
+  set expanded(value: boolean | string) {
+    this.open = value === '' ? true : !!value;
+  }
+}
+
+@Component({
+  selector: 'c-sidebar-footer',
+  standalone: false,
+  template: '<ng-content></ng-content>',
+  host: {
+    class: 'sidebar-footer'
+  }
+})
+export class CSidebarFooterComponent {}
 
 @Component({
   selector: 'c-header',
@@ -323,8 +393,30 @@ export class NavModule {}
 
 @NgModule({
   imports: [CommonModule],
-  declarations: [CAppComponent, CSidebarComponent, CSidebarBrandComponent, CSidebarNavComponent],
-  exports: [CAppComponent, CSidebarComponent, CSidebarBrandComponent, CSidebarNavComponent]
+  declarations: [
+    CAppComponent,
+    CSidebarComponent,
+    CSidebarHeaderComponent,
+    CSidebarBrandComponent,
+    CSidebarNavComponent,
+    CSidebarNavTitleComponent,
+    CSidebarNavLinkComponent,
+    CSidebarNavLinkContentComponent,
+    CSidebarNavGroupComponent,
+    CSidebarFooterComponent
+  ],
+  exports: [
+    CAppComponent,
+    CSidebarComponent,
+    CSidebarHeaderComponent,
+    CSidebarBrandComponent,
+    CSidebarNavComponent,
+    CSidebarNavTitleComponent,
+    CSidebarNavLinkComponent,
+    CSidebarNavLinkContentComponent,
+    CSidebarNavGroupComponent,
+    CSidebarFooterComponent
+  ]
 })
 export class SidebarModule {}
 
