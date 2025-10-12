@@ -141,7 +141,7 @@
                   <td class="text-end">
                     <button
                       type="button"
-                      class="btn btn-info action-icon-button me-1"
+                      class="btn btn-outline-primary action-icon-button me-1"
                       (click)="startEdit(categoria)"
                       [disabled]="loading() || saving()"
                       [attr.aria-label]="'Editar categoria: ' + categoria.nombre"
@@ -165,7 +165,7 @@
                     </button>
                     <button
                       type="button"
-                      class="btn btn-warning action-icon-button"
+                      class="btn btn-outline-danger action-icon-button"
                       (click)="promptDelete(categoria)"
                       [disabled]="loading() || saving()"
                       [attr.aria-label]="'Eliminar categoria: ' + categoria.nombre"
