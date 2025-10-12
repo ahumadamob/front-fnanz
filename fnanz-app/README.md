@@ -13,7 +13,25 @@ Proyecto base en Angular standalone orientado a servicios para la plataforma Fna
 npm install
 ```
 
-> **Nota:** En este entorno no fue posible descargar las dependencias de npm por políticas de red, pero el `package.json` queda listo para que ejecutes la instalación en tu máquina local.
+Las dependencias incluyen `bootstrap`, `@popperjs/core` y `bootswatch` (tema **Yeti**) instaladas con:
+
+```bash
+npm install bootstrap@^5 @popperjs/core bootswatch@^5
+```
+
+> **Nota:** En este entorno no fue posible descargar las dependencias de npm por políticas de red, pero el `package.json` queda listo para que ejecutes la instalación en tu máquina local y obtengas los paquetes de Bootswatch/Bootstrap.
+
+## Theming global con Bootswatch
+
+El archivo global `src/styles.scss` importa el tema Yeti siguiendo la secuencia recomendada por Bootswatch:
+
+```scss
+@import "bootswatch/dist/yeti/variables";
+@import "bootstrap/scss/bootstrap";
+@import "bootswatch/dist/yeti/bootswatch";
+```
+
+Si quieres cambiar a otro tema, sustituye `yeti` por el nombre del tema deseado (por ejemplo `cerulean`, `cosmo`, etc.) en esas tres rutas.
 
 ## Scripts disponibles
 
