@@ -108,6 +108,19 @@ export class PartidasPresupuestariasComponent implements OnInit {
 
   trackByPartidaId = (_: number, partida: PartidaPresupuestaria): number => partida.id;
 
+  estadoRowClass(partida: PartidaPresupuestaria): string {
+    switch (partida.estado) {
+      case 'APLICADO':
+        return 'table-success';
+      case 'RESERVADO':
+        return 'table-warning';
+      case 'CANCELADO':
+        return 'table-danger';
+      default:
+        return '';
+    }
+  }
+
   private loadCategorias(): void {
     this.categoriasLoading.set(true);
     this.categoriasError.set(null);

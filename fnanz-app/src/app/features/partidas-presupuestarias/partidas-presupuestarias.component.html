@@ -131,21 +131,21 @@
   </section>
 
   <div *ngIf="!showForm() && !viewingPartida()" class="partida-grid">
-    <table class="data-table">
+    <table class="table table-hover budget-table">
       <thead>
         <tr>
-          <th>Concepto</th>
-          <th>Tipo</th>
-          <th>Categoría</th>
-          <th>Estado</th>
-          <th>Monto reservado</th>
-          <th>Monto aplicado</th>
-          <th class="data-table__actions">Acciones</th>
+          <th scope="col">Concepto</th>
+          <th scope="col">Tipo</th>
+          <th scope="col">Categoría</th>
+          <th scope="col">Estado</th>
+          <th scope="col">Monto reservado</th>
+          <th scope="col">Monto aplicado</th>
+          <th scope="col" class="budget-table__actions">Acciones</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngIf="partidas().length === 0">
-          <td class="data-table__empty" colspan="7">
+          <td class="budget-table__empty" colspan="7">
             <ng-container *ngIf="loading(); else emptyMessage">
               Cargando información...
             </ng-container>
@@ -158,10 +158,13 @@
             </ng-template>
           </td>
         </tr>
-        <tr *ngFor="let partida of partidas(); trackBy: trackByPartidaId">
-          <td>
+        <tr
+          *ngFor="let partida of partidas(); trackBy: trackByPartidaId"
+          [ngClass]="estadoRowClass(partida)"
+        >
+          <th scope="row">
             <div class="partida-name">{{ partida.concepto }}</div>
-          </td>
+          </th>
           <td>
             <span class="tipo-pill" [ngClass]="partida.tipo === 'INGRESO' ? 'tipo-pill--ingreso' : 'tipo-pill--egreso'">
               {{ partida.tipo }}
@@ -171,9 +174,9 @@
           <td>
             <span [ngClass]="'estado estado--' + partida.estado.toLowerCase()">{{ partida.estado }}</span>
           </td>
-          <td class="data-table__numeric">{{ formatAccounting(partida.montoReservado) }}</td>
-          <td class="data-table__numeric">{{ formatAccounting(partida.montoAplicado) }}</td>
-          <td class="data-table__actions">
+          <td class="budget-table__numeric">{{ formatAccounting(partida.montoReservado) }}</td>
+          <td class="budget-table__numeric">{{ formatAccounting(partida.montoAplicado) }}</td>
+          <td class="budget-table__actions">
             <button
               type="button"
               class="ghost-button icon-button"
