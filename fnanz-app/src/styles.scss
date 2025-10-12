@@ -1,5 +1,9 @@
 @use 'sass:color';
 
+@import "bootswatch/dist/yeti/variables";
+@import "bootstrap/scss/bootstrap";
+@import "bootswatch/dist/yeti/bootswatch";
+
 :root {
   --fnanz-primary: #0050b3;
   --fnanz-secondary: #1890ff;
@@ -46,10 +50,26 @@ a {
 }
 
 .card {
-  background: var(--fnanz-surface);
-  border-radius: 1rem;
-  box-shadow: 0 10px 30px rgba(0, 40, 90, 0.08);
+  background-color: var(--fnanz-surface);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 0.75rem;
+  box-shadow: 0 1.5rem 2.5rem rgba(15, 23, 42, 0.06);
+  padding: 0;
+}
+
+.card .card-body {
   padding: 1.5rem;
+}
+
+.card .card-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.card .card-subtitle {
+  color: rgba(31, 41, 55, 0.65);
+  margin-bottom: 0;
 }
 
 .icon-button {

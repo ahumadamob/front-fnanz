@@ -1,8 +1,9 @@
-<section class="card resumen-panel">
-  <header class="resumen-panel__header">
+<section class="card resumen-panel shadow-sm border-0">
+  <div class="card-body">
+    <header class="resumen-panel__header">
     <div>
-      <h2>Resumen de partidas presupuestarias por categoría</h2>
-      <p class="resumen-panel__subtitle">
+      <h2 class="card-title mb-1">Resumen de partidas presupuestarias por categoría</h2>
+      <p class="card-subtitle text-muted">
         Periodo:
         <span *ngIf="periodoNombre(); else periodoFallback">{{ periodoNombre() }}</span>
         <ng-template #periodoFallback>
@@ -121,4 +122,5 @@
   <ng-template #emptyState>
     <p class="resumen-panel__empty">No hay información de partidas presupuestarias para este periodo.</p>
   </ng-template>
+  </div>
 </section>

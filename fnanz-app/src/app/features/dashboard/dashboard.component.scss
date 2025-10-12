@@ -1,30 +1,9 @@
-.card__header {
+.dashboard-header {
   align-items: center;
   display: flex;
   gap: 1rem;
   justify-content: space-between;
   margin-bottom: 1.5rem;
-}
-
-.card__subtitle {
-  color: rgba(31, 41, 55, 0.7);
-  margin: 0.25rem 0 0;
-}
-
-.refresh-button {
-  background: linear-gradient(90deg, var(--fnanz-primary), var(--fnanz-secondary));
-  border: none;
-  border-radius: 9999px;
-  color: #fff;
-  cursor: pointer;
-  font-weight: 600;
-  padding: 0.6rem 1.5rem;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
-}
-
-.refresh-button:hover {
-  box-shadow: 0 12px 24px rgba(0, 45, 110, 0.2);
-  transform: translateY(-1px);
 }
 
 .service-grid {
