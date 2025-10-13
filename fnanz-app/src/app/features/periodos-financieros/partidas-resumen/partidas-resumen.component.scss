@@ -90,6 +90,27 @@
   margin: 0;
 }
 
+.resumen-card--ingresos .table-responsive {
+  border: 1px solid rgba(4, 120, 87, 0.15);
+  border-radius: 0.75rem;
+}
+
+.resumen-ingresos-table thead th {
+  color: #065f46;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.resumen-ingresos-table tbody td,
+.resumen-ingresos-table tfoot td {
+  vertical-align: middle;
+}
+
+.resumen-ingresos-table tfoot td {
+  border-top: 2px solid rgba(4, 120, 87, 0.2);
+}
+
 .resumen-table {
   border-collapse: collapse;
   width: 100%;

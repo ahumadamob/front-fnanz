@@ -75,40 +75,42 @@
                 No hay partidas de ingreso para este periodo.
               </p>
 
-              <table *ngIf="resumenData.ingresos.length > 0" class="resumen-table">
-                <thead>
-                  <tr>
-                    <th>Categoría</th>
-                    <th>Reservado</th>
-                    <th>Aplicado</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let ingreso of resumenData.ingresos; trackBy: trackByCategoriaId">
-                    <td>
-                      <div class="categoria-nombre">{{ ingreso.categoriaNombre }}</div>
-                      <small *ngIf="ingreso.orden != null" class="categoria-orden">Orden {{ ingreso.orden }}</small>
-                    </td>
-                    <td>
-                      {{ ingreso.montoReservado | currency: 'USD':'symbol-narrow':'1.0-0' }}
-                    </td>
-                    <td>
-                      {{ ingreso.montoAplicado | currency: 'USD':'symbol-narrow':'1.0-0' }}
-                    </td>
-                  </tr>
-                </tbody>
-                <tfoot>
-                  <tr>
-                    <td>Total</td>
-                    <td>
-                      {{ resumenData.totalIngresos.montoReservado | currency: 'USD':'symbol-narrow':'1.0-0' }}
-                    </td>
-                    <td>
-                      {{ resumenData.totalIngresos.montoAplicado | currency: 'USD':'symbol-narrow':'1.0-0' }}
-                    </td>
-                  </tr>
-                </tfoot>
-              </table>
+              <div *ngIf="resumenData.ingresos.length > 0" class="table-responsive">
+                <table class="table table-hover align-middle mb-0 resumen-ingresos-table">
+                  <thead class="table-light">
+                    <tr>
+                      <th scope="col">Categoría</th>
+                      <th scope="col">Reservado</th>
+                      <th scope="col">Aplicado</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let ingreso of resumenData.ingresos; trackBy: trackByCategoriaId">
+                      <td>
+                        <div class="categoria-nombre fw-semibold">{{ ingreso.categoriaNombre }}</div>
+                        <small *ngIf="ingreso.orden != null" class="categoria-orden">Orden {{ ingreso.orden }}</small>
+                      </td>
+                      <td>
+                        {{ ingreso.montoReservado | currency: 'USD':'symbol-narrow':'1.0-0' }}
+                      </td>
+                      <td>
+                        {{ ingreso.montoAplicado | currency: 'USD':'symbol-narrow':'1.0-0' }}
+                      </td>
+                    </tr>
+                  </tbody>
+                  <tfoot class="table-light">
+                    <tr>
+                      <td class="fw-semibold">Total</td>
+                      <td class="fw-semibold">
+                        {{ resumenData.totalIngresos.montoReservado | currency: 'USD':'symbol-narrow':'1.0-0' }}
+                      </td>
+                      <td class="fw-semibold">
+                        {{ resumenData.totalIngresos.montoAplicado | currency: 'USD':'symbol-narrow':'1.0-0' }}
+                      </td>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
             </div>
           </article>
 
