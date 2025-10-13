@@ -22,44 +22,53 @@
   <ng-container *ngIf="!loading() && resumen() as resumenData">
     <ng-container *ngIf="resumenData; else emptyState">
       <section class="resumen-grid">
-        <article class="resumen-card">
-          <header>
-            <h3>Ingresos</h3>
-            <span class="monto-pill monto-pill--ingreso">
-              Reservado: {{ resumenData.totalIngresos.montoReservado | currency: 'USD':'symbol-narrow':'1.0-0' }}
-            </span>
-          </header>
+        <article class="resumen-card resumen-card--ingresos card border-success">
+          <div class="card-header">
+            <h3 class="mb-0">Ingresos</h3>
+            <div class="ingresos-card__totales">
+              <span class="ingresos-card__label">Total reservado</span>
+              <strong class="ingresos-card__monto">
+                {{ resumenData.totalIngresos.montoReservado | currency: 'USD':'symbol-narrow':'1.0-0' }}
+              </strong>
+              <span class="ingresos-card__label">Total aplicado</span>
+              <strong class="ingresos-card__monto">
+                {{ resumenData.totalIngresos.montoAplicado | currency: 'USD':'symbol-narrow':'1.0-0' }}
+              </strong>
+            </div>
+          </div>
 
-          <p *ngIf="resumenData.ingresos.length === 0" class="resumen-card__empty">
-            No hay partidas de ingreso para este periodo.
-          </p>
+          <div class="card-body">
+            <p *ngIf="resumenData.ingresos.length === 0" class="resumen-card__empty">
+              No hay partidas de ingreso para este periodo.
+            </p>
 
-          <table *ngIf="resumenData.ingresos.length > 0" class="resumen-table">
-            <thead>
-              <tr>
-                <th>Categoría</th>
-                <th>Reservado</th>
-                <th>Aplicado</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let ingreso of resumenData.ingresos; trackBy: trackByCategoriaId">
-                <td>
-                  <div class="categoria-nombre">{{ ingreso.categoriaNombre }}</div>
-                  <small *ngIf="ingreso.orden != null" class="categoria-orden">Orden {{ ingreso.orden }}</small>
-                </td>
-                <td>{{ ingreso.montoReservado | currency: 'USD':'symbol-narrow':'1.0-0' }}</td>
-                <td>{{ ingreso.montoAplicado | currency: 'USD':'symbol-narrow':'1.0-0' }}</td>
-              </tr>
-            </tbody>
-            <tfoot>
-              <tr>
-                <td>Total</td>
-                <td>{{ resumenData.totalIngresos.montoReservado | currency: 'USD':'symbol-narrow':'1.0-0' }}</td>
-                <td>{{ resumenData.totalIngresos.montoAplicado | currency: 'USD':'symbol-narrow':'1.0-0' }}</td>
-              </tr>
-            </tfoot>
-          </table>
+            <table *ngIf="resumenData.ingresos.length > 0" class="resumen-table">
+              <thead>
+                <tr>
+                  <th>Categoría</th>
+                  <th>Reservado</th>
+                  <th>Aplicado</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let ingreso of resumenData.ingresos; trackBy: trackByCategoriaId">
+                  <td>
+                    <div class="categoria-nombre">{{ ingreso.categoriaNombre }}</div>
+                    <small *ngIf="ingreso.orden != null" class="categoria-orden">Orden {{ ingreso.orden }}</small>
+                  </td>
+                  <td>{{ ingreso.montoReservado | currency: 'USD':'symbol-narrow':'1.0-0' }}</td>
+                  <td>{{ ingreso.montoAplicado | currency: 'USD':'symbol-narrow':'1.0-0' }}</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td>Total</td>
+                  <td>{{ resumenData.totalIngresos.montoReservado | currency: 'USD':'symbol-narrow':'1.0-0' }}</td>
+                  <td>{{ resumenData.totalIngresos.montoAplicado | currency: 'USD':'symbol-narrow':'1.0-0' }}</td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
         </article>
 
         <article class="resumen-card">
