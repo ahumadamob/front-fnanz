@@ -68,16 +68,6 @@
           <article class="resumen-card resumen-card--ingresos card border-success">
             <div class="card-header">
               <h3 class="mb-0">Ingresos</h3>
-              <div class="ingresos-card__totales">
-                <span class="ingresos-card__label">Total reservado</span>
-                <strong class="ingresos-card__monto">
-                  {{ resumenData.totalIngresos.montoReservado | currency: 'USD':'symbol-narrow':'1.0-0' }}
-                </strong>
-                <span class="ingresos-card__label">Total aplicado</span>
-                <strong class="ingresos-card__monto">
-                  {{ resumenData.totalIngresos.montoAplicado | currency: 'USD':'symbol-narrow':'1.0-0' }}
-                </strong>
-              </div>
             </div>
 
             <div class="card-body">

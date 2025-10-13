@@ -61,22 +61,10 @@
 }
 
 .resumen-card--ingresos .card-header {
-  align-items: flex-start;
   background-color: #ecfdf5;
   border-bottom: 1px solid rgba(4, 120, 87, 0.25);
   border-radius: 1rem 1rem 0 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
   padding: 1.25rem 1.5rem;
-}
-
-@media (min-width: 576px) {
-  .resumen-card--ingresos .card-header {
-    align-items: center;
-    flex-direction: row;
-    justify-content: space-between;
-  }
 }
 
 .resumen-card--ingresos .card-body {
@@ -86,26 +74,6 @@
   padding: 1.5rem;
 }
 
-.ingresos-card__totales {
-  align-items: flex-end;
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-  text-align: right;
-}
-
-.ingresos-card__label {
-  color: #047857;
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-}
-
-.ingresos-card__monto {
-  color: #047857;
-  font-size: 1.25rem;
-}
 
 .resumen-card header {
   align-items: center;
