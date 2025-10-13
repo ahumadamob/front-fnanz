@@ -207,10 +207,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr
-                  *ngFor="let partida of partidas(); trackBy: trackByPartidaId"
-                  [ngClass]="estadoRowClass(partida)"
-                >
+                <tr *ngFor="let partida of partidas(); trackBy: trackByPartidaId">
                   <th scope="row" class="fw-semibold">{{ partida.concepto }}</th>
                   <td>
                     <span class="tipo-pill" [ngClass]="partida.tipo === 'INGRESO' ? 'tipo-pill--ingreso' : 'tipo-pill--egreso'">

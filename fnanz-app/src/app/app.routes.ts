@@ -4,7 +4,7 @@ import { DashboardComponent } from './features/dashboard/dashboard.component';
 import { CategoriasFinancierasComponent } from './features/categorias-financieras/categorias-financieras.component';
 import { PartidasPresupuestariasComponent } from './features/partidas-presupuestarias/partidas-presupuestarias.component';
 import { PeriodosFinancierosComponent } from './features/periodos-financieros/periodos-financieros.component';
-import { ReservasResumenComponent } from './features/periodos-financieros/reservas-resumen/reservas-resumen.component';
+import { PartidasResumenComponent } from './features/periodos-financieros/partidas-resumen/partidas-resumen.component';
 
 export const routes: Routes = [
   {
@@ -25,8 +25,8 @@ export const routes: Routes = [
     component: PeriodosFinancierosComponent
   },
   {
-    path: 'periodos/:id/reservas-resumen',
-    component: ReservasResumenComponent
+    path: 'periodos/:id/partidas-resumen',
+    component: PartidasResumenComponent
   },
   {
     path: '**',
