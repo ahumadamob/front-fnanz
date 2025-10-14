@@ -23,16 +23,16 @@
       <ng-container *ngIf="resumenData; else emptyState">
         <div class="row g-4">
           <div class="col-12 col-lg-6">
-            <div class="card border-success h-100">
-              <div class="card-header bg-success-subtle border-success">
-                <h3 class="mb-0">Ingresos</h3>
+            <div class="card h-100">
+              <div class="card-header py-2">
+                <h3 class="card-title h5 mb-0">Ingresos</h3>
               </div>
               <div class="card-body">
                 <p *ngIf="resumenData.ingresos.length === 0" class="text-muted mb-0">
                   No hay partidas de ingreso para este periodo.
                 </p>
                 <div *ngIf="resumenData.ingresos.length > 0" class="table-responsive">
-                  <table class="table table-hover align-middle mb-0">
+                  <table class="table table-striped table-sm mb-0">
                     <thead class="table-light">
                       <tr>
                         <th scope="col">Categoría</th>
@@ -65,8 +65,8 @@
 
           <div class="col-12 col-lg-6">
             <div class="card h-100">
-              <div class="card-header d-flex justify-content-between align-items-center">
-                <h3 class="mb-0">Egresos</h3>
+              <div class="card-header d-flex justify-content-between align-items-center py-2">
+                <h3 class="card-title h5 mb-0">Egresos</h3>
                 <span class="badge text-bg-danger">
                   Reservado: {{ resumenData.totalEgresos.montoReservado | currency: 'USD':'symbol-narrow':'1.0-0' }}
                 </span>
@@ -76,7 +76,7 @@
                   No hay partidas de egreso para este periodo.
                 </p>
                 <div *ngIf="resumenData.egresos.length > 0" class="table-responsive">
-                  <table class="table align-middle mb-0">
+                  <table class="table table-striped table-sm mb-0">
                     <thead class="table-light">
                       <tr>
                         <th scope="col">Categoría</th>
