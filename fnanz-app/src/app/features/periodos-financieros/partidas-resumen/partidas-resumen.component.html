@@ -1,17 +1,17 @@
-<section class="card shadow-sm border-0">
+<section class="card">
   <div class="card-body">
-    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-start gap-3 mb-4">
       <div>
-        <h2 class="card-title mb-1">Resumen de partidas presupuestarias por categoría</h2>
+        <h2 class="card-title h4 mb-2">Mi Panel Personal</h2>
         <p class="card-subtitle text-muted mb-0">
-          Periodo:
+          Resumen de partidas presupuestarias por categoría · Periodo:
           <span *ngIf="periodoNombre(); else periodoFallback">{{ periodoNombre() }}</span>
           <ng-template #periodoFallback>
             {{ periodoId() ? ('#' + periodoId()) : 'Desconocido' }}
           </ng-template>
         </p>
       </div>
-      <a class="btn btn-outline-secondary" routerLink="/periodos">
+      <a class="btn btn-outline-secondary align-self-md-center" routerLink="/periodos">
         Volver a periodos
       </a>
     </div>
